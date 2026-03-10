@@ -17,22 +17,12 @@ CREATE TABLE Usuario (
 );
 
 -- =========================
--- Perfil (1:1 con Usuario)
+-- Perfil (1:1 con Usuario). Incluye datos de contacto y enlaces.
 -- =========================
 CREATE TABLE Perfil (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT UNIQUE,
     descripcion TEXT,
-    FOREIGN KEY (usuario_id) REFERENCES Usuario(id)
-        ON DELETE CASCADE
-);
-
--- =========================
--- Contacto
--- =========================
-CREATE TABLE Contacto (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT,
     numero_tel VARCHAR(20),
     whatsapp VARCHAR(20),
     FOREIGN KEY (usuario_id) REFERENCES Usuario(id)
@@ -40,13 +30,13 @@ CREATE TABLE Contacto (
 );
 
 -- =========================
--- Link (relacionado a Contacto)
+-- Link (relacionado a Perfil)
 -- =========================
 CREATE TABLE Link (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    contacto_id INT,
+    perfil_id INT,
     url VARCHAR(255),
-    FOREIGN KEY (contacto_id) REFERENCES Contacto(id)
+    FOREIGN KEY (perfil_id) REFERENCES Perfil(id)
         ON DELETE CASCADE
 );
 
