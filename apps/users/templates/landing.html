@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#745945",
+                        "background": "#fcf9f8",
+                        "on-secondary-fixed-variant": "#6b3836",
+                        "tertiary-container": "#ffdec8",
+                        "on-background": "#1c1b1b",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#ffdad7",
+                        "on-secondary-container": "#7b4542",
+                        "primary-container": "#d9e9d0",
+                        "secondary": "#874f4c",
+                        "primary-fixed-dim": "#bbcbb3",
+                        "surface-container-highest": "#e5e2e1",
+                        "tertiary-fixed-dim": "#e3c0a8",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#ffb7b2",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#5b6955",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e5e2e1",
+                        "inverse-surface": "#313030",
+                        "inverse-primary": "#bbcbb3",
+                        "secondary-fixed-dim": "#fcb4b0",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#121f0f",
+                        "primary-fixed": "#d7e7ce",
+                        "surface": "#fcf9f8",
+                        "outline": "#747871",
+                        "surface-container": "#f0eded",
+                        "outline-variant": "#c4c8bf",
+                        "on-tertiary-fixed-variant": "#5a422f",
+                        "on-primary-fixed-variant": "#3d4b38",
+                        "on-tertiary-fixed": "#2a1708",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f6f3f2",
+                        "primary": "#54624f",
+                        "surface-bright": "#fcf9f8",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#444841",
+                        "on-secondary-fixed": "#360e0d",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdcc4",
+                        "surface-tint": "#54624f",
+                        "surface-container-high": "#eae7e7",
+                        "on-tertiary-container": "#7b604c",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-dim": "#dcd9d9",
+                        "on-surface": "#1c1b1b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "xl": "80px",
+                        "xs": "4px",
+                        "lg": "48px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "container-max": "1200px",
+                        "sm": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "body-md": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "caption": ["Manrope"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "700"}],
+                        "caption": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .kinetic-gradient {
+            background: linear-gradient(135deg, #d9e9d0 0%, #ffffff 50%, #ffdec8 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background antialiased selection:bg-primary-container selection:text-on-primary-container">
+{% include "header.html" %}
+{% if messages %}
+<div class="fixed top-20 left-1/2 -translate-x-1/2 z-[70] w-[92%] max-w-md space-y-2">
+  {% for message in messages %}
+  <p class="toast-message rounded-lg px-4 py-2 text-sm text-center shadow-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-emerald-100 text-emerald-700{% endif %}">
+    {{ message }}
+  </p>
+  {% endfor %}
+</div>
+{% endif %}
+<main>
+<!-- Hero Section -->
+<section class="relative pt-xl pb-lg kinetic-gradient overflow-hidden">
+<div class="max-w-container-max mx-auto px-8 grid lg:grid-cols-2 gap-md items-center">
+<div class="z-10">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-container text-on-primary-container font-label-md mb-md">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+                        Conexiones profesionales inmediatas
+                    </div>
+<h1 class="font-headline-xl text-headline-xl text-on-background mb-md">
+                        Encuentra un <span class="text-primary italic">Profesionista</span> ahora para tu próximo proyecto.
+                    </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-lg max-w-lg">
+                        Conectamos el talento local con las mejores oportunidades. Chambitas es el hub donde el crecimiento profesional florece de manera orgánica.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex items-center justify-center px-8 py-4 rounded-full bg-primary text-white font-label-md hover:shadow-xl transition-all h-[56px] min-w-[200px]" href="{% url 'register' %}">
+                            Registrarme
+                        </a>
+<a class="flex items-center justify-center px-8 py-4 rounded-full border-2 border-primary text-primary font-label-md bg-white/50 backdrop-blur hover:bg-white transition-all h-[56px] min-w-[200px]" href="{% url 'login' %}">
+                            Iniciar Sesión
+                        </a>
+</div>
+<div class="mt-lg flex items-center gap-4">
+<div class="flex -space-x-3">
+<div class="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a young woman with a friendly smile, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5BghmF8lWqZNaaRoxFJBu-6z339gIGIPB8seZgCyHranpNCK3xoyqq-A-MzoYQW8oCahFPbLDrO3yy85KnqpmQ7winlWKvodTkfrO72-dY1enPpqXmY8oN87z47uN45CsMFX5JVFyFz1zBQS33orjwAlJ3-zYP9DXTzzcITz96qY8HAy_LpUzAM-4b4Qh_lEF_R3gO3M6dx4qnCCi9TmTW-koxUr15EzLlHlZ8k_JRKZtv46Yb5uAI6c26KafcF1VYhazNKrq-g8"/>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="headshot of a middle-aged male architect in a studio setting, warm ambient lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp9oZ5gAUrqx0yge7Q3lke0l-Oe1qOoWB8UqWFMs7Aj7JncmxASv4wsli3zLLYsEhNbq6AhRgHMCPJTnrVkL6xtzD6-Mjt1Hn5ZfrKJwHwB-Lm9s01HW8eaIYjcIKDaps_-mOoF_wNNHP7fhXBOqC7SWvq0PO1w17CnPLgfUG40RaeAB-6It3TPruRSHiEh-Z-DgliBbjyiVSpNX3__8rn3LVsxC3jKhyB4eeIZUhRZnxKwebsVj4EV0nkDpWZYV3Fcg8Crvo4DEA"/>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="modern close-up of a smiling professional woman against a clean pastel background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZCBuU4DK-QSoCM3FqNoAKqsxRgM45rra4FnjOmnagcyqC4XQWk_jw1WesmMatfFtapA4lFqbG2l0-6CLxDCBDcTK5VlMO_Sc2trtT0SG1bVPFZ1FQRb0-jeUbyvFine8ddH7LQeTbrniZqryhhUHwQgVcaEomydUSM7kG76uci-gGpDG8DfK0n_ZE1LScqsQWkVQOShPuN6_cC2l12jPNmEHLgQcSV2-x4mztxzmMtxP7UvCREXO7WJm2lou_c-aP1UJWV21kCQk"/>
+</div>
+</div>
+<p class="font-caption text-on-surface-variant">
+<span class="font-bold text-on-background">+15,000</span> expertos ya están trabajando
+                        </p>
+</div>
+</div>
+<div class="relative">
+<div class="relative z-10 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/40">
+<img class="w-full h-auto" data-alt="diverse group of professionals collaborating in a bright modern office with plants and warm sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0w-dyVq00KL9ai-Kkd4hMCDOIYIW8h8rvSNtGdTjm_FMacWkZ7lJfm5BDu2vzQnbWWAi8lot_V1QKUG0HJR_GZPo0DE8oFeOE4S4sMqvgFzbW3Ni6xaZFDyZciDowGBHyFKuYOqvMR8na8Y8PP8-OXYfRkeEqZivX4v5MEl8duyAYmJOsi_Ue7uSx2TE7iLC5IM5Wh0WfSGjhPfy4GJ2gZ6pQM2dxsNZn7zpypYTf989M0AB9_SpcF4IaMl5NG3igpToGrYl2mkw"/>
+</div>
+<!-- Decorative Elements -->
+<div class="absolute -top-12 -right-12 w-64 h-64 bg-primary-container rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse"></div>
+<div class="absolute -bottom-12 -left-12 w-64 h-64 bg-secondary-container rounded-full mix-blend-multiply filter blur-3xl opacity-60"></div>
+<!-- Stats Card Floating -->
+<div class="absolute -bottom-6 -right-6 glass-card p-6 rounded-2xl shadow-lg z-20">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+<div>
+<p class="font-label-md text-primary">Proyectos Completados</p>
+<p class="font-headline-md text-headline-md leading-none">98.5%</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Social Proof Section -->
+<section class="py-lg bg-surface-container-lowest">
+<div class="max-w-container-max mx-auto px-8">
+<p class="text-center font-label-md text-on-surface-variant uppercase tracking-widest mb-md">Empresas que confían en nosotros</p>
+<div class="flex flex-wrap justify-center items-center gap-xl opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+<span class="font-headline-md text-slate-400">TECNOVIA</span>
+<span class="font-headline-md text-slate-400">GROWTHCO</span>
+<span class="font-headline-md text-slate-400">LUMINA</span>
+<span class="font-headline-md text-slate-400">STUDIO_K</span>
+<span class="font-headline-md text-slate-400">NEXUS</span>
+</div>
+</div>
+</section>
+<!-- Features Bento Grid -->
+<section class="py-xl bg-background">
+<div class="max-w-container-max mx-auto px-8">
+<div class="text-center mb-xl">
+<h2 class="font-headline-lg text-headline-lg mb-4">¿Por qué elegir Chambitas?</h2>
+<p class="font-body-lg text-on-surface-variant max-w-2xl mx-auto">Diseñamos una plataforma que prioriza la calidad del trabajo y la transparencia en cada transacción.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Feature 1 -->
+<div class="md:col-span-2 glass-card p-lg rounded-3xl flex flex-col justify-between hover:shadow-xl transition-all">
+<div>
+<div class="w-14 h-14 rounded-2xl bg-primary-container flex items-center justify-center text-primary mb-md">
+<span class="material-symbols-outlined text-[32px]">handshake</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-md">Confianza entre profesionales</h3>
+<p class="font-body-md text-on-surface-variant">Fomentamos una comunidad basada en perfiles claros, comunicación abierta y buenas referencias para trabajar con mayor tranquilidad.</p>
+</div>
+<div class="mt-lg rounded-xl overflow-hidden h-48">
+<img class="w-full h-full object-cover" data-alt="close up of hands shaking in a professional agreement with soft office lighting background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIiFGtZ0K-yvxJj5vVaV9605n8Op41FZd18stcxzNjMUi9xK1BjImudGAemEWjO5uWF8plN8fzdNgLUsJy5ZwwgcAfTyYGuOa11Kq27GbvKC9qHMlRXHNejAwhvc3SW4D1I1kRKBnc4mTfcau-WhoKQprn6pWZvoFG01dLOaVESbWHUIcZYGwTdKkjh2pFGkeXC80-aFUQYG6Ml8oidhsnaFtdi4nVjwmX0iGtE26prRnoQFIDf_UQc0WyInoOhuXVBP6S8YQK1CQ"/>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="glass-card p-lg rounded-3xl hover:shadow-xl transition-all">
+<div class="w-14 h-14 rounded-2xl bg-tertiary-container flex items-center justify-center text-tertiary mb-md">
+<span class="material-symbols-outlined text-[32px]">speed</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-md">Respuesta Rápida</h3>
+<p class="font-body-md text-on-surface-variant">Recibe propuestas de expertos calificados en menos de 24 horas para tus necesidades urgentes.</p>
+</div>
+<!-- Feature 4 -->
+<div class="md:col-span-3 glass-card p-lg rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-md hover:shadow-xl transition-all">
+<div class="flex flex-col justify-center">
+<div class="w-14 h-14 rounded-2xl bg-secondary-container flex items-center justify-center text-secondary mb-md">
+<span class="material-symbols-outlined text-[32px]">diversity_3</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-md">Comunidad Activa</h3>
+<p class="font-body-md text-on-surface-variant">Únete a una red de más de 50,000 colaboradores compartiendo conocimiento y oportunidades diariamente.</p>
+</div>
+<div class="rounded-2xl overflow-hidden bg-slate-100">
+<img class="w-full h-full object-cover" data-alt="vibrant workshop setting with people brainstorming around a table with sticky notes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLF6REVy2tlwnt_y1lqDsTy36ploWeVNmDMBRY806Y9skDLyuQnTQzNuIfw1Q3nkFVh4efJ0Ty-eC3vG48s0Fi45vaE_E8TSrH2lmOcF9RgRorNGEPff7Vlmvi9aRf6f8xsbh2mywcrHdaDonB_b8RRzvsnOs9CHq1b8jTirbYNAiOESJinlCEzcRf-uMScjfUO0pv3LFnQnW0kypnqHMGlaJczTjOrvwZFgMIyUCqUgqAkWz3nEK_JKvKvw61SnQJqa6iCDlxIQY"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="py-xl">
+<div class="max-w-[1100px] mx-auto px-8">
+<div class="bg-on-secondary-container rounded-[40px] p-xl text-white relative overflow-hidden">
+<div class="relative z-10 max-w-xl">
+<h2 class="font-headline-xl text-headline-xl mb-md">¿Listo para impulsar tu carrera?</h2>
+<p class="font-body-lg text-white/80 mb-lg">Miles de empresas están buscando exactamente lo que tú ofreces. Crea tu perfil hoy mismo y empieza a crecer.</p>
+<div class="flex flex-wrap gap-4">
+<a class="px-8 py-4 rounded-full bg-white text-secondary font-label-md hover:scale-105 transition-all" href="{% url 'register' %}">Crear Perfil Gratis</a>
+<a class="px-8 py-4 rounded-full bg-transparent border border-white/30 text-white font-label-md hover:bg-white/10 transition-all" href="{% url 'login' %}">Ver Ofertas</a>
+</div>
+</div>
+<!-- Decorative Circle -->
+<div class="absolute top-0 right-0 w-[400px] h-[400px] bg-secondary rounded-full -translate-y-1/2 translate-x-1/4 opacity-20"></div>
+<div class="absolute bottom-0 right-0 p-lg hidden lg:block">
+<span class="material-symbols-outlined text-[200px] opacity-10">rocket_launch</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<script>
+  (function () {
+    const toasts = document.querySelectorAll(".toast-message");
+    if (!toasts.length) return;
+
+    setTimeout(function () {
+      toasts.forEach(function (toast) {
+        toast.style.transition = "opacity 250ms ease";
+        toast.style.opacity = "0";
+        setTimeout(function () {
+          toast.remove();
+        }, 260);
+      });
+    }, 2000);
+  })();
+</script>
+<!-- Footer -->
+<footer class="w-full py-12 mt-20 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+<div class="max-w-[1200px] mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="font-bold text-slate-900 dark:text-slate-100 text-xl font-['Plus_Jakarta_Sans']">Chambitas</span>
+<p class="font-['Plus_Jakarta_Sans'] text-sm text-slate-500">© 2026 Chambitas. Cultivating professional growth.</p>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

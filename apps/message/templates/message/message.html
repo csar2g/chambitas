@@ -59,45 +59,7 @@
 <div class="flex min-h-screen">
 
   <!-- SideNavBar -->
-  <aside class="h-screen w-64 fixed left-0 top-0 border-r border-primary-container/50 bg-[#D9E9D0] flex flex-col gap-2 p-6 z-40">
-    <div class="mb-8">
-      <h1 class="text-xl font-bold text-primary font-headline-md">Chambitas</h1>
-      <div class="mt-6 flex items-center gap-3 px-2">
-        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-sm">
-          {{ usuario.nombre|slice:":2"|upper }}
-        </div>
-        <div>
-          <p class="font-headline-md text-sm text-primary">{{ usuario.nombre }}</p>
-          <p class="font-caption text-xs text-on-primary-container/70">Growth Mode Active</p>
-        </div>
-      </div>
-    </div>
-    <nav class="flex-1 space-y-2">
-      <a class="flex items-center gap-3 p-3 text-on-primary-container/70 hover:bg-white/40 rounded-xl transition-transform hover:translate-x-1" href="#">
-        <span class="material-symbols-outlined">dashboard</span>
-        <span class="font-label-md">Dashboard</span>
-      </a>
-      <a class="flex items-center gap-3 p-3 text-on-primary-container/70 hover:bg-white/40 rounded-xl transition-transform hover:translate-x-1" href="#">
-        <span class="material-symbols-outlined">work</span>
-        <span class="font-label-md">Active Projects</span>
-      </a>
-      <a class="flex items-center gap-3 p-3 bg-white text-primary font-bold shadow-sm rounded-xl" href="#">
-        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
-        <span class="font-label-md">Messages</span>
-      </a>
-      <a class="flex items-center gap-3 p-3 text-on-primary-container/70 hover:bg-white/40 rounded-xl transition-transform hover:translate-x-1" href="#">
-        <span class="material-symbols-outlined">account_balance_wallet</span>
-        <span class="font-label-md">Wallet</span>
-      </a>
-      <a class="flex items-center gap-3 p-3 text-on-primary-container/70 hover:bg-white/40 rounded-xl transition-transform hover:translate-x-1" href="#">
-        <span class="material-symbols-outlined">settings</span>
-        <span class="font-label-md">Settings</span>
-      </a>
-    </nav>
-    <button class="mt-auto w-full py-3 px-4 bg-gradient-to-r from-primary to-tertiary text-white rounded-xl font-label-md shadow-sm active:opacity-80 transition-opacity">
-      Post a Job
-    </button>
-  </aside>
+  {% include "sidebar_profile.html" with active_menu="messages" sidebar_nav_classes="hidden md:flex flex-col gap-2 p-6 h-screen w-64 fixed left-0 top-0 border-r border-emerald-200/50 dark:border-emerald-900/30 bg-[#D9E9D0] dark:bg-emerald-950/30 z-40" %}
 
   <!-- Main Content -->
   <main class="ml-64 flex-1 flex h-screen">
@@ -120,7 +82,7 @@
 
       <div class="flex-1 overflow-y-auto px-4 pb-6 space-y-2" id="lista-conversaciones">
         {% for item in conversaciones %}
-          <a href="{% url 'conversacion' usuario.id item.conv.id %}"
+          <a href="{% url 'conversacion' item.conv.id %}"
              class="conv-item"
              data-nombre="{{ item.otro.nombre|lower }}">
             <div class="p-4 {% if conversacion_activa.id == item.conv.id %}bg-primary-container/40 border border-primary-container{% else %}hover:bg-surface-container-low{% endif %} rounded-2xl flex gap-3 cursor-pointer transition-all">
@@ -216,7 +178,7 @@
 
         <!-- Input — todo dentro del form -->
         <footer class="p-6 border-t border-surface-container">
-          <form method="POST" action="{% url 'conversacion' usuario.id conversacion_activa.id %}" enctype="multipart/form-data" id="form-mensaje">
+          <form method="POST" action="{% url 'conversacion' conversacion_activa.id %}" enctype="multipart/form-data" id="form-mensaje">
             {% csrf_token %}
 
             <div class="max-w-4xl mx-auto flex items-center gap-4">

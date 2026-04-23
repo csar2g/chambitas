@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#745945",
+                        "background": "#fcf9f8",
+                        "on-secondary-fixed-variant": "#6b3836",
+                        "tertiary-container": "#ffdec8",
+                        "on-background": "#1c1b1b",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#ffdad7",
+                        "on-secondary-container": "#7b4542",
+                        "primary-container": "#d9e9d0",
+                        "secondary": "#874f4c",
+                        "primary-fixed-dim": "#bbcbb3",
+                        "surface-container-highest": "#e5e2e1",
+                        "tertiary-fixed-dim": "#e3c0a8",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#ffb7b2",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#5b6955",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e5e2e1",
+                        "inverse-surface": "#313030",
+                        "inverse-primary": "#bbcbb3",
+                        "secondary-fixed-dim": "#fcb4b0",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#121f0f",
+                        "primary-fixed": "#d7e7ce",
+                        "surface": "#fcf9f8",
+                        "outline": "#747871",
+                        "surface-container": "#f0eded",
+                        "outline-variant": "#c4c8bf",
+                        "on-tertiary-fixed-variant": "#5a422f",
+                        "on-primary-fixed-variant": "#3d4b38",
+                        "on-tertiary-fixed": "#2a1708",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f6f3f2",
+                        "primary": "#54624f",
+                        "surface-bright": "#fcf9f8",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#444841",
+                        "on-secondary-fixed": "#360e0d",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdcc4",
+                        "surface-tint": "#54624f",
+                        "surface-container-high": "#eae7e7",
+                        "on-tertiary-container": "#7b604c",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-dim": "#dcd9d9",
+                        "on-surface": "#1c1b1b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "xl": "80px",
+                        "xs": "4px",
+                        "lg": "48px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "container-max": "1200px",
+                        "sm": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "body-md": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "caption": ["Manrope"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "700"}],
+                        "caption": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background">
+<!-- SideNavBar (Hidden on Mobile) -->
+{% include "sidebar_profile.html" with active_menu="perfil" %}
+{% if messages %}
+<div class="fixed top-6 right-6 z-[70] w-[92%] max-w-sm space-y-2">
+{% for message in messages %}
+<p class="toast-message rounded-lg px-4 py-2 text-sm shadow-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-emerald-100 text-emerald-700{% endif %}">
+{{ message }}
+</p>
+{% endfor %}
+</div>
+{% endif %}
+<!-- Main Content Area -->
+<main class="md:ml-64 min-h-screen">
+<!-- Header Section -->
+<header class="relative h-[320px] w-full overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-r from-primary-container via-secondary-container to-tertiary-container opacity-60"></div>
+<img class="w-full h-full object-cover mix-blend-overlay" data-alt="vibrant abstract gradient background with flowing organic shapes in shades of soft green, peach, and cream with a subtle paper texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrISv5eOB3Q6juukz8DVgy55iGAk-YPyUZw8QR_zyChd4WesXskWchmdtKTzS2ZYnTqxeLxNvJDU1bMp2rAofhFGq5btv05xNr2el-u1Z9hy8hxQ1wMl0Zp3zePKJUCu-PcB-hnAdnwCnZLJ8L6YorokPjI_kmRfOVDsUZRHZcjYw1hHYswxL6PunZzEtYjYnGzl5HndQBfd2zncRzZ9yt1026fLNq_CSveNCj8YtNFgS5OMQ8jDOv6HjM1cSIyfzbCnPAROxMSMs"/>
+</header>
+<!-- Profile Section -->
+<div class="max-w-[1100px] mx-auto px-md -mt-48 relative z-20">
+<div class="flex flex-col lg:flex-row lg:items-start gap-gutter">
+<!-- Profile Main Info (Left Column) -->
+<div class="flex-1 space-y-gutter">
+<!-- Bio Card -->
+<div class="bg-surface-container-lowest p-md lg:p-lg rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
+<div class="flex flex-col md:flex-row gap-md items-start">
+<div class="relative">
+<img class="w-32 h-32 md:w-40 md:h-40 rounded-[2rem] object-cover shadow-xl border-4 border-white" data-alt="professional portrait of a creative individual in a bright modern studio with a warm and friendly expression" src="{% if perfil.foto_perfil %}{{ perfil.foto_perfil.url }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuBMF0iBtcXqEyRXB1XAVGe11gzboHIuvC9luupau4oi4uhd32Gfjs9GwXL_G3ANRwYFv-5nHJlaL9D892GJAjoFcdz2IqAtAEwH8s0FRhoOGVgHmdczLpf6C1v7sWbJD8-zFAQ7g3ER5CG4k6sa5qFYH63U4-6bjB6PWx3TMGmlbahGxWMofKEaECKB359_qMTkEDIKEe7gEQyQmKJ6Fp5KTkBbdIxW23DK9ntypA3-GsyV4DbsuW7mF8rtttQIqNiRm6eDCF6bxic{% endif %}"/>
+<div class="absolute -bottom-2 -right-2 bg-primary p-2 rounded-full text-white shadow-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-sm" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="flex-1 mt-4 md:mt-0">
+<div class="flex flex-wrap items-center gap-sm">
+<h1 class="font-headline-lg text-on-surface">{{ request.user.get_full_name|default:request.user.username }}</h1>
+<span class="px-3 py-1 bg-primary-container text-on-primary-container rounded-full font-label-md text-xs">Available Now</span>
+</div>
+<p class="font-headline-md text-primary mt-1">{{ request.user.email|default:"Profesional en Chambitas" }}</p>
+<div class="flex items-center gap-md mt-sm text-on-surface-variant font-label-md">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="location_on">location_on</span>
+                                        {{ perfil.ubicacion|default:"Sin ubicación" }}
+                                    </div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="call">call</span>
+                                        {{ perfil.numero_tel|default:"Sin telefono registrado" }}
+                                    </div>
+</div>
+</div>
+<div class="flex flex-col gap-sm w-full md:w-auto">
+<a class="flex items-center justify-center gap-2 px-8 py-4 bg-primary text-white rounded-xl font-bold font-label-md shadow-lg hover:translate-y-[-2px] transition-all" href="{% url 'edit_profile' %}">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+                                    Edit Profile
+                                </a>
+</div>
+</div>
+<div class="mt-lg border-t border-outline-variant/20 pt-lg">
+<h2 class="font-headline-md mb-sm">About</h2>
+<p class="font-body-lg text-on-surface-variant leading-relaxed">
+                                {{ perfil.descripcion|default:"Complete your profile to let others know your experience and work style." }}
+                            </p>
+</div>
+</div>
+<!-- Aptitudes (Tags) Section -->
+<div class="bg-surface-container-lowest p-md lg:p-lg rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
+<h2 class="font-headline-md mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="auto_awesome">auto_awesome</span>
+                            Skills
+                        </h2>
+<div class="flex flex-wrap gap-sm">
+{% for aptitud in aptitudes %}
+<span class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-on-surface hover:bg-primary-fixed transition-colors cursor-default">{{ aptitud }}</span>
+{% empty %}
+<span class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-on-surface">Add skills from Edit Profile</span>
+{% endfor %}
+</div>
+</div>
+<!-- Recomendaciones Section -->
+<div class="bg-surface-container-lowest p-md lg:p-lg rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
+<div class="flex justify-between items-center mb-md">
+<h2 class="font-headline-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="forum">forum</span>
+                                Recommendations
+                            </h2>
+</div>
+<div class="p-md bg-background rounded-2xl border border-outline-variant/10">
+<p class="font-body-md text-on-surface-variant">
+                                You don't have any recommendations published yet.
+                            </p>
+</div>
+</div>
+</div>
+<!-- Sidebar (Right Column) — mismo row que la columna izquierda (Edit Profile) -->
+<aside class="w-full lg:w-80 lg:shrink-0 space-y-gutter">
+<!-- Enlaces Section -->
+<div class="bg-surface-container-lowest p-md rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
+<h2 class="font-headline-md mb-md text-lg">Enlaces</h2>
+<div class="flex flex-col gap-sm">
+{% if linkedin_url %}
+<a class="flex items-center justify-between p-3 rounded-xl border border-outline-variant/20 hover:bg-primary-container/10 transition-colors" href="{{ linkedin_url }}" rel="noopener noreferrer" target="_blank">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="link">link</span>
+<span class="font-label-md">LinkedIn Profile</span>
+</div>
+<span class="material-symbols-outlined text-sm opacity-40" data-icon="open_in_new">open_in_new</span>
+</a>
+{% endif %}
+{% if portfolio_url %}
+<a class="flex items-center justify-between p-3 rounded-xl border border-outline-variant/20 hover:bg-primary-container/10 transition-colors" href="{{ portfolio_url }}" rel="noopener noreferrer" target="_blank">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="palette">palette</span>
+<span class="font-label-md">Portfolio</span>
+</div>
+<span class="material-symbols-outlined text-sm opacity-40" data-icon="open_in_new">open_in_new</span>
+</a>
+{% endif %}
+{% if perfil.whatsapp %}
+<a class="flex items-center justify-between p-3 rounded-xl border border-outline-variant/20 hover:bg-primary-container/10 transition-colors" href="https://wa.me/{{ perfil.whatsapp|cut:' '|cut:'+' }}" rel="noopener noreferrer" target="_blank">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="chat">chat</span>
+<span class="font-label-md">WhatsApp</span>
+</div>
+<span class="material-symbols-outlined text-sm opacity-40" data-icon="open_in_new">open_in_new</span>
+</a>
+{% endif %}
+{% if not linkedin_url and not portfolio_url and not perfil.whatsapp %}
+<p class="text-sm text-on-surface-variant">You don't have any links configured yet.</p>
+{% endif %}
+</div>
+</div>
+<!-- Statistics / Quick Stats -->
+<div class="bg-primary p-md rounded-[2rem] text-white">
+<h2 class="font-headline-md text-lg mb-md">Work Metrics</h2>
+<div class="space-y-md">
+<div class="flex justify-between items-center">
+<span class="font-body-md opacity-80">Response Rate</span>
+<span class="font-headline-md text-xl">98%</span>
+</div>
+<div class="w-full bg-white/20 h-1 rounded-full overflow-hidden">
+<div class="bg-white h-full w-[98%]"></div>
+</div>
+</div>
+</div>
+<!-- Ad / Promo -->
+<div class="relative overflow-hidden rounded-[2rem] aspect-square group cursor-pointer">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="vibrant abstract close up of colorful spring flowers blooming in soft morning light with shallow depth of field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuYHQmcR8XLDN8bgg-4EtTqfpA44USXPF2E_-oQxqqdPD7zTDf2AgWxZYciGkybtxVPwW4Uc41ZTEXhCmVehTRoiKKd7Mo_jZQQXS6CdzwKD9ijh1kpg5B9UmrEa4B8KiVrB-73p5U27XXQxJgCt3wKR7ciyVKjTct_zg6t0BHCAv3Dquy30pgCUYkypFGorKcAz-W5y9PINrvzQbAHztELRcDNdLdMXfhMoPNLS1voijLi59qXEjOt94kCTRzc-aP0e-tutqFud8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent p-md flex flex-col justify-end">
+<h3 class="text-white font-headline-md text-lg">Looking for a full team?</h3>
+<p class="text-white/80 text-caption mt-xs">Hire agencies and curated collectives for large scale projects.</p>
+</div>
+</div>
+</aside>
+</div>
+</div>
+<!-- Footer -->
+<footer class="w-full py-12 mt-20 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+<div class="max-w-[1200px] mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex flex-col gap-2">
+<span class="font-bold text-slate-900 dark:text-slate-100 font-headline-md">Chambitas</span>
+<p class="font-['Plus_Jakarta_Sans'] text-sm text-slate-500">© 2024 Chambitas. Cultivating professional growth.</p>
+</div>
+<div class="flex gap-lg">
+<a class="text-slate-500 hover:text-emerald-500 transition-colors font-label-md" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-emerald-500 transition-colors font-label-md" href="#">Terms of Service</a>
+<a class="text-slate-500 hover:text-emerald-500 transition-colors font-label-md" href="#">Help Center</a>
+<a class="text-slate-500 hover:text-emerald-500 transition-colors font-label-md" href="#">Career Advice</a>
+</div>
+</div>
+</footer>
+</main>
+<script>
+  (function () {
+    const toasts = document.querySelectorAll(".toast-message");
+    if (!toasts.length) return;
+
+    setTimeout(function () {
+      toasts.forEach(function (toast) {
+        toast.style.transition = "opacity 250ms ease";
+        toast.style.opacity = "0";
+        setTimeout(function () {
+          toast.remove();
+        }, 260);
+      });
+    }, 2000);
+  })();
+</script>
+</body></html>

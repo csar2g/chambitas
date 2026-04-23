@@ -1,0 +1,24 @@
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-emerald-100 dark:border-emerald-900/30 shadow-sm shadow-emerald-900/5">
+  <div class="flex justify-between items-center h-16 px-2 md:px-4 w-full">
+    <a class="text-2xl font-bold tracking-tighter text-emerald-900 dark:text-emerald-50 font-headline-md" href="{% url 'landing' %}">
+      Chambitas
+    </a>
+    <div class="flex items-center space-x-4">
+      {% if user.is_authenticated %}
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button class="px-5 py-2 rounded-full font-['Plus_Jakarta_Sans'] text-sm font-semibold tracking-tight text-slate-600 dark:text-slate-400 hover:text-emerald-600 transition-colors active:scale-95 duration-200" type="submit">
+          Logout
+        </button>
+      </form>
+      {% else %}
+      <a class="px-5 py-2 rounded-full font-['Plus_Jakarta_Sans'] text-sm font-semibold tracking-tight text-slate-600 dark:text-slate-400 hover:text-emerald-600 transition-colors active:scale-95 duration-200" href="{% url 'login' %}">
+        Login
+      </a>
+      <a class="px-5 py-2 bg-primary text-white rounded-full font-['Plus_Jakarta_Sans'] text-sm font-semibold tracking-tight shadow-lg shadow-primary/20 active:scale-95 duration-200" href="{% url 'register' %}">
+        Sign Up
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</header>

@@ -1,0 +1,33 @@
+<nav class="{{ sidebar_nav_classes|default:'hidden md:flex flex-col gap-2 p-6 h-screen w-64 fixed left-0 top-0 border-r border-emerald-200/50 dark:border-emerald-900/30 bg-[#D9E9D0] dark:bg-emerald-950/30 z-50' }}">
+  <div class="mb-lg">
+    <span class="text-3xl font-extrabold text-emerald-900 dark:text-emerald-100 font-headline-md">Chambitas</span>
+  </div>
+  <div class="flex flex-col gap-2">
+    <a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:translate-x-1 transition-transform hover:bg-white/40 dark:hover:bg-emerald-800/20 rounded-xl font-label-md" href="#">
+      <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+      Dashboard
+    </a>
+    <a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:translate-x-1 transition-transform hover:bg-white/40 dark:hover:bg-emerald-800/20 rounded-xl font-label-md" href="#">
+      <span class="material-symbols-outlined" data-icon="work">work</span>
+      Publicaciones
+    </a>
+    <a class="{% if active_menu == 'messages' %}bg-white dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-200 font-bold shadow-sm{% else %}text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 dark:hover:bg-emerald-800/20{% endif %} flex items-center gap-3 px-4 py-3 hover:translate-x-1 transition-transform rounded-xl font-label-md" href="{% url 'bandeja' %}">
+      <span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+      Messages
+    </a>
+    <a class="{% if active_menu == 'perfil' %}bg-white dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-200 font-bold shadow-sm{% else %}text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 dark:hover:bg-emerald-800/20{% endif %} flex items-center gap-3 px-4 py-3 hover:translate-x-1 transition-transform rounded-xl font-label-md" href="{% url 'main_profile' %}">
+      <span class="material-symbols-outlined" data-icon="person">person</span>
+      Perfil
+    </a>
+  </div>
+  <div class="mt-auto">
+    {% if user.is_authenticated %}
+    <form action="{% url 'logout' %}" method="post" class="mt-2">
+      {% csrf_token %}
+      <button class="w-full py-3 rounded-xl border border-emerald-800/20 text-emerald-900 dark:text-emerald-200 font-semibold text-sm hover:bg-white/40 dark:hover:bg-emerald-800/20 transition-colors" type="submit">
+        Logout
+      </button>
+    </form>
+    {% endif %}
+  </div>
+</nav>
