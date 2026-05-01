@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign Up | Chambitas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#54624f",
+                        "primary-fixed-dim": "#bbcbb3",
+                        "outline": "#747871",
+                        "on-secondary-fixed": "#360e0d",
+                        "tertiary-fixed-dim": "#e3c0a8",
+                        "secondary-fixed-dim": "#fcb4b0",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#ffb7b2",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#ffdad7",
+                        "background": "#fcf9f8",
+                        "surface-container": "#f0eded",
+                        "inverse-on-surface": "#f3f0ef",
+                        "on-background": "#1c1b1b",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f6f3f2",
+                        "secondary": "#874f4c",
+                        "on-tertiary-fixed-variant": "#5a422f",
+                        "on-secondary-fixed-variant": "#6b3836",
+                        "on-primary-fixed-variant": "#3d4b38",
+                        "surface-container-high": "#eae7e7",
+                        "tertiary": "#745945",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#fcf9f8",
+                        "primary": "#54624f",
+                        "primary-fixed": "#d7e7ce",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#ffdcc4",
+                        "surface": "#fcf9f8",
+                        "surface-dim": "#dcd9d9",
+                        "tertiary-container": "#ffdec8",
+                        "on-surface": "#1c1b1b",
+                        "outline-variant": "#c4c8bf",
+                        "on-tertiary-fixed": "#2a1708",
+                        "on-primary-fixed": "#121f0f",
+                        "primary-container": "#d9e9d0",
+                        "inverse-surface": "#313030",
+                        "on-tertiary-container": "#7b604c",
+                        "on-primary-container": "#5b6955",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-surface-variant": "#444841",
+                        "inverse-primary": "#bbcbb3",
+                        "on-secondary-container": "#7b4542",
+                        "surface-variant": "#e5e2e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "80px",
+                        "sm": "12px",
+                        "gutter": "24px",
+                        "container-max": "1200px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "md": "24px",
+                        "lg": "48px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Manrope"],
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "label-md": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "caption": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "700"}],
+                        "caption": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .kinetic-bloom-gradient {
+            background: linear-gradient(135deg, #d9e9d0 0%, #ffdec8 50%, #ffdad7 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen selection:bg-primary-container">
+{% include "header.html" %}
+<main class="min-h-screen flex items-stretch pt-16">
+<section class="hidden lg:flex w-1/2 kinetic-bloom-gradient relative overflow-hidden items-center justify-center p-xl">
+<div class="absolute inset-0 opacity-30 mix-blend-soft-light pointer-events-none">
+<div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-white rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-secondary-container rounded-full blur-[150px]"></div>
+</div>
+<div class="relative z-10 max-w-lg text-center lg:text-left">
+<div class="mb-gutter inline-flex items-center gap-2 px-4 py-2 bg-white/40 backdrop-blur-sm rounded-full border border-white/50 text-on-primary-container">
+<span class="material-symbols-outlined text-[20px]" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-md text-caption uppercase tracking-wider">Join 10k+ Professionals</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-primary-fixed mb-md">Empower your career growth.</h1>
+<p class="font-body-lg text-body-lg text-on-primary-fixed-variant opacity-80 mb-lg">
+                    Discover opportunities that match your passion. Connect with top talent and start your next big chapter today.
+                </p>
+<div class="grid grid-cols-2 gap-gutter mt-lg">
+<div class="glass-panel p-md rounded-xl border border-white/40">
+<span class="material-symbols-outlined text-primary mb-xs" data-icon="verified">verified</span>
+<h3 class="font-headline-md text-body-md font-bold mb-xs">Trusted Network</h3>
+<p class="font-body-md text-caption opacity-70">Verified professionals and companies only.</p>
+</div>
+<div class="glass-panel p-md rounded-xl border border-white/40">
+<span class="material-symbols-outlined text-primary mb-xs" data-icon="speed">speed</span>
+<h3 class="font-headline-md text-body-md font-bold mb-xs">Smart Matching</h3>
+<p class="font-body-md text-caption opacity-70">AI-driven job suggestions based on your skills.</p>
+</div>
+</div>
+</div>
+<div class="absolute bottom-10 left-10 right-10 flex justify-between items-center">
+<div class="flex -space-x-4">
+<img alt="User profile" class="w-12 h-12 rounded-full border-4 border-white object-cover" data-alt="professional male headshot with a friendly smile in a modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI-OHBqGiwY7klpKbBzwSrIZ2gxYNBR1qEnYxeJC_NCv5YZ_X7xE_YKaPAMlV8AYi9yEySxQTSAohl4-Xp6e2CPYz3slYr5YqoDDESOvRx2somsXMwa9bi9fVpPYJeuoMhCYE97R5Wycp_9I6g5lAR3d5RyrAFImcI_WFQUXMMVU8xVZViV6_EJ9UPs2K2Lkf--SncszzV794-F5ouiHH7xaK_fd2zUsf_MQN9tHvGOlaCsyBKRoF6HBhGCZxooDwYniRT2Gfnet8"/>
+<img alt="User profile" class="w-12 h-12 rounded-full border-4 border-white object-cover" data-alt="cheerful young woman with glasses working in a bright creative studio space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACxYZZyEaWVaJnVacU92gop8EH4F4Q-DpBRK25AkiFJMn18c4ZUcE7bDrLofVBvWiiwo-h02tfuOKrKAaHheY30iMqFZSq83wYJFPrIP2UNYQJ1lka0iZlCytjSQhXd1i1nkPJup9P-fJkYdibfhmMfoGebrKbDsSVvKH6TiSpFSG4mpRi8r1ZDyRV_P-eow6Yb73lg-v2Px-3SzctJ_NdqfDwqf024IXjgPKYSQCRGByYZmy4XdpXnMlnCuUgdhrO76xc2QV54x0"/>
+<img alt="User profile" class="w-12 h-12 rounded-full border-4 border-white object-cover" data-alt="man in professional attire looking confidently at the camera against a neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOpiGzzroxeR6iTTudpqVcbYdGq8Yb4mCpdVHoXy8LPdEhhcbRJDs_IOnn7VJ4_1tv2GqQTbW1LLuzTcT-v5bb-znt-ppPfbCtBz-LjZnNfiCnERSZ_aOTGVEZ-2OzAED5Sf74R6EiDS8zxuX1J867ppiZUN9h86fB1BAZBMdG1ly41TXE1YtJ5VLxDxFpru_fua454eYKjsyUSmQTmSubPiCSCd_Rl9kuY7Fz0kwWBOgBiToMs1Gnmzz8yGHS7Bh9PlqL7TrjCUI"/>
+<div class="w-12 h-12 rounded-full border-4 border-white bg-primary-fixed flex items-center justify-center text-primary font-bold text-caption">+12k</div>
+</div>
+<div class="text-on-primary-fixed-variant font-label-md text-caption">Join the community</div>
+</div>
+</section>
+<section class="flex-1 flex flex-col justify-center px-6 md:px-lg lg:px-xl py-xl overflow-y-auto">
+<div class="max-w-md w-full mx-auto">
+<header class="mb-lg">
+<h2 class="font-headline-lg text-headline-lg mb-xs">Create an account</h2>
+<p class="font-body-md text-body-md text-outline">Already have an account? <a class="text-primary font-semibold hover:underline" href="{% url 'login' %}">Login</a></p>
+</header>
+{% if messages %}
+<div class="mb-md space-y-2">
+{% for message in messages %}
+<p class="rounded-lg px-4 py-2 text-sm {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-emerald-100 text-emerald-700{% endif %}">
+{{ message }}
+</p>
+{% endfor %}
+</div>
+{% endif %}
+<form action="{% url 'register' %}" class="space-y-md" method="POST">
+{% csrf_token %}
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1" for="full_name">Full Name</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="person">person</span>
+<input class="w-full pl-12 pr-4 py-4 rounded-xl border-outline-variant bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" id="full_name" name="full_name" placeholder="John Doe" type="text" value="{{ full_name }}"/>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1" for="email">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="mail">mail</span>
+<input class="w-full pl-12 pr-4 py-4 rounded-xl border-outline-variant bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" id="email" name="email" placeholder="john@example.com" type="email" value="{{ email }}"/>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1" for="password">Password</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="lock">lock</span>
+<input class="w-full pl-12 pr-12 py-4 rounded-xl border-outline-variant bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-body-md outline-none" id="password" name="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary" id="toggle-password" type="button">
+<span class="material-symbols-outlined" id="toggle-password-icon">visibility</span>
+</button>
+</div>
+<p class="text-caption font-caption text-outline mt-1 px-1">Must be at least 8 characters long.</p>
+</div>
+<div class="flex items-start gap-3 py-2">
+<div class="flex items-center h-6">
+<input class="h-5 w-5 rounded border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" id="terms" name="terms" type="checkbox" {% if accepted_terms %}checked{% endif %}/>
+</div>
+<label class="font-body-md text-caption text-on-surface-variant" for="terms">
+                            I agree to the <a class="text-primary font-bold hover:underline" href="#">Terms of Service</a> and <a class="text-primary font-bold hover:underline" href="#">Privacy Policy</a>.
+                        </label>
+</div>
+<button class="w-full py-4 rounded-full bg-primary text-white font-headline-md text-body-md flex items-center justify-center gap-2 hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-[0.98] duration-200 mt-base" type="submit">
+                        Sign Up
+                        <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+<footer class="mt-xl text-center">
+<p class="font-caption text-caption text-outline">
+                        © 2024 Chambitas Inc. All rights reserved.
+                    </p>
+</footer>
+</div>
+</section>
+</main>
+<div class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-emerald-50 dark:border-emerald-900/20 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-50">
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Messages</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">My Jobs</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-emerald-100/50 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 rounded-xl px-4 py-1">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Profile</span>
+</div>
+</div>
+<script>
+      (function () {
+        const passwordInput = document.getElementById("password");
+        const toggleButton = document.getElementById("toggle-password");
+        const toggleIcon = document.getElementById("toggle-password-icon");
+
+        if (!passwordInput || !toggleButton || !toggleIcon) return;
+
+        toggleButton.addEventListener("click", function () {
+          const isHidden = passwordInput.type === "password";
+          passwordInput.type = isHidden ? "text" : "password";
+          toggleIcon.textContent = isHidden ? "visibility_off" : "visibility";
+        });
+      })();
+    </script>
+</body></html>

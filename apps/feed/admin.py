@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Publicacion Reaccion Comentario
+from .models import Publicacion, Reaccion, Comentario
 
 # Register your models here.
 
@@ -11,6 +11,6 @@ class PublicacionAdmin(admin.ModelAdmin):
 class ReaccionAdmin(admin.ModelAdmin):
     list_display=('created_at', 'user', 'publicacion')
 
-@admin.regster(Comentario)
+@admin.register(Comentario)
 class ComentarioAdmin(admin.ModelAdmin):
     list_display=('created_at', 'contenido', 'user', 'publicacion')
