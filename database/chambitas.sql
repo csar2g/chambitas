@@ -163,3 +163,6 @@ CREATE TABLE Mensaje (
         ON DELETE CASCADE,
     FOREIGN KEY (usuario_emisor_id) REFERENCES Usuario(id)
 );
+
+
+DROP DATABASE chambitas;

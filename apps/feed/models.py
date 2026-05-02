@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class Publicacion(models.Model):
     descripcion = models.TextField()
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='publicaciones')
     img = models.CharField(max_length=350, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)

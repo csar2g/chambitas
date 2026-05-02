@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html class="light" lang="en"><head>
 	<meta charset="utf-8"/>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -7,6 +6,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+	{% load static %}
 	<script id="tailwind-config">
 	tailwind.config = {
 darkMode: "class",
@@ -103,39 +103,65 @@ extend: {
 	<body class="bg-background text-on-background font-body-md overflow-x-hidden">
 		<!-- TopNavBar (Shared Component) -->
 		<header class="sticky top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-emerald-50 dark:border-slate-800 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+
 			<div class="flex justify-between items-center h-20 px-8 max-w-[1200px] mx-auto">
+
+				<!-- IZQUIERDA -->
 				<div class="flex items-center gap-8">
-					<span class="text-2xl font-black bg-gradient-to-r from-emerald-600 to-orange-400 bg-clip-text text-transparent">Chambitas</span>
-					<nav class="hidden md:flex gap-6 font-['Plus_Jakarta_Sans'] text-sm font-semibold tracking-tight">
-						<a class="text-slate-600 dark:text-slate-400 hover:text-emerald-600 transition-colors" href="#">Find Work</a>
-						<a class="text-slate-600 dark:text-slate-400 hover:text-emerald-600 transition-colors" href="#">Hire Talent</a>
-						<a class="text-slate-600 dark:text-slate-400 hover:text-emerald-600 transition-colors" href="#">Services</a>
-						<a class="text-slate-600 dark:text-slate-400 hover:text-emerald-600 transition-colors" href="#">About</a>
+					<span class="text-2xl font-black bg-gradient-to-r from-emerald-600 to-orange-400 bg-clip-text text-transparent">
+						Chambitas
+					</span>
+
+					<nav class="hidden md:flex gap-6 text-sm font-semibold">
+						<a class="text-slate-600 hover:text-emerald-600">Find Work</a>
+						<a class="text-slate-600 hover:text-emerald-600">Hire Talent</a>
+						<a class="text-slate-600 hover:text-emerald-600">Services</a>
+						<a class="text-slate-600 hover:text-emerald-600">About</a>
 					</nav>
 				</div>
+
 				<div class="flex items-center gap-4">
-					<div class="hidden sm:flex items-center bg-primary-container/30 px-4 py-2 rounded-full border border-outline-variant/30">
-						<span class="material-symbols-outlined text-on-primary-container text-[20px]">search</span>
-						<input class="bg-transparent border-none focus:ring-0 text-sm text-on-surface ml-2 w-48" placeholder="Search..." type="text"/>
+					<!-- SEARCH -->
+					<div class="relative w-70"> 
+						<div class="flex items-center bg-primary-container/30 px-4 py-2 rounded-full border border-outline-variant/30">
+							<span class="material-symbols-outlined text-[20px]">search</span>
+							<input id="search-input"
+								class="bg-transparent border-none focus:ring-0 text-sm ml-2 w-full"
+								placeholder="Search..."
+								type="text"/>
+						</div>
+
+						<div id="results"
+							class="absolute top-full left-0 w-full bg-white text-black rounded shadow mt-2 z-50">
+						</div>
 					</div>
-					<button class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50 transition-all">Log In</button>
-					<button class="px-6 py-2 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-sm font-semibold shadow-lg shadow-emerald-200/50 hover:scale-[1.02] transition-all">Sign Up</button>
+					<!--LOG OUT-->
+					<form action="{% url 'logout' %}" method="POST">
+						{% csrf_token %}
+						<button type="submit"
+							class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">
+							Log Out
+						</button>
+					</form>
 				</div>
 			</div>
+			
 		</header>
 		<div class="max-w-[1200px] mx-auto flex gap-gutter min-h-screen pt-md">
 			<!-- Left SideNavBar (Shared Component) -->
 			<aside class="hidden lg:flex flex-col gap-2 p-6 h-screen w-64 sticky top-20 bg-[#D9E9D0] dark:bg-emerald-950/30 font-['Plus_Jakarta_Sans'] antialiased">
 				<div class="flex flex-col gap-4 mb-8">
-					<div class="flex items-center gap-3">
-						<div class="w-12 h-12 rounded-xl overflow-hidden border-2 border-white">
-							<img alt="User profile" class="w-full h-full object-cover" data-alt="professional woman in corporate attire smiling confidently against a soft blurred office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDksDD6amHRUj4ID5G5vzHaiyMkEskSkFFezGrRs9n5u472YdRubbVbZufXn3-GISArhV3Nd3UyxnsEq6U8CioLM2irzqmCycx7NlK2v7f__fs2y_fZkXFbtGyXn2QVTbYsBDSgAOAWxfpHpWbOduA3k3w29QOpEqOJT9--DwC0d6UEMwLAAo91OeM0MF-kLV6SrzRuWSTuCnWg4JVP0vmjqBsHufn36BF9-PzF_gkMPCqE9TCuJT7I9LLYLVstvF7FmHiL6l3a718"/>
+					<a href="{% url 'main_profile'  %}" class="flex items-center gap-3 hover:opacity-80 transition">
+						<div class="flex items-center gap-3">
+							<div class="w-12 h-12 rounded-xl overflow-hidden border-2 border-white">
+								<img alt="User profile" class="w-full h-full object-cover"  src="{{user.perfil.foto_perfil.url}}"/>
+							</div>
+							<div>
+								<p class="text-sm font-bold text-emerald-900">{{user.get_full_name}}</p>
+								<p class="text-[10px] uppercase tracking-widest text-emerald-700/70 font-bold">{{user.username}}</p>
+							</div>
 						</div>
-						<div>
-							<p class="text-sm font-bold text-emerald-900">Professional Hub</p>
-							<p class="text-[10px] uppercase tracking-widest text-emerald-700/70 font-bold">Growth Mode Active</p>
-						</div>
-					</div>
+					</a>
 				</div>
 				<nav class="flex flex-col gap-2">
 					<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-200 font-bold shadow-sm rounded-xl" href="#">
@@ -173,7 +199,7 @@ extend: {
 						</div>
 						<div class="flex-1">
 							<div class="w-full bg-surface-container rounded-2xl p-4 cursor-pointer hover:bg-surface-container-high transition-colors">
-								<span class="text-on-surface-variant font-body-md">What's on your mind, Elena?</span>
+								<span class="text-on-surface-variant font-body-md">What's on your mind, {{user.first_name}}?</span>
 							</div>
 						</div>
 					</div>
@@ -204,10 +230,16 @@ extend: {
 						<div class="flex justify-between items-start mb-4">
 							<div class="flex gap-3">
 								<div class="w-12 h-12 rounded-lg overflow-hidden">
-									<img alt="Marcus Chen" class="w-full h-full object-cover" data-alt="smiling man with neat beard in casual creative attire in a bright airy studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7DB3GcxlO78-mmrdsGKBodeU3s1HFGOkXkXKqhFLyWuxMl_NGYg3BcvfkB5FPLgRbKXodd7A76xtaBZ19wOwzjgA2skdJyr8PnpuXfIrevNAK35OIGcbQRENf40fRcyJNuWx5oCo736N0j68LIv1pjdiZtHXf3-ISECSyEFBxsVwE4L_D_KvddIbvlmPt9md6W-nN9J20rpC_NkUAOsyvKsX-WSIU0qyoub1UV1dhBvn6ejUSV--lQNgJTugiqKdQGZ7GAcGtHvM"/>
+									{% if publicacion.user.perfil.foto_perfil %}
+									<img src="{{ publicacion.user.perfil.foto_perfil.url }}"
+										class="w-10 h-10 rounded-full object-cover">
+									{% else %}
+									<img src="/static/img/default.jpg"
+										class="w-10 h-10 rounded-full object-cover">
+									{% endif %}
 								</div>
-								<div>
-									<h3 class="font-headline-md text-[18px] text-on-surface">{{publicacion.user.username}}</h3>
+							<div>
+									<h3 class="font-headline-md text-[18px] text-on-surface">{{publicacion.user}}</h3>
 									<p class="text-caption text-on-surface-variant">Senior Product Designer • 2h ago</p>
 								</div>
 							</div>
@@ -313,5 +345,6 @@ extend: {
 		<button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform">
 			<span class="material-symbols-outlined text-[28px]">add</span>
 		</button>
+	<script src="{% static 'js/search.js' %}"></script>
 	</body>
 </html>
