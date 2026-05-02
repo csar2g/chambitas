@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+	<meta charset="utf-8"/>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+	<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+	{% load static %}
+	<script id="tailwind-config">
+	tailwind.config = {
+darkMode: "class",
+theme: {
+extend: {
+"colors": {
+"tertiary": "#745945",
+"background": "#fcf9f8",
+"on-secondary-fixed-variant": "#6b3836",
+"tertiary-container": "#ffdec8",
+"on-background": "#1c1b1b",
+"on-secondary": "#ffffff",
+"secondary-fixed": "#ffdad7",
+"on-secondary-container": "#7b4542",
+"primary-container": "#d9e9d0",
+"secondary": "#874f4c",
+"primary-fixed-dim": "#bbcbb3",
+"surface-container-highest": "#e5e2e1",
+"tertiary-fixed-dim": "#e3c0a8",
+"on-error": "#ffffff",
+"secondary-container": "#ffb7b2",
+"on-error-container": "#93000a",
+"on-primary-container": "#5b6955",
+"error": "#ba1a1a",
+"surface-variant": "#e5e2e1",
+"inverse-surface": "#313030",
+"inverse-primary": "#bbcbb3",
+"secondary-fixed-dim": "#fcb4b0",
+"on-tertiary": "#ffffff",
+"on-primary-fixed": "#121f0f",
+"primary-fixed": "#d7e7ce",
+"surface": "#fcf9f8",
+"outline": "#747871",
+"surface-container": "#f0eded",
+"outline-variant": "#c4c8bf",
+"on-tertiary-fixed-variant": "#5a422f",
+"on-primary-fixed-variant": "#3d4b38",
+"on-tertiary-fixed": "#2a1708",
+"on-primary": "#ffffff",
+"surface-container-low": "#f6f3f2",
+"primary": "#54624f",
+"surface-bright": "#fcf9f8",
+"surface-container-lowest": "#ffffff",
+"on-surface-variant": "#444841",
+"on-secondary-fixed": "#360e0d",
+"error-container": "#ffdad6",
+"tertiary-fixed": "#ffdcc4",
+"surface-tint": "#54624f",
+"surface-container-high": "#eae7e7",
+"on-tertiary-container": "#7b604c",
+"inverse-on-surface": "#f3f0ef",
+"surface-dim": "#dcd9d9",
+"on-surface": "#1c1b1b"
+},
+"borderRadius": {
+"DEFAULT": "0.25rem",
+"lg": "0.5rem",
+"xl": "0.75rem",
+"full": "9999px"
+},
+"spacing": {
+"md": "24px",
+"xl": "80px",
+"xs": "4px",
+"lg": "48px",
+"base": "8px",
+"gutter": "24px",
+"container-max": "1200px",
+"sm": "12px"
+},
+"fontFamily": {
+"headline-xl": ["Plus Jakarta Sans"],
+"body-md": ["Manrope"],
+"label-md": ["Manrope"],
+"headline-lg": ["Plus Jakarta Sans"],
+"caption": ["Manrope"],
+"headline-md": ["Plus Jakarta Sans"],
+"body-lg": ["Manrope"]
+},
+"fontSize": {
+"headline-xl": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+"body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+"label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+"headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "700"}],
+"caption": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+"headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+"body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+}
+}
+}
+}
+</script>
+</head>
+	<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+		<!-- TopNavBar (Shared Component) -->
+		<header class="sticky top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-emerald-50 dark:border-slate-800 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+
+			<div class="flex justify-between items-center h-20 px-8 max-w-[1200px] mx-auto">
+
+				<!-- IZQUIERDA -->
+				<div class="flex items-center gap-8">
+					<span class="text-2xl font-black bg-gradient-to-r from-emerald-600 to-orange-400 bg-clip-text text-transparent">
+						Chambitas
+					</span>
+
+					<nav class="hidden md:flex gap-6 text-sm font-semibold">
+						<a class="text-slate-600 hover:text-emerald-600">Find Work</a>
+						<a class="text-slate-600 hover:text-emerald-600">Hire Talent</a>
+						<a class="text-slate-600 hover:text-emerald-600">Services</a>
+						<a class="text-slate-600 hover:text-emerald-600">About</a>
+					</nav>
+				</div>
+
+				<div class="flex items-center gap-4">
+					<!-- SEARCH -->
+					<div class="relative w-70"> 
+						<div class="flex items-center bg-primary-container/30 px-4 py-2 rounded-full border border-outline-variant/30">
+							<span class="material-symbols-outlined text-[20px]">search</span>
+							<input id="search-input"
+								class="bg-transparent border-none focus:ring-0 text-sm ml-2 w-full"
+								placeholder="Search..."
+								type="text"/>
+						</div>
+
+						<div id="results"
+							class="absolute top-full left-0 w-full bg-white text-black rounded shadow mt-2 z-50">
+						</div>
+					</div>
+					<!--LOG OUT-->
+					<form action="{% url 'logout' %}" method="POST">
+						{% csrf_token %}
+						<button type="submit"
+							class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">
+							Log Out
+						</button>
+					</form>
+				</div>
+			</div>
+			
+		</header>
+		<div class="max-w-[1200px] mx-auto flex gap-gutter min-h-screen pt-md">
+			<!-- Left SideNavBar (Shared Component) -->
+			<aside class="hidden lg:flex flex-col gap-2 p-6 h-screen w-64 sticky top-20 bg-[#D9E9D0] dark:bg-emerald-950/30 font-['Plus_Jakarta_Sans'] antialiased">
+				<div class="flex flex-col gap-4 mb-8">
+					<a href="{% url 'main_profile'  %}" class="flex items-center gap-3 hover:opacity-80 transition">
+						<div class="flex items-center gap-3">
+							<div class="w-12 h-12 rounded-xl overflow-hidden border-2 border-white">
+								<img alt="User profile" class="w-full h-full object-cover"  src="{{user.perfil.foto_perfil.url}}"/>
+							</div>
+							<div>
+								<p class="text-sm font-bold text-emerald-900">{{user.get_full_name}}</p>
+								<p class="text-[10px] uppercase tracking-widest text-emerald-700/70 font-bold">{{user.username}}</p>
+							</div>
+						</div>
+					</a>
+				</div>
+				<nav class="flex flex-col gap-2">
+					<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-200 font-bold shadow-sm rounded-xl" href="#">
+						<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+						<span>Dashboard</span>
+					</a>
+					<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl" href="#">
+						<span class="material-symbols-outlined">work</span>
+						<span>Active Projects</span>
+					</a>
+					<a href="{% url 'bandeja' %}"
+						class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl">
+
+						<span class="material-symbols-outlined">chat_bubble</span>
+						<span>Messages</span>
+					</a>
+					<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl" href="#">
+						<span class="material-symbols-outlined">account_balance_wallet</span>
+						<span>Wallet</span>
+					</a>
+					<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl" href="#">
+						<span class="material-symbols-outlined">settings</span>
+						<span>Settings</span>
+					</a>
+				</nav>
+				<button class="mt-xl w-full py-4 rounded-2xl bg-emerald-800 text-white font-bold shadow-lg hover:opacity-90 active:scale-95 transition-all">
+					Post a Job
+				</button>
+			</aside>
+			<!-- Central Feed Canvas -->
+			<main class="flex-1 max-w-[640px] flex flex-col gap-md px-4 md:px-0 mb-xl">
+				<!-- Compose Box -->
+				<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
+					<div class="flex gap-4">
+						<div class="w-12 h-12 rounded-full overflow-hidden shrink-0">
+							<img alt="My Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional woman with a warm friendly expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-Pi-kckWRE13aCkucvZbA75Uj6ud3dhickCsQKtC-sbhfAqikLOW961XZWr3wDmjDfv7bIgnlUsTo7YX-7fAFGhfQmzfs67R3A-2O0yIDdSVe53UfgKg0IFL0tPBdhKnUZpy98RTysjhx2VYuYYUKv4Rwk8dxp6YDYG7GniODB50CdR96dbpqJjVlTaj5M16lIOE-Scaf9wk3oHTPWAmwaOyJF4FB0uW9si0D_EZmoQ9X4u8sO-8DVJKlr9fC4pRPYaXAtkPXJ6k"/>
+						</div>
+						<div class="flex-1">
+							<div class="w-full bg-surface-container rounded-2xl p-4 cursor-pointer hover:bg-surface-container-high transition-colors">
+								<span class="text-on-surface-variant font-body-md">What's on your mind, {{user.first_name}}?</span>
+							</div>
+						</div>
+					</div>
+					<div class="flex justify-between items-center mt-4 pt-4 border-t border-outline-variant/20">
+						<div class="flex gap-2">
+							<button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
+								<span class="material-symbols-outlined text-[20px]">image</span>
+								<span>Media</span>
+							</button>
+							<button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
+								<span class="material-symbols-outlined text-[20px]">calendar_month</span>
+								<span>Event</span>
+							</button>
+							<button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
+								<span class="material-symbols-outlined text-[20px]">article</span>
+								<span>Article</span>
+							</button>
+						</div>
+						<button class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">Post</button>
+					</div>
+
+					<!-- PUBLICACIONES -->
+				{% for publicacion in publicaciones %}
+				</section>
+				<!-- Feed Post 1 -->
+				<article class="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30 overflow-hidden">
+					<div class="p-md">
+						<div class="flex justify-between items-start mb-4">
+							<div class="flex gap-3">
+								<div class="w-12 h-12 rounded-lg overflow-hidden">
+									{% if publicacion.user.perfil.foto_perfil %}
+									<img src="{{ publicacion.user.perfil.foto_perfil.url }}"
+										class="w-10 h-10 rounded-full object-cover">
+									{% else %}
+									<img src="/static/img/default.jpg"
+										class="w-10 h-10 rounded-full object-cover">
+									{% endif %}
+								</div>
+							<div>
+									<h3 class="font-headline-md text-[18px] text-on-surface">{{publicacion.user}}</h3>
+									<p class="text-caption text-on-surface-variant">Senior Product Designer • 2h ago</p>
+								</div>
+							</div>
+							<button class="text-on-surface-variant hover:bg-surface-container rounded-full p-1 transition-colors">
+								<span class="material-symbols-outlined">more_horiz</span>
+							</button>
+						</div>
+						<p class="font-body-md text-on-surface-variant mb-4">
+							{{publicacion.descripcion}}	
+						</p>
+						{% if publicacion.img %}
+						<div class="rounded-xl overflow-hidden h-[340px] relative group">
+							 <img src="{{ publicacion.img.url }}" alt="imagen">
+							<div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-all"></div>
+						</div>
+						{% endif %}
+					</div>
+					<div class="px-md pb-md flex flex-col gap-4">
+						<div class="flex justify-between items-center text-caption text-on-surface-variant">
+							<div class="flex items-center gap-1">
+								<span class="material-symbols-outlined text-[14px] text-emerald-600" style="font-variation-settings: 'FILL' 1;">recommend</span>
+								<span>42 professionals liked this</span>
+							</div>
+							<span>{{publicacion.comentario_set.count}} comments • 4 shares</span>
+						</div>
+						<div class="flex border-t border-outline-variant/20 pt-4 justify-between">
+							<button class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors">
+								<span class="material-symbols-outlined text-[20px]">thumb_up</span>
+								<span class="font-label-md">Like</span>
+							</button>
+							<button class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors">
+								<span class="material-symbols-outlined text-[20px]">chat_bubble_outline</span>
+								<span class="font-label-md">Comment</span>
+							</button>
+							<button class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors">
+								<span class="material-symbols-outlined text-[20px]">share</span>
+								<span class="font-label-md">Share</span>
+							</button>
+						</div>
+					</div>
+				</article>
+				{% endfor %}
+			</main>
+			<!-- Right Sidebar -->
+			<aside class="hidden xl:flex flex-col gap-gutter w-80 sticky top-20 h-fit">
+				<!-- Recommended Section -->
+				<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
+					<h2 class="font-headline-md text-[18px] text-on-surface mb-4">Recommended for you</h2>
+					<div class="flex flex-col gap-4">
+						<div class="flex items-center gap-3">
+							<div class="w-10 h-10 rounded-full overflow-hidden bg-slate-200">
+								<img alt="Profile" class="w-full h-full object-cover" data-alt="close up of a professional man in casual clothing smiling in an outdoor urban setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmNHm82YkrQJ3wHCSzORYVHk2emEjaYd4dMaevDK-jNmpgIEzFd0d1muCBzIc9JMzNfp-Hfr4MU2zbSEXxKHBAu-rDK-DFDJlnfibGrwHHlDeZmxLFW1bEvLU5Txdn27bOmDtNsKe5Kv5ZwsvFPM1SaZqr-2zIRMM6Ed_Ydejpq7foSOwXIE7_OYAcSn5P1t1b-lItPcbIMFiIMzlZqKE5dVq09YziCEhJg0kVMmTwLOA7OHPm3QnRlnygCF5_u0QIuJGFsOSXicw"/>
+							</div>
+							<div class="flex-1">
+								<p class="text-sm font-bold text-on-surface">Alex Rivera</p>
+								<p class="text-xs text-on-surface-variant">Cloud Architect</p>
+							</div>
+							<button class="material-symbols-outlined text-primary hover:bg-primary-container/30 p-1 rounded-full transition-all">person_add</button>
+						</div>
+						<div class="flex items-center gap-3">
+							<div class="w-10 h-10 rounded-full overflow-hidden bg-slate-200">
+								<img alt="Profile" class="w-full h-full object-cover" data-alt="headshot of a stylish professional woman with short dark hair in a minimal white studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFTM9OiAl3NVSG8J2syZ2J9mtfAPlWIfxvYNdy6gHoEF8A1YkAu8RJ0t1Yu4PIBypnIFxbP2fV_C7kRxoBDBRMgM3F0qIc0DLdv4dckRCYpxLf8o2_v-iR_sBHnUUeMpWeWLiVxbqOH9TovPprXbo9g1CqVglqh-0eB8CDVsTEWzBHbuB4TLvRZBwVLWE-rFegOmOWPaSulyKIbDCaEzoqVD9NHgJjJBQHE0B6POqtwhxb9jqpyKxglSX74UlQKWJThZ713uUyRic"/>
+							</div>
+							<div class="flex-1">
+								<p class="text-sm font-bold text-on-surface">Mia Song</p>
+								<p class="text-xs text-on-surface-variant">Python Developer</p>
+							</div>
+							<button class="material-symbols-outlined text-primary hover:bg-primary-container/30 p-1 rounded-full transition-all">person_add</button>
+						</div>
+					</div>
+					<button class="mt-4 w-full text-center text-primary font-label-md hover:underline decoration-2 underline-offset-4">View all suggestions</button>
+				</section>
+				<!-- Trending Topics (Bento Style) -->
+				<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
+					<h2 class="font-headline-md text-[18px] text-on-surface mb-4">Trending Professional</h2>
+					<div class="grid grid-cols-2 gap-2">
+						<div class="col-span-2 p-3 bg-primary-container/30 rounded-lg hover:bg-primary-container/50 transition-colors cursor-pointer">
+							<p class="text-xs font-bold text-primary mb-1">#FUTUREOFWORK</p>
+							<p class="text-sm font-semibold text-on-surface">Remote work trends in 2024</p>
+						</div>
+						<div class="p-3 bg-secondary-container/20 rounded-lg hover:bg-secondary-container/40 transition-colors cursor-pointer">
+							<p class="text-xs font-bold text-secondary mb-1">#UIUX</p>
+							<p class="text-[13px] text-on-surface">Design Systems</p>
+						</div>
+						<div class="p-3 bg-tertiary-container/30 rounded-lg hover:bg-tertiary-container/50 transition-colors cursor-pointer">
+							<p class="text-xs font-bold text-tertiary mb-1">#AI</p>
+							<p class="text-[13px] text-on-surface">Prompt Eng.</p>
+						</div>
+					</div>
+				</section>
+				<!-- Small Footer Link Section -->
+				<div class="px-md flex flex-wrap gap-x-4 gap-y-2 text-xs text-on-surface-variant opacity-60">
+					<a class="hover:text-primary" href="#">About</a>
+					<a class="hover:text-primary" href="#">Accessibility</a>
+					<a class="hover:text-primary" href="#">Help Center</a>
+					<a class="hover:text-primary" href="#">Privacy &amp; Terms</a>
+					<a class="hover:text-primary" href="#">Community Policies</a>
+					<p class="w-full mt-2">© 2024 Chambitas. Cultivating professional growth.</p>
+				</div>
+			</aside>
+		</div>
+		<!-- Responsive FAB (Mobile Only) -->
+		<button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform">
+			<span class="material-symbols-outlined text-[28px]">add</span>
+		</button>
+	<script src="{% static 'js/search.js' %}"></script>
+	</body>
+</html>
