@@ -7,6 +7,8 @@
 	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 	{% load static %}
+	{% load tz %}
+	{{ publicacion.created_at|localtime }}
 	<script id="tailwind-config">
 	tailwind.config = {
 darkMode: "class",
@@ -154,7 +156,11 @@ extend: {
 					<a href="{% url 'main_profile'  %}" class="flex items-center gap-3 hover:opacity-80 transition">
 						<div class="flex items-center gap-3">
 							<div class="w-12 h-12 rounded-xl overflow-hidden border-2 border-white">
-								<img alt="User profile" class="w-full h-full object-cover"  src="{{user.perfil.foto_perfil.url}}"/>
+								{% if usuario.foto_perfil %}
+								<img src="{{ usuario.perfil.foto_perfil.url }}">
+								{% else %}
+								<img src="/static/img/default.jpg">
+								{% endif %}
 							</div>
 							<div>
 								<p class="text-sm font-bold text-emerald-900">{{user.get_full_name}}</p>
@@ -197,11 +203,16 @@ extend: {
 				<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
 					<div class="flex gap-4">
 						<div class="w-12 h-12 rounded-full overflow-hidden shrink-0">
-							<img alt="My Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional woman with a warm friendly expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-Pi-kckWRE13aCkucvZbA75Uj6ud3dhickCsQKtC-sbhfAqikLOW961XZWr3wDmjDfv7bIgnlUsTo7YX-7fAFGhfQmzfs67R3A-2O0yIDdSVe53UfgKg0IFL0tPBdhKnUZpy98RTysjhx2VYuYYUKv4Rwk8dxp6YDYG7GniODB50CdR96dbpqJjVlTaj5M16lIOE-Scaf9wk3oHTPWAmwaOyJF4FB0uW9si0D_EZmoQ9X4u8sO-8DVJKlr9fC4pRPYaXAtkPXJ6k"/>
+								{% if usuario.foto_perfil %}
+								<img src="{{ usuario.foto_perfil.url }}">
+								{% else %}
+								<img src="/static/img/default.jpg">
+								{% endif %}
 						</div>
 						<div class="flex-1">
-							<div class="w-full bg-surface-container rounded-2xl p-4 cursor-pointer hover:bg-surface-container-high transition-colors">
-								<span class="text-on-surface-variant font-body-md">What's on your mind, {{user.first_name}}?</span>
+							<div onclick="abrirModal()" 
+								class="w-full bg-surface-container rounded-2xl p-4 cursor-pointer hover:bg-surface-container-high transition-colors">
+								<span>What's on your mind, {{user.first_name}}?</span>
 							</div>
 						</div>
 					</div>
@@ -222,10 +233,10 @@ extend: {
 						</div>
 						<button class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">Post</button>
 					</div>
-
+				</section>
 					<!-- PUBLICACIONES -->
 				{% for publicacion in publicaciones %}
-				</section>
+			
 				<!-- Feed Post 1 -->
 				<article class="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30 overflow-hidden">
 					<div class="p-md">
@@ -242,7 +253,9 @@ extend: {
 								</div>
 							<div>
 									<h3 class="font-headline-md text-[18px] text-on-surface">{{publicacion.user}}</h3>
-									<p class="text-caption text-on-surface-variant">Senior Product Designer • 2h ago</p>
+									<p class="text-caption text-on-surface-variant">
+										Hace {{ publicacion.created_at|timesince }}
+									</p>
 								</div>
 							</div>
 							<button class="text-on-surface-variant hover:bg-surface-container rounded-full p-1 transition-colors">
@@ -252,10 +265,11 @@ extend: {
 						<p class="font-body-md text-on-surface-variant mb-4">
 							{{publicacion.descripcion}}	
 						</p>
-						{% if publicacion.img %}
-						<div class="rounded-xl overflow-hidden h-[340px] relative group">
-							 <img src="{{ publicacion.img.url }}" alt="imagen">
-							<div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-all"></div>
+						{% if publicacion.imagenes.exists %}
+						<div class="grid grid-cols-2 gap-2 rounded-xl">
+							{% for img in publicacion.imagenes.all %}
+							<img src="{{ img.imagen.url }}" class="w-full h-40 object-cover rounded-lg">
+							{% endfor %}
 						</div>
 						{% endif %}
 					</div>
@@ -263,9 +277,9 @@ extend: {
 						<div class="flex justify-between items-center text-caption text-on-surface-variant">
 							<div class="flex items-center gap-1">
 								<span class="material-symbols-outlined text-[14px] text-emerald-600" style="font-variation-settings: 'FILL' 1;">recommend</span>
-								<span>42 professionals liked this</span>
+								<span>{{ publicacion.total_reacciones }} reactions</span>
 							</div>
-							<span>{{publicacion.comentario_set.count}} comments • 4 shares</span>
+							<span>{{publicacion.comentarios.count}} comments </span>
 						</div>
 						<div class="flex border-t border-outline-variant/20 pt-4 justify-between">
 							<button class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors">
@@ -348,5 +362,60 @@ extend: {
 			<span class="material-symbols-outlined text-[28px]">add</span>
 		</button>
 	<script src="{% static 'js/search.js' %}"></script>
+	<script src="{% static 'js/post.js' %}"></script>
+
+		<!-- CREACION DE PULICACION-->
+		<div id="modal-post" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+			<div class="bg-white w-[600px] max-w-[90%] rounded-xl p-6">
+
+				<h2 class="text-lg font-bold mb-4">Crear publicación</h2>
+
+				<form id="form-publicacion" method="POST" action="{% url 'crear_publicacion' %}" enctype="multipart/form-data" class="flex flex-col gap-4">
+					{% csrf_token %}
+					<div class="flex items-center gap-3">
+						<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white">
+							{% if usuario.perfil.foto_perfil %}
+							<img src="{{ usuario.perfil.foto_perfil.url }}" 
+								class="w-full h-full object-cover">
+							{% else %}
+							<img src="/static/img/default.jpg" 
+								class="w-full h-full object-cover">
+							{% endif %}
+						</div>						
+						<div>
+							<p class="text-sm font-bold text-emerald-900">{{user.get_full_name}}</p>
+							<p class="text-[10px] uppercase tracking-widest text-emerald-700/70 font-bold">{{user.username}}</p>
+						</div>
+					</div>
+
+					<!--DESCRIPCION DE PUBLICACION-->
+					<textarea 
+						name="descripcion" 
+						class="w-full h-32 bg-surface-container rounded-2xl p-4 cursor-pointer hover:bg-surface-container-high transition-colors resize-none"
+						required
+						placeholder="¿What's on your mind {{user.first_name}}?"></textarea>
+
+					<!--SUBIR IMAGEN-->
+					<input class="hidden" type="file" name="imagen" id="input-imagen" onchange="previewImagen(event)" multiple>
+					<button 
+						type="button"
+						onclick="document.getElementById('input-imagen').click()"
+						class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
+						<span class="material-symbols-outlined text-[20px]">image</span>
+						<span>Media</span>
+					</button>
+
+					<!--PREVIEW DE IMAGEN-->
+					<div id="contenedor-imagenes" class="flex gap-2 flex-wrap mt-2"></div>
+
+					<!--CANCELAR-->
+					<div class="flex justify-end gap-2">
+						<button type="button" onclick="cerrarModal()" class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">Cancelar</button>
+						<button type="submit" class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">Publicar</button>
+					</div>
+
+				</form>
+			</div>
+		</div>
 	</body>
 </html>

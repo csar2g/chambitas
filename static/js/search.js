@@ -19,7 +19,7 @@ input.addEventListener('keyup', async () => {
 		div.className = "flex items-center gap-2 p-2 hover:bg-gray-200 cursor-pointer";
 
 		const img = document.createElement('img');
-		img.src = user.foto || "/static/default.png";  // fallback
+		img.src = user.foto || "/static/img/default.jpg";  // fallback
 		img.className = "w-8 h-8 rounded-full object-cover";
 
 		const span = document.createElement('span');
