@@ -265,26 +265,54 @@ extend: {
 						<p class="font-body-md text-on-surface-variant mb-4">
 							{{publicacion.descripcion}}	
 						</p>
-						{% if publicacion.imagenes.exists %}
-						<div class="grid grid-cols-2 gap-2 rounded-xl">
+						{% with total=publicacion.imagenes.count %}
+						<div class="
+							{% if total == 1 %}grid grid-cols-1
+							{% elif total == 2 %}grid grid-cols-2
+							{% else %}grid grid-cols-2{% endif %}
+							gap-2 rounded-xl">
+
 							{% for img in publicacion.imagenes.all %}
-							<img src="{{ img.imagen.url }}" class="w-full h-40 object-cover rounded-lg">
+							<img src="{{ img.imagen.url }}" 
+								onclick="verImagen(this.src)"
+								class="w-full 
+								{% if total == 1 %}h-[400px]
+								{% elif total == 2 %}h-[250px]
+								{% else %}h-[200px]{% endif %}
+								object-cover rounded-lg cursor-pointer">
 							{% endfor %}
 						</div>
-						{% endif %}
+						{% endwith %}
 					</div>
 					<div class="px-md pb-md flex flex-col gap-4">
 						<div class="flex justify-between items-center text-caption text-on-surface-variant">
 							<div class="flex items-center gap-1">
 								<span class="material-symbols-outlined text-[14px] text-emerald-600" style="font-variation-settings: 'FILL' 1;">recommend</span>
-								<span>{{ publicacion.total_reacciones }} reactions</span>
+								<span class="contador-reacciones">{{ publicacion.total_reacciones }} reactions</span>
 							</div>
 							<span>{{publicacion.comentarios.count}} comments </span>
 						</div>
 						<div class="flex border-t border-outline-variant/20 pt-4 justify-between">
-							<button class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors">
-								<span class="material-symbols-outlined text-[20px]">thumb_up</span>
-								<span class="font-label-md">Like</span>
+							<button 
+								onclick="darLike({{ publicacion.id }}, this)"
+								class="like-btn flex-1 flex items-center justify-center gap-2 py-2 rounded-lg
+								{% if publicacion.liked %}
+								text-blue-600
+								{% else %}
+								text-on-surface-variant
+								{% endif %}
+								">
+								<span class="material-symbols-outlined"
+									style="font-variation-settings: {% if publicacion.liked %}'FILL' 1{% else %}'FILL' 0{% endif %};">
+									thumb_up
+								</span>
+								<span class="texto-like">
+									{% if publicacion.liked %}
+									Liked
+									{% else %}
+									Like
+									{% endif %}
+								</span>
 							</button>
 							<button class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors">
 								<span class="material-symbols-outlined text-[20px]">chat_bubble_outline</span>
@@ -361,8 +389,7 @@ extend: {
 		<button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform">
 			<span class="material-symbols-outlined text-[28px]">add</span>
 		</button>
-	<script src="{% static 'js/search.js' %}"></script>
-	<script src="{% static 'js/post.js' %}"></script>
+
 
 		<!-- CREACION DE PULICACION-->
 		<div id="modal-post" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
@@ -417,5 +444,14 @@ extend: {
 				</form>
 			</div>
 		</div>
+		<!--VISUALIZAR IMAGENES DE PUBLICACION-->
+		<div id="modal-img" 
+			class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50"
+			onclick="cerrarImagen()">
+
+			<img id="img-grande" class="max-w-[90%] max-h-[90%] rounded-lg">
+		</div>
+		<script src="{% static 'js/search.js' %}"></script>
+		<script src="{% static 'js/post.js' %}"></script>	
 	</body>
 </html>

@@ -1,5 +1,7 @@
 let imagenesSeleccionadas = [];
 
+console.log("Post cargado")
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const form = document.getElementById('form-publicacion');
@@ -57,4 +59,57 @@ function previewImagen(event) {
     event.target.value = "";
 }
 
+window.verImagen = function(src) {
+    const modal = document.getElementById('modal-img');
+    const img = document.getElementById('img-grande');
 
+    img.src = src;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+window.cerrarImagen = function() {
+    const modal = document.getElementById('modal-img');
+    modal.classList.add('hidden');
+}
+
+function darLike(id, btn) {
+    fetch(`/like/${id}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCSRFToken()
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        const contador = btn.closest('article')
+            .querySelector('.contador-reacciones');
+
+        contador.innerText = data.total + " reactions";
+	
+		const icon = btn.querySelector('.material-symbols-outlined');
+		const texto = btn.querySelector('.texto-like');
+
+		if (data.liked) {
+		btn.classList.remove('text-on-surface-variant');
+		btn.classList.add('text-blue-600');
+
+		icon.style.fontVariationSettings = "'FILL' 1";
+		texto.innerText = "Liked";
+
+		} else {
+		btn.classList.remove('text-blue-600');
+		btn.classList.add('text-on-surface-variant'); 
+
+		icon.style.fontVariationSettings = "'FILL' 0";
+		texto.innerText = "Like";
+		}
+	});
+}
+
+function getCSRFToken() {
+    return document.cookie.split('; ')
+        .find(row => row.startsWith('csrftoken'))
+        .split('=')[1];
+}

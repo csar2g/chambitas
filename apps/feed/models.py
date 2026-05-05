@@ -11,6 +11,10 @@ class Publicacion(models.Model):
     
     def __str__(self):
         return str(self.created_at)
+    
+    def usuario_dio_like(self, user):
+        return self.reacciones.filter(user=user).exists()
+
 
 class ImagenPublicacion(models.Model):
     publicacion = models.ForeignKey(
@@ -23,6 +27,7 @@ class ImagenPublicacion(models.Model):
     def __str__(self):
         return f"Imagen de {self.publicacion.id}"
 
+    
 class Reaccion(models.Model):
     created_at = models.DateTimeField(auto_now_add=True) 
     user = models.ForeignKey(User, on_delete=models.CASCADE)

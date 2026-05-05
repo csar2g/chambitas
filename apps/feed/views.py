@@ -9,12 +9,15 @@ from profiles.models import Perfil
 
 @login_required(login_url='landing')
 def feed_view(request):
-    publicaciones = Publicacion.objects.all().order_by('-created_at')\
+    publicaciones = Publicacion.objects.all()\
         .annotate(total_reacciones=Count('reacciones'))\
         .order_by('-created_at')
+
+    for pub in publicaciones:
+        pub.liked = pub.reacciones.filter(user=request.user).exists()
+
     return render(request, "feed.html", {
-            'publicaciones': publicaciones,
-            'user': request.user
+        'publicaciones': publicaciones
     })
 
 @require_POST
@@ -59,3 +62,28 @@ def search_users(request):
         data = []
 
     return JsonResponse(data, safe=False)
+
+@require_POST
+@login_required
+def toggle_like(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+
+    like = Reaccion.objects.filter(
+        user=request.user,
+        publicacion=publicacion
+    ).first()
+
+    if like:
+        like.delete()
+        liked = False
+    else:
+        Reaccion.objects.create(
+            user=request.user,
+            publicacion=publicacion
+        )
+        liked = True
+
+    return JsonResponse({
+        'liked': liked,
+        'total': publicacion.reacciones.count()
+    })
