@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
+from django.utils.timesince import timesince
 from django.http import JsonResponse
+from django.db.models import Q
 from django.db.models import Count
 from .models import Publicacion, Reaccion, Comentario, ImagenPublicacion
 from profiles.models import Perfil
@@ -86,4 +88,60 @@ def toggle_like(request, publicacion_id):
     return JsonResponse({
         'liked': liked,
         'total': publicacion.reacciones.count()
+    })
+
+def buscar_view(request):
+    query = request.GET.get('q', '')
+    usuarios = []
+    publicaciones = []
+
+    if query:
+        usuarios = list(User.objects.filter(
+            Q(username__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query)
+        )[:4])
+
+        # Agrega las aptitudes ya spliteadas como atributo
+        for u in usuarios:
+            perfil = getattr(u, 'perfil', None)
+            if perfil and perfil.aptitudes:
+                u.aptitudes_lista = [a.strip() for a in perfil.aptitudes.split(',') if a.strip()]
+            else:
+                u.aptitudes_lista = []
+
+        publicaciones = Publicacion.objects.filter(
+            descripcion__icontains=query
+        ).annotate(
+            total_reacciones=Count('reacciones')
+        ).order_by('-created_at')
+
+        for pub in publicaciones:
+            pub.liked = pub.reacciones.filter(user=request.user).exists()
+
+    return render(request, 'results.html', {
+        'usuarios': usuarios,
+        'publicaciones': publicaciones,
+        'query': query,
+    })
+
+@require_POST
+@login_required
+def agregar_comentario(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+    contenido = request.POST.get('contenido', '').strip()
+    if not contenido:
+        return JsonResponse({'error': 'Comentario vacío'}, status=400)
+    comentario = Comentario.objects.create(
+        contenido=contenido,
+        user=request.user,
+        publicacion=publicacion
+    )
+    perfil = getattr(comentario.user, 'perfil', None)
+    return JsonResponse({
+        'id': comentario.id,
+        'contenido': comentario.contenido,
+        'username': comentario.user.get_full_name() or comentario.user.username,
+        'foto': perfil.foto_perfil.url if perfil and perfil.foto_perfil else None,
+        'created_at': timesince(comentario.created_at),
     })

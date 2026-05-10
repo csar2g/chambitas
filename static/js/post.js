@@ -5,7 +5,7 @@ console.log("Post cargado")
 document.addEventListener('DOMContentLoaded', () => {
 
     const form = document.getElementById('form-publicacion');
-
+	if (!form) return
     form.addEventListener('submit', function(e) {
         const input = document.getElementById('input-imagen');
 
