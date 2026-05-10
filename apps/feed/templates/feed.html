@@ -7,6 +7,8 @@
 	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 	{% load static %}
+	{% load tz %}
+	{{ publicacion.created_at|localtime }}
 	<script id="tailwind-config">
 	tailwind.config = {
 darkMode: "class",
@@ -108,18 +110,12 @@ extend: {
 
 				<!-- IZQUIERDA -->
 				<div class="flex items-center gap-8">
-					<span class="text-2xl font-black bg-gradient-to-r from-emerald-600 to-orange-400 bg-clip-text text-transparent">
-						Chambitas
-					</span>
-
-					<nav class="hidden md:flex gap-6 text-sm font-semibold">
-						<a class="text-slate-600 hover:text-emerald-600">Find Work</a>
-						<a class="text-slate-600 hover:text-emerald-600">Hire Talent</a>
-						<a class="text-slate-600 hover:text-emerald-600">Services</a>
-						<a class="text-slate-600 hover:text-emerald-600">About</a>
-					</nav>
+					<a href="{% url 'feed' %}">
+						<span class="text-2xl font-black bg-gradient-to-r from-emerald-600 to-orange-400 bg-clip-text text-transparent">
+							Chambitas
+						</span>
+					</a>
 				</div>
-
 				<div class="flex items-center gap-4">
 					<!-- SEARCH -->
 					<div class="relative w-70"> 
@@ -154,7 +150,12 @@ extend: {
 					<a href="{% url 'main_profile'  %}" class="flex items-center gap-3 hover:opacity-80 transition">
 						<div class="flex items-center gap-3">
 							<div class="w-12 h-12 rounded-xl overflow-hidden border-2 border-white">
-								<img alt="User profile" class="w-full h-full object-cover"  src="{{user.perfil.foto_perfil.url}}"/>
+								{% if user.perfil.foto_perfil %}
+								<img src="{{ user.perfil.foto_perfil.url }}"
+     								class="w-full h-full object-cover">
+								{% else %}
+								<img src="/static/img/default.jpg">
+								{% endif %}
 							</div>
 							<div>
 								<p class="text-sm font-bold text-emerald-900">{{user.get_full_name}}</p>
@@ -168,28 +169,20 @@ extend: {
 						<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
 						<span>Dashboard</span>
 					</a>
-					<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl" href="#">
-						<span class="material-symbols-outlined">work</span>
-						<span>Active Projects</span>
-					</a>
 					<a href="{% url 'bandeja' %}"
 						class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl">
-
 						<span class="material-symbols-outlined">chat_bubble</span>
 						<span>Messages</span>
 					</a>
-					<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl" href="#">
-						<span class="material-symbols-outlined">account_balance_wallet</span>
-						<span>Wallet</span>
+					<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:translate-x-1 transition-transform hover:bg-white/40 dark:hover:bg-emerald-800/20 rounded-xl font-label-md" href="#">
+						<span class="material-symbols-outlined" data-icon="work">work</span>
+						Publicaciones
 					</a>
-					<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl" href="#">
+					<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl" href="{% url 'main_profile'  %}">
 						<span class="material-symbols-outlined">settings</span>
 						<span>Settings</span>
 					</a>
 				</nav>
-				<button class="mt-xl w-full py-4 rounded-2xl bg-emerald-800 text-white font-bold shadow-lg hover:opacity-90 active:scale-95 transition-all">
-					Post a Job
-				</button>
 			</aside>
 			<!-- Central Feed Canvas -->
 			<main class="flex-1 max-w-[640px] flex flex-col gap-md px-4 md:px-0 mb-xl">
@@ -197,35 +190,43 @@ extend: {
 				<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
 					<div class="flex gap-4">
 						<div class="w-12 h-12 rounded-full overflow-hidden shrink-0">
-							<img alt="My Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional woman with a warm friendly expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-Pi-kckWRE13aCkucvZbA75Uj6ud3dhickCsQKtC-sbhfAqikLOW961XZWr3wDmjDfv7bIgnlUsTo7YX-7fAFGhfQmzfs67R3A-2O0yIDdSVe53UfgKg0IFL0tPBdhKnUZpy98RTysjhx2VYuYYUKv4Rwk8dxp6YDYG7GniODB50CdR96dbpqJjVlTaj5M16lIOE-Scaf9wk3oHTPWAmwaOyJF4FB0uW9si0D_EZmoQ9X4u8sO-8DVJKlr9fC4pRPYaXAtkPXJ6k"/>
+								{% if user.perfil.foto_perfil %}
+								<img src="{{ user.perfil.foto_perfil.url }}"
+    								class="w-full h-full object-cover">
+								{% else %}
+								<img src="/static/img/default.jpg">
+								{% endif %}
 						</div>
 						<div class="flex-1">
-							<div class="w-full bg-surface-container rounded-2xl p-4 cursor-pointer hover:bg-surface-container-high transition-colors">
-								<span class="text-on-surface-variant font-body-md">What's on your mind, {{user.first_name}}?</span>
+							<div onclick="abrirModal()" 
+								class="w-full bg-surface-container rounded-2xl p-4 cursor-pointer hover:bg-surface-container-high transition-colors">
+								<span>What's on your mind, {{user.first_name}}?</span>
 							</div>
 						</div>
 					</div>
 					<div class="flex justify-between items-center mt-4 pt-4 border-t border-outline-variant/20">
-						<div class="flex gap-2">
+
+						<div class="flex justify-center gap-2 w-full">
 							<button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
 								<span class="material-symbols-outlined text-[20px]">image</span>
 								<span>Media</span>
 							</button>
+
 							<button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
 								<span class="material-symbols-outlined text-[20px]">calendar_month</span>
 								<span>Event</span>
 							</button>
+
 							<button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
 								<span class="material-symbols-outlined text-[20px]">article</span>
 								<span>Article</span>
 							</button>
 						</div>
-						<button class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">Post</button>
-					</div>
 
+					</div>				</section>
 					<!-- PUBLICACIONES -->
 				{% for publicacion in publicaciones %}
-				</section>
+			
 				<!-- Feed Post 1 -->
 				<article class="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30 overflow-hidden">
 					<div class="p-md">
@@ -242,44 +243,125 @@ extend: {
 								</div>
 							<div>
 									<h3 class="font-headline-md text-[18px] text-on-surface">{{publicacion.user}}</h3>
-									<p class="text-caption text-on-surface-variant">Senior Product Designer • 2h ago</p>
+									<p class="text-caption text-on-surface-variant">
+										Hace {{ publicacion.created_at|timesince }}
+									</p>
 								</div>
 							</div>
 							<button class="text-on-surface-variant hover:bg-surface-container rounded-full p-1 transition-colors">
 								<span class="material-symbols-outlined">more_horiz</span>
 							</button>
 						</div>
-						<p class="font-body-md text-on-surface-variant mb-4">
-							{{publicacion.descripcion}}	
-						</p>
-						{% if publicacion.img %}
-						<div class="rounded-xl overflow-hidden h-[340px] relative group">
-							 <img src="{{ publicacion.img.url }}" alt="imagen">
-							<div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-all"></div>
+						<p class="font-body-md text-on-surface-variant mb-4 whitespace-pre-wrap">{{publicacion.descripcion}}</p>
+						{% with total=publicacion.imagenes.count %}
+						<div class="
+							{% if total == 1 %}grid grid-cols-1
+							{% elif total == 2 %}grid grid-cols-2
+							{% else %}grid grid-cols-2{% endif %}
+							gap-2 rounded-xl">
+
+							{% for img in publicacion.imagenes.all %}
+							<img src="{{ img.imagen.url }}" 
+								onclick="verImagen(this.src)"
+								class="w-full 
+								{% if total == 1 %}h-[400px]
+								{% elif total == 2 %}h-[250px]
+								{% else %}h-[200px]{% endif %}
+								object-cover rounded-lg cursor-pointer">
+							{% endfor %}
 						</div>
-						{% endif %}
+						{% endwith %}
 					</div>
 					<div class="px-md pb-md flex flex-col gap-4">
 						<div class="flex justify-between items-center text-caption text-on-surface-variant">
 							<div class="flex items-center gap-1">
 								<span class="material-symbols-outlined text-[14px] text-emerald-600" style="font-variation-settings: 'FILL' 1;">recommend</span>
-								<span>42 professionals liked this</span>
+								<span class="contador-reacciones">{{ publicacion.total_reacciones }} reactions</span>
 							</div>
-							<span>{{publicacion.comentario_set.count}} comments • 4 shares</span>
-						</div>
+							<button onclick="toggleComentarios({{ publicacion.id }})"
+								class="flex items-center gap-1 hover:text-primary hover:underline underline-offset-2 transition-colors">
+								<span data-comments="{{ publicacion.id }}">{{ publicacion.comentarios.count }}</span>
+								<span>comments</span>
+							</button>						</div>
 						<div class="flex border-t border-outline-variant/20 pt-4 justify-between">
-							<button class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors">
-								<span class="material-symbols-outlined text-[20px]">thumb_up</span>
-								<span class="font-label-md">Like</span>
+							<button 
+								onclick="darLike({{ publicacion.id }}, this)"
+								class="like-btn flex-1 flex items-center justify-center gap-2 py-2 rounded-lg
+								{% if publicacion.liked %}
+								text-blue-600
+								{% else %}
+								text-on-surface-variant
+								{% endif %}
+								">
+								<span class="material-symbols-outlined"
+									style="font-variation-settings: {% if publicacion.liked %}'FILL' 1{% else %}'FILL' 0{% endif %};">
+									thumb_up
+								</span>
+								<span class="texto-like">
+									{% if publicacion.liked %}
+									Liked
+									{% else %}
+									Like
+									{% endif %}
+								</span>
 							</button>
-							<button class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors">
+							<button onclick="toggleComentarios({{ publicacion.id }})"
+								class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors">
 								<span class="material-symbols-outlined text-[20px]">chat_bubble_outline</span>
 								<span class="font-label-md">Comment</span>
 							</button>
-							<button class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors">
-								<span class="material-symbols-outlined text-[20px]">share</span>
-								<span class="font-label-md">Share</span>
-							</button>
+						</div>
+					</div>
+
+					<!-- Sección de comentarios -->
+					<div id="comentarios-{{ publicacion.id }}" class="hidden px-md pb-md flex flex-col gap-3">
+						<!-- Comentarios existentes -->
+						<div id="lista-comentarios-{{ publicacion.id }}" class="flex flex-col gap-3">
+							{% for comentario in publicacion.comentarios.all %}
+							<div class="flex gap-3 items-start">
+								<div class="w-8 h-8 rounded-full overflow-hidden shrink-0">
+									{% if comentario.user.perfil.foto_perfil %}
+									<img src="{{ comentario.user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
+									{% else %}
+									<img src="/static/img/default.jpg" class="w-full h-full object-cover">
+									{% endif %}
+								</div>
+								<div class="bg-surface-container rounded-2xl px-4 py-2 flex-1">
+									<div class="flex items-baseline gap-2">
+										<p class="text-sm font-bold text-on-surface">{{ comentario.user.get_full_name }}</p>
+										<p class="text-[10px] text-on-surface-variant">Hace {{ comentario.created_at|timesince }}</p>
+									</div>	
+									<p class="text-sm text-on-surface-variant">{{ comentario.contenido }}</p>
+								</div>
+							</div>
+							{% empty %}
+							<p class="text-caption text-on-surface-variant text-center py-2" id="empty-{{ publicacion.id }}">
+								No hay comentarios aún. ¡Sé el primero!
+							</p>
+							{% endfor %}
+						</div>
+						<!-- Input nuevo comentario -->
+						<div class="flex gap-3 items-center pt-2 border-t border-outline-variant/20">
+							<div class="w-8 h-8 rounded-full overflow-hidden shrink-0">
+								{% if user.perfil.foto_perfil %}
+								<img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
+								{% else %}
+								<img src="/static/img/default.jpg" class="w-full h-full object-cover">
+								{% endif %}
+							</div>
+							<div class="flex-1 flex items-center gap-2 bg-surface-container rounded-full px-4 py-2">
+								<input
+									type="text"
+									id="input-comentario-{{ publicacion.id }}"
+									placeholder="Write a comment..."
+									class="flex-1 bg-transparent border-none focus:ring-0 text-sm"
+									onkeydown="if(event.key==='Enter') enviarComentario({{ publicacion.id }})"
+								/>
+								<button onclick="enviarComentario({{ publicacion.id }})"
+									class="material-symbols-outlined text-primary text-[20px] hover:opacity-70 transition-opacity">
+									send
+								</button>
+							</div>
 						</div>
 					</div>
 				</article>
@@ -347,6 +429,70 @@ extend: {
 		<button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform">
 			<span class="material-symbols-outlined text-[28px]">add</span>
 		</button>
-	<script src="{% static 'js/search.js' %}"></script>
+
+
+		<!-- CREACION DE PULICACION-->
+		<div id="modal-post" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+			<div class="bg-white w-[600px] max-w-[90%] rounded-xl p-6">
+
+				<h2 class="text-lg font-bold mb-4">Crear publicación</h2>
+
+				<form id="form-publicacion" method="POST" action="{% url 'crear_publicacion' %}" enctype="multipart/form-data" class="flex flex-col gap-4">
+					{% csrf_token %}
+					<div class="flex items-center gap-3">
+						<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white">
+							{% if user.perfil.foto_perfil %}
+							<img src="{{ user.perfil.foto_perfil.url }}" 
+								class="w-full h-full object-cover">
+							{% else %}
+							<img src="/static/img/default.jpg" 
+								class="w-full h-full object-cover">
+							{% endif %}
+						</div>						
+						<div>
+							<p class="text-sm font-bold text-emerald-900">{{user.get_full_name}}</p>
+							<p class="text-[10px] uppercase tracking-widest text-emerald-700/70 font-bold">{{user.username}}</p>
+						</div>
+					</div>
+
+					<!--DESCRIPCION DE PUBLICACION-->
+					<textarea 
+						name="descripcion" 
+						class="w-full h-32 bg-surface-container rounded-2xl p-4 cursor-pointer hover:bg-surface-container-high transition-colors resize-none"
+						required
+						placeholder="¿What's on your mind {{user.first_name}}?"></textarea>
+
+					<!--SUBIR IMAGEN-->
+					<input class="hidden" type="file" name="imagen" id="input-imagen" onchange="previewImagen(event)" multiple>
+					<button 
+						type="button"
+						onclick="document.getElementById('input-imagen').click()"
+						class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
+						<span class="material-symbols-outlined text-[20px]">image</span>
+						<span>Media</span>
+					</button>
+
+					<!--PREVIEW DE IMAGEN-->
+					<div id="contenedor-imagenes" class="flex gap-2 flex-wrap mt-2"></div>
+
+					<!--CANCELAR-->
+					<div class="flex justify-end gap-2">
+						<button type="button" onclick="cerrarModal()" class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">Cancelar</button>
+						<button type="submit" class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">Publicar</button>
+					</div>
+
+				</form>
+			</div>
+		</div>
+		<!--VISUALIZAR IMAGENES DE PUBLICACION-->
+		<div id="modal-img" 
+			class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50"
+			onclick="cerrarImagen()">
+
+			<img id="img-grande" class="max-w-[90%] max-h-[90%] rounded-lg">
+		</div>
+		<script src="{% static 'js/search.js' %}"></script>
+		<script src="{% static 'js/post.js' %}"></script>	
+		<script src="{% static 'js/comments.js' %}"></script>	
 	</body>
 </html>
