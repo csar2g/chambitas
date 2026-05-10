@@ -174,7 +174,11 @@ extend: {
 						<span class="material-symbols-outlined">chat_bubble</span>
 						<span>Messages</span>
 					</a>
-					<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl" href="#">
+					<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:translate-x-1 transition-transform hover:bg-white/40 dark:hover:bg-emerald-800/20 rounded-xl font-label-md" href="#">
+						<span class="material-symbols-outlined" data-icon="work">work</span>
+						Publicaciones
+					</a>
+					<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl" href="{% url 'main_profile'  %}">
 						<span class="material-symbols-outlined">settings</span>
 						<span>Settings</span>
 					</a>
@@ -248,9 +252,7 @@ extend: {
 								<span class="material-symbols-outlined">more_horiz</span>
 							</button>
 						</div>
-						<p class="font-body-md text-on-surface-variant mb-4">
-							{{publicacion.descripcion}}	
-						</p>
+						<p class="font-body-md text-on-surface-variant mb-4 whitespace-pre-wrap">{{publicacion.descripcion}}</p>
 						{% with total=publicacion.imagenes.count %}
 						<div class="
 							{% if total == 1 %}grid grid-cols-1
