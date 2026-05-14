@@ -248,9 +248,20 @@ extend: {
 									</p>
 								</div>
 							</div>
-							<button class="text-on-surface-variant hover:bg-surface-container rounded-full p-1 transition-colors">
-								<span class="material-symbols-outlined">more_horiz</span>
-							</button>
+							{% if publicacion.user == user %}
+							<div class="relative">
+								<button onclick="toggleMenu({{ publicacion.id }})"
+									class="text-on-surface-variant hover:bg-surface-container rounded-full p-1 transition-colors">
+									<span class="material-symbols-outlined">more_horiz</span>
+								</button>
+								<div id="menu-{{ publicacion.id }}" class="hidden absolute right-0 bg-white shadow-lg rounded-xl border border-outline-variant/20 z-10 w-40">
+									<button onclick="abrirEditar({{ publicacion.id }}, `{{ publicacion.descripcion|escapejs }}`)"
+										class="w-full text-left px-4 py-2 text-sm hover:bg-surface-container">Editar</button>
+									<button onclick="confirmarEliminar({{ publicacion.id }})"
+										class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Eliminar</button>
+								</div>
+							</div>
+							{% endif %}
 						</div>
 						<p class="font-body-md text-on-surface-variant mb-4 whitespace-pre-wrap">{{publicacion.descripcion}}</p>
 						{% with total=publicacion.imagenes.count %}
@@ -491,8 +502,79 @@ extend: {
 
 			<img id="img-grande" class="max-w-[90%] max-h-[90%] rounded-lg">
 		</div>
-		<script src="{% static 'js/search.js' %}"></script>
+		<!-- Modal editar publicación -->
+		<div id="modal-editar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+			<div class="bg-white w-[500px] max-w-[90%] rounded-xl p-6 flex flex-col gap-4">
+				<h2 class="text-lg font-bold">Editar publicación</h2>
+				<textarea id="textarea-editar"
+					class="w-full h-32 bg-surface-container rounded-2xl p-4 resize-none"></textarea>
+				<div class="flex justify-end gap-2">
+					<button onclick="cerrarEditar()"
+						class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">Cancelar</button>
+					<button onclick="guardarEdicion()"
+						class="bg-primary text-white px-5 py-2 rounded-full font-label-md">Guardar</button>
+				</div>
+			</div>
+		</div>
+		<!-- Modal confirmar eliminación -->
+			<div id="modal-eliminar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+				<div class="bg-white w-[400px] max-w-[90%] rounded-xl p-6 flex flex-col gap-4">
+					<h2 class="text-lg font-bold">¿Eliminar publicación?</h2>
+					<p class="text-on-surface-variant text-sm">Esta acción no se puede deshacer.</p>
+					<div class="flex justify-end gap-2">
+						<button onclick="document.getElementById('modal-eliminar').classList.add('hidden')"
+							class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">Cancelar</button>
+						<button id="btn-confirmar-eliminar"
+							class="bg-red-600 text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-red-700">Eliminar</button>
+					</div>
+				</div>
+			</div>
+					<script src="{% static 'js/search.js' %}"></script>
 		<script src="{% static 'js/post.js' %}"></script>	
 		<script src="{% static 'js/comments.js' %}"></script>	
+
+		<script>
+			let _editandoId = null;
+
+			function toggleMenu(id) {
+				document.querySelectorAll('[id^="menu-"]').forEach(m => {
+					if (m.id !== `menu-${id}`) m.classList.add('hidden');
+				});
+				document.getElementById(`menu-${id}`).classList.toggle('hidden');
+			}
+
+			function abrirEditar(id, descripcion) {
+				_editandoId = id;
+				document.getElementById('textarea-editar').value = descripcion;
+				document.getElementById('modal-editar').classList.remove('hidden');
+				document.getElementById(`menu-${id}`).classList.add('hidden');
+			}
+
+			function cerrarEditar() {
+				document.getElementById('modal-editar').classList.add('hidden');
+			}
+
+			async function guardarEdicion() {
+				const desc = document.getElementById('textarea-editar').value.trim();
+				if (!desc) return;
+				const res = await fetch(`/publicacion/${_editandoId}/editar/`, {
+					method: 'POST',
+					headers: {'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/x-www-form-urlencoded'},
+					body: `descripcion=${encodeURIComponent(desc)}`
+				});
+				if (res.ok) location.reload();
+			}
+
+			function confirmarEliminar(id) {
+				document.getElementById('modal-eliminar').classList.remove('hidden');
+				document.getElementById('btn-confirmar-eliminar').onclick = async () => {
+					const res = await fetch(`/publicacion/${id}/eliminar/`, {
+						method: 'POST',
+						headers: {'X-CSRFToken': '{{ csrf_token }}'}
+					});
+					if (res.ok) location.reload();
+				};
+			}
+			</script>
 	</body>
 </html>
