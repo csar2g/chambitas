@@ -7,10 +7,10 @@
       <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
       Dashboard
     </a>
-    <a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:translate-x-1 transition-transform hover:bg-white/40 dark:hover:bg-emerald-800/20 rounded-xl font-label-md" href="#">
-      <span class="material-symbols-outlined" data-icon="work">work</span>
-      Publicaciones
-    </a>
+		<a class="{% if active_menu == 'publicaciones' %}bg-white dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-200 font-bold shadow-sm{% else %}text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 dark:hover:bg-emerald-800/20{% endif %} flex items-center gap-3 px-4 py-3 hover:translate-x-1 transition-transform rounded-xl font-label-md" href="{% url 'mis_publicaciones' %}">
+			<span class="material-symbols-outlined" data-icon="work">work</span>
+			Publicaciones
+		</a>
     <a class="{% if active_menu == 'messages' %}bg-white dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-200 font-bold shadow-sm{% else %}text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 dark:hover:bg-emerald-800/20{% endif %} flex items-center gap-3 px-4 py-3 hover:translate-x-1 transition-transform rounded-xl font-label-md" href="{% url 'bandeja' %}">
       <span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
       Messages

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+	<head>
+		<meta charset="utf-8"/>
+		<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+		{% load static %}
+		{% load tz %}
+		<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+		<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+		<style>
+		.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+		</style>
+		<script id="tailwind-config">
+		tailwind.config = {
+darkMode: "class",
+theme: {
+extend: {
+colors: {
+"tertiary": "#745945", "background": "#fcf9f8", "on-secondary-fixed-variant": "#6b3836",
+"tertiary-container": "#ffdec8", "on-background": "#1c1b1b", "on-secondary": "#ffffff",
+"secondary-fixed": "#ffdad7", "on-secondary-container": "#7b4542", "primary-container": "#d9e9d0",
+"secondary": "#874f4c", "primary-fixed-dim": "#bbcbb3", "surface-container-highest": "#e5e2e1",
+"tertiary-fixed-dim": "#e3c0a8", "on-error": "#ffffff", "secondary-container": "#ffb7b2",
+"on-error-container": "#93000a", "on-primary-container": "#5b6955", "error": "#ba1a1a",
+"surface-variant": "#e5e2e1", "inverse-surface": "#313030", "inverse-primary": "#bbcbb3",
+"secondary-fixed-dim": "#fcb4b0", "on-tertiary": "#ffffff", "on-primary-fixed": "#121f0f",
+"primary-fixed": "#d7e7ce", "surface": "#fcf9f8", "outline": "#747871",
+"surface-container": "#f0eded", "outline-variant": "#c4c8bf",
+"on-primary-fixed-variant": "#3d4b38", "on-tertiary-fixed": "#2a1708", "on-primary": "#ffffff",
+"surface-container-low": "#f6f3f2", "primary": "#54624f", "surface-bright": "#fcf9f8",
+"surface-container-lowest": "#ffffff", "on-surface-variant": "#444841",
+"error-container": "#ffdad6", "tertiary-fixed": "#ffdcc4", "surface-tint": "#54624f",
+"surface-container-high": "#eae7e7", "on-tertiary-container": "#7b604c",
+"inverse-on-surface": "#f3f0ef", "surface-dim": "#dcd9d9", "on-surface": "#1c1b1b"
+},
+borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+spacing: { "md": "24px", "xl": "80px", "xs": "4px", "lg": "48px", "base": "8px", "gutter": "24px", "sm": "12px" },
+fontFamily: { "body-md": ["Manrope"], "label-md": ["Manrope"], "headline-md": ["Plus Jakarta Sans"], "caption": ["Manrope"] },
+fontSize: {
+"body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+"label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+"headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+"headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "700"}],
+"caption": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}]
+}
+}
+}
+}
+		</script>
+	</head>
+	<body class="bg-background font-body-md text-on-surface min-h-screen">
+		<div class="flex min-h-screen">
+
+			{% include "sidebar_profile.html" with active_menu="publicaciones" sidebar_nav_classes="hidden md:flex flex-col gap-2 p-6 h-screen w-64 fixed left-0 top-0 border-r border-emerald-200/50 bg-[#D9E9D0] z-40" %}
+
+			<!-- Main -->
+			<main class="ml-64 flex-1 p-gutter">
+				<div class="max-w-2xl mx-auto">
+
+					<!-- Header -->
+					<div class="flex justify-between items-center mb-lg">
+						<div>
+							<h1 class="font-headline-lg text-[28px] font-bold text-on-surface">Mis publicaciones</h1>
+							<p class="text-on-surface-variant text-sm mt-1">
+								{{ publicaciones|length }} publicación{{ publicaciones|length|pluralize:"es" }}
+							</p>
+						</div>
+						<button onclick="abrirModal()"
+							class="flex items-center gap-2 bg-primary text-white px-md py-sm rounded-xl font-label-md hover:opacity-90 active:scale-95 transition-all shadow-sm">
+							<span class="material-symbols-outlined text-[20px]">add</span>
+							Nueva
+						</button>
+					</div>
+
+					<!-- Sin publicaciones -->
+					{% if not publicaciones %}
+					<div class="flex flex-col items-center justify-center py-xl gap-md text-on-surface-variant">
+						<span class="material-symbols-outlined text-[64px] opacity-30">article</span>
+						<p class="font-headline-md text-center">Aún no has publicado nada</p>
+						<p class="text-body-md text-center">Crea tu primera publicación para que otros puedan encontrarte</p>
+						<button onclick="abrirModal()"
+							class="bg-primary text-white px-lg py-sm rounded-xl font-label-md hover:opacity-90 transition-all">
+							Crear publicación
+						</button>
+					</div>
+					{% endif %}
+
+					<!-- Lista de publicaciones -->
+					<div class="flex flex-col gap-md">
+						{% for publicacion in publicaciones %}
+						<article class="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10 overflow-hidden">
+							<div class="p-md">
+
+								<!-- Cabecera -->
+								<div class="flex justify-between items-start mb-4">
+									<div class="flex gap-3">
+										<div class="w-12 h-12 rounded-lg overflow-hidden shrink-0">
+											{% if user.perfil.foto_perfil %}
+											<img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
+											{% else %}
+											<img src="/static/img/default.jpg" class="w-full h-full object-cover">
+											{% endif %}
+										</div>
+										<div>
+											<h3 class="font-headline-md text-[16px] text-on-surface">{{ user.get_full_name }}</h3>
+											<p class="text-caption text-on-surface-variant">Hace {{ publicacion.created_at|timesince }}</p>
+										</div>
+									</div>
+									<!-- Menú editar/eliminar -->
+									<div class="relative">
+										<button onclick="toggleMenu({{ publicacion.id }})"
+											class="p-1 rounded-full hover:bg-surface-container transition-colors text-on-surface-variant">
+											<span class="material-symbols-outlined">more_horiz</span>
+										</button>
+										<div id="menu-{{ publicacion.id }}"
+											class="hidden absolute right-0 top-8 bg-white border border-outline-variant/20 rounded-xl shadow-lg z-10 w-40 overflow-hidden">
+											<button onclick="abrirEditar({{ publicacion.id }}, `{{ publicacion.descripcion|escapejs }}`)"
+												class="w-full flex items-center gap-2 px-4 py-3 text-sm text-on-surface hover:bg-surface-container transition-colors">
+												<span class="material-symbols-outlined text-[18px]">edit</span>
+												Editar
+											</button>
+											<button onclick="confirmarEliminar({{ publicacion.id }})"
+												class="w-full flex items-center gap-2 px-4 py-3 text-sm text-error hover:bg-error-container transition-colors">
+												<span class="material-symbols-outlined text-[18px]">delete</span>
+												Eliminar
+											</button>
+										</div>
+									</div>
+								</div>
+
+								<!-- Descripción -->
+								<p class="font-body-md text-on-surface-variant mb-4 whitespace-pre-wrap">{{ publicacion.descripcion }}</p>
+
+								<!-- Link -->
+								{% if publicacion.link %}
+								<a href="{{ publicacion.link }}" target="_blank" rel="noopener noreferrer"
+									class="flex items-center gap-3 p-3 mb-4 bg-surface-container hover:bg-surface-container-high transition-colors rounded-xl border border-outline-variant/20 group">
+									<span class="material-symbols-outlined text-primary text-[24px] shrink-0">link</span>
+									<p class="text-sm font-semibold text-primary truncate group-hover:underline">{{ publicacion.link }}</p>
+									<span class="material-symbols-outlined text-on-surface-variant text-[18px] ml-auto">open_in_new</span>
+								</a>
+								{% endif %}
+
+								<!-- Imágenes -->
+								{% with total=publicacion.imagenes.count %}
+								{% if total > 0 %}
+								<div class="{% if total == 1 %}grid grid-cols-1{% else %}grid grid-cols-2{% endif %} gap-2 rounded-xl mb-2">
+									{% for img in publicacion.imagenes.all %}
+									<img src="{{ img.imagen.url }}"
+										onclick="verImagen(this.src)"
+										class="w-full {% if total == 1 %}h-[400px]{% else %}h-[200px]{% endif %} object-cover rounded-lg cursor-pointer">
+									{% endfor %}
+								</div>
+								{% endif %}
+								{% endwith %}
+							</div>
+
+							<!-- Stats -->
+							<div class="px-md pb-md flex items-center justify-between text-caption text-on-surface-variant border-t border-outline-variant/10 pt-3">
+								<div class="flex items-center gap-1">
+									<span class="material-symbols-outlined text-[14px] text-emerald-600" style="font-variation-settings: 'FILL' 1;">recommend</span>
+									<span>{{ publicacion.total_reacciones }} reactions</span>
+								</div>
+								<span>{{ publicacion.comentarios.count }} comments</span>
+							</div>
+						</article>
+						{% endfor %}
+					</div>
+
+				</div>
+			</main>
+		</div>
+
+		<!-- Modal crear publicación -->
+		<div id="modal-post" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+			<div class="bg-white w-[600px] max-w-[90%] rounded-xl p-6">
+				<h2 class="text-lg font-bold mb-4">Crear publicación</h2>
+				<form id="form-publicacion" method="POST" action="{% url 'crear_publicacion' %}" enctype="multipart/form-data" class="flex flex-col gap-4">
+					{% csrf_token %}
+					<div class="flex items-center gap-3">
+						<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white">
+							{% if user.perfil.foto_perfil %}
+							<img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
+							{% else %}
+							<img src="/static/img/default.jpg" class="w-full h-full object-cover">
+							{% endif %}
+						</div>
+						<div>
+							<p class="text-sm font-bold text-emerald-900">{{ user.get_full_name }}</p>
+							<p class="text-[10px] uppercase tracking-widest text-emerald-700/70 font-bold">{{ user.username }}</p>
+						</div>
+					</div>
+					<textarea name="descripcion" class="w-full h-32 bg-surface-container rounded-2xl p-4 hover:bg-surface-container-high transition-colors resize-none" required placeholder="¿What's on your mind?"></textarea>
+					<div id="contenedor-link" class="hidden flex items-center gap-2 bg-surface-container rounded-2xl px-4 py-3">
+						<span class="material-symbols-outlined text-primary text-[20px]">link</span>
+						<input type="url" name="link" id="input-link" placeholder="https://tu-portafolio.com" class="flex-1 bg-transparent border-none focus:ring-0 text-sm"/>
+						<button type="button" onclick="quitarLink()" class="material-symbols-outlined text-on-surface-variant text-[18px] hover:text-error transition-colors">close</button>
+					</div>
+					<div class="flex gap-2">
+						<input class="hidden" type="file" name="imagen" id="input-imagen" onchange="previewImagen(event)" multiple>
+						<button type="button" onclick="document.getElementById('input-imagen').click()"
+							class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
+							<span class="material-symbols-outlined text-[20px]">image</span>
+							<span>Media</span>
+						</button>
+						<button type="button" onclick="mostrarLink()" id="btn-link"
+							class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
+							<span class="material-symbols-outlined text-[20px]">link</span>
+							<span>Link</span>
+						</button>
+					</div>
+					<div id="contenedor-imagenes" class="flex gap-2 flex-wrap mt-2"></div>
+					<div class="flex justify-end gap-2">
+						<button type="button" onclick="cerrarModal()" class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">Cancelar</button>
+						<button type="submit" class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">Publicar</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- Modal editar publicación -->
+		<div id="modal-editar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+			<div class="bg-white w-[600px] max-w-[90%] rounded-xl p-6">
+				<h2 class="text-lg font-bold mb-4">Editar publicación</h2>
+				<form id="form-editar" method="POST" action="" class="flex flex-col gap-4">
+					{% csrf_token %}
+					<textarea id="textarea-editar" name="descripcion"
+						class="w-full h-32 bg-surface-container rounded-2xl p-4 hover:bg-surface-container-high transition-colors resize-none"
+						required></textarea>
+					<div class="flex justify-end gap-2">
+						<button type="button" onclick="cerrarEditar()"
+							class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">
+							Cancelar
+						</button>
+						<button type="submit"
+							class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">
+							Guardar
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- Modal eliminar -->
+		<div id="modal-eliminar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+			<div class="bg-white w-[400px] max-w-[90%] rounded-xl p-6 text-center flex flex-col gap-4">
+				<span class="material-symbols-outlined text-error text-[48px] mx-auto">delete_forever</span>
+				<h2 class="text-lg font-bold text-on-surface">¿Eliminar publicación?</h2>
+				<p class="text-sm text-on-surface-variant">Esta acción no se puede deshacer.</p>
+				<form id="form-eliminar" method="POST" action="">
+					{% csrf_token %}
+					<div class="flex justify-center gap-3">
+						<button type="button" onclick="cerrarEliminar()"
+							class="px-6 py-2 rounded-full border border-outline text-on-surface text-sm font-semibold hover:bg-surface-container">
+							Cancelar
+						</button>
+						<button type="submit"
+							class="px-6 py-2 rounded-full bg-error text-white text-sm font-semibold hover:opacity-90">
+							Eliminar
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- Modal imagen -->
+		<div id="modal-img" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50" onclick="cerrarImagen()">
+			<img id="img-grande" class="max-w-[90%] max-h-[90%] rounded-lg">
+		</div>
+
+		<script src="{% static 'js/post.js' %}"></script>
+		<script>
+function toggleMenu(id) {
+const menu = document.getElementById(`menu-${id}`);
+document.querySelectorAll('[id^="menu-"]').forEach(m => {
+if (m.id !== `menu-${id}`) m.classList.add('hidden');
+});
+menu.classList.toggle('hidden');
+}
+
+document.addEventListener('click', function(e) {
+if (!e.target.closest('[onclick^="toggleMenu"]') && !e.target.closest('[id^="menu-"]')) {
+document.querySelectorAll('[id^="menu-"]').forEach(m => m.classList.add('hidden'));
+}
+});
+
+function abrirEditar(id, descripcion) {
+document.getElementById('modal-editar').classList.remove('hidden');
+document.getElementById('textarea-editar').value = descripcion;
+document.getElementById('form-editar').action = `/publicacion/${id}/editar/`;
+document.querySelectorAll('[id^="menu-"]').forEach(m => m.classList.add('hidden'));
+}
+
+function cerrarEditar() {
+document.getElementById('modal-editar').classList.add('hidden');
+}
+
+function confirmarEliminar(id) {
+document.getElementById('modal-eliminar').classList.remove('hidden');
+document.getElementById('form-eliminar').action = `/publicacion/${id}/eliminar/`;
+document.querySelectorAll('[id^="menu-"]').forEach(m => m.classList.add('hidden'));
+}
+
+function cerrarEliminar() {
+document.getElementById('modal-eliminar').classList.add('hidden');
+}
+
+function mostrarLink() {
+document.getElementById('contenedor-link').classList.remove('hidden');
+document.getElementById('btn-link').classList.add('hidden');
+document.getElementById('input-link').focus();
+}
+
+function quitarLink() {
+document.getElementById('contenedor-link').classList.add('hidden');
+document.getElementById('btn-link').classList.remove('hidden');
+document.getElementById('input-link').value = '';
+}
+		</script>
+	</body>
+</html>

@@ -217,7 +217,7 @@ extend: {
 					<div class="flex flex-col gap-md">
 						<h2 class="font-headline-md text-on-surface-variant text-sm uppercase tracking-widest">Personas</h2>
 						{% for u in usuarios %}
-						<a href="/perfil/{{ u.username }}/"
+						<a href="{% if u == request.user %}{% url 'main_profile' %}{% else %}/perfil/{{ u.username }}/{% endif %}"
 							class="bg-surface-container-lowest p-gutter rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10 flex flex-col md:flex-row gap-md hover:translate-y-[-2px] transition-transform">
 							<div class="relative flex-shrink-0">
 								{% if u.perfil.foto_perfil %}
@@ -225,9 +225,17 @@ extend: {
 								{% else %}
 								<img src="/static/img/default.jpg" class="w-24 h-24 rounded-2xl object-cover border-2 border-primary-container shadow-sm"/>
 								{% endif %}
+								{% if u == request.user %}
+								<div class="absolute -bottom-2 -right-2 bg-primary text-on-primary px-xs py-0.5 rounded-full text-[10px] font-bold">Tú</div>
+								{% endif %}
 							</div>
 							<div class="flex-grow flex flex-col justify-center gap-xs">
-								<h3 class="font-headline-md text-on-surface">{{ u.get_full_name|default:u.username }}</h3>
+								<div class="flex items-center gap-sm">
+									<h3 class="font-headline-md text-on-surface">{{ u.get_full_name|default:u.username }}</h3>
+									{% if u == request.user %}
+									<span class="text-caption bg-primary-container text-primary px-sm py-xs rounded-full font-bold">Mi perfil</span>
+									{% endif %}
+								</div>
 								<p class="text-primary font-label-md">@{{ u.username }}</p>
 								{% if u.perfil.descripcion %}
 								<p class="text-on-surface-variant text-body-md line-clamp-2">{{ u.perfil.descripcion }}</p>

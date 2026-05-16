@@ -188,46 +188,32 @@ extend: {
 			<main class="flex-1 max-w-[640px] flex flex-col gap-md px-4 md:px-0 mb-xl">
 				<!-- Compose Box -->
 				<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
-					<div class="flex gap-4">
+					<div class="flex gap-2 items-center">
 						<div class="w-12 h-12 rounded-full overflow-hidden shrink-0">
-								{% if user.perfil.foto_perfil %}
-								<img src="{{ user.perfil.foto_perfil.url }}"
-    								class="w-full h-full object-cover">
-								{% else %}
-								<img src="/static/img/default.jpg">
-								{% endif %}
+							{% if user.perfil.foto_perfil %}
+							<img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
+							{% else %}
+							<img src="/static/img/default.jpg">
+							{% endif %}
 						</div>
-						<div class="flex-1">
-							<div onclick="abrirModal()" 
-								class="w-full bg-surface-container rounded-2xl p-4 cursor-pointer hover:bg-surface-container-high transition-colors">
-								<span>What's on your mind, {{user.first_name}}?</span>
-							</div>
+						<div onclick="abrirModal()"
+							class="flex-1 bg-surface-container rounded-2xl px-4 py-3 cursor-pointer hover:bg-surface-container-high transition-colors">
+							<span class="text-on-surface-variant">What's on your mind, {{ user.first_name }}?</span>
 						</div>
+						<button onclick="abrirModal()"
+							class="p-2 rounded-full hover:bg-primary-container/30 text-primary transition-colors"
+							title="Media">
+							<span class="material-symbols-outlined text-[22px]">image</span>
+						</button>
+						<button onclick="abrirModal()"
+							class="p-2 rounded-full hover:bg-primary-container/30 text-primary transition-colors"
+							title="Link">
+							<span class="material-symbols-outlined text-[22px]">link</span>
+						</button>
 					</div>
-					<div class="flex justify-between items-center mt-4 pt-4 border-t border-outline-variant/20">
-
-						<div class="flex justify-center gap-2 w-full">
-							<button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
-								<span class="material-symbols-outlined text-[20px]">image</span>
-								<span>Media</span>
-							</button>
-
-							<button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
-								<span class="material-symbols-outlined text-[20px]">calendar_month</span>
-								<span>Event</span>
-							</button>
-
-							<button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
-								<span class="material-symbols-outlined text-[20px]">article</span>
-								<span>Article</span>
-							</button>
-						</div>
-
-					</div>				</section>
-					<!-- PUBLICACIONES -->
+				</section>
+				<!-- PUBLICACIONES -->
 				{% for publicacion in publicaciones %}
-			
-				<!-- Feed Post 1 -->
 				<article class="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30 overflow-hidden">
 					<div class="p-md">
 						<div class="flex justify-between items-start mb-4">
@@ -264,6 +250,17 @@ extend: {
 							{% endif %}
 						</div>
 						<p class="font-body-md text-on-surface-variant mb-4 whitespace-pre-wrap">{{publicacion.descripcion}}</p>
+						{% if publicacion.link %}
+						<a href="{{ publicacion.link }}" target="_blank" rel="noopener noreferrer"
+							class="flex items-center gap-3 p-3 mt-2 mb-4 bg-surface-container hover:bg-surface-container-high transition-colors rounded-xl border border-outline-variant/20 group">
+							<span class="material-symbols-outlined text-primary text-[24px] shrink-0">link</span>
+							<div class="flex-1 min-w-0">
+								<p class="text-xs text-on-surface-variant mb-0.5">Enlace externo</p>
+								<p class="text-sm font-semibold text-primary truncate group-hover:underline">{{ publicacion.link }}</p>
+							</div>
+							<span class="material-symbols-outlined text-on-surface-variant text-[18px]">open_in_new</span>
+						</a>
+						{% endif %}
 						{% with total=publicacion.imagenes.count %}
 						<div class="
 							{% if total == 1 %}grid grid-cols-1
@@ -380,51 +377,34 @@ extend: {
 			</main>
 			<!-- Right Sidebar -->
 			<aside class="hidden xl:flex flex-col gap-gutter w-80 sticky top-20 h-fit">
+				{% if usuarios %}
 				<!-- Recommended Section -->
 				<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
 					<h2 class="font-headline-md text-[18px] text-on-surface mb-4">Recommended for you</h2>
 					<div class="flex flex-col gap-4">
+					{%for u in usuarios%}
 						<div class="flex items-center gap-3">
 							<div class="w-10 h-10 rounded-full overflow-hidden bg-slate-200">
-								<img alt="Profile" class="w-full h-full object-cover" data-alt="close up of a professional man in casual clothing smiling in an outdoor urban setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmNHm82YkrQJ3wHCSzORYVHk2emEjaYd4dMaevDK-jNmpgIEzFd0d1muCBzIc9JMzNfp-Hfr4MU2zbSEXxKHBAu-rDK-DFDJlnfibGrwHHlDeZmxLFW1bEvLU5Txdn27bOmDtNsKe5Kv5ZwsvFPM1SaZqr-2zIRMM6Ed_Ydejpq7foSOwXIE7_OYAcSn5P1t1b-lItPcbIMFiIMzlZqKE5dVq09YziCEhJg0kVMmTwLOA7OHPm3QnRlnygCF5_u0QIuJGFsOSXicw"/>
+								{% if u.perfil.foto_perfil %}
+								<img src="{{ u.perfil.foto_perfil.url }}" class="w-full h-full object-cover"/>
+								{% else %}
+								<img src="/static/img/default.jpg" class="w-full h-full object-cover"/>
+								{% endif %}
 							</div>
 							<div class="flex-1">
-								<p class="text-sm font-bold text-on-surface">Alex Rivera</p>
-								<p class="text-xs text-on-surface-variant">Cloud Architect</p>
+								<p class="text-sm font-bold text-on-surface">{{u.username}}</p>
+								<p class="text-xs text-on-surface-variant line-clamp-1">{{ u.perfil.descripcion }}</p>
 							</div>
-							<button class="material-symbols-outlined text-primary hover:bg-primary-container/30 p-1 rounded-full transition-all">person_add</button>
+							<a href="/perfil/{{ u.username }}/"
+								class="material-symbols-outlined text-primary hover:bg-primary-container/30 p-1 rounded-full transition-all">
+								person_add
+							</a>
 						</div>
-						<div class="flex items-center gap-3">
-							<div class="w-10 h-10 rounded-full overflow-hidden bg-slate-200">
-								<img alt="Profile" class="w-full h-full object-cover" data-alt="headshot of a stylish professional woman with short dark hair in a minimal white studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFTM9OiAl3NVSG8J2syZ2J9mtfAPlWIfxvYNdy6gHoEF8A1YkAu8RJ0t1Yu4PIBypnIFxbP2fV_C7kRxoBDBRMgM3F0qIc0DLdv4dckRCYpxLf8o2_v-iR_sBHnUUeMpWeWLiVxbqOH9TovPprXbo9g1CqVglqh-0eB8CDVsTEWzBHbuB4TLvRZBwVLWE-rFegOmOWPaSulyKIbDCaEzoqVD9NHgJjJBQHE0B6POqtwhxb9jqpyKxglSX74UlQKWJThZ713uUyRic"/>
-							</div>
-							<div class="flex-1">
-								<p class="text-sm font-bold text-on-surface">Mia Song</p>
-								<p class="text-xs text-on-surface-variant">Python Developer</p>
-							</div>
-							<button class="material-symbols-outlined text-primary hover:bg-primary-container/30 p-1 rounded-full transition-all">person_add</button>
-						</div>
-					</div>
-					<button class="mt-4 w-full text-center text-primary font-label-md hover:underline decoration-2 underline-offset-4">View all suggestions</button>
-				</section>
-				<!-- Trending Topics (Bento Style) -->
-				<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
-					<h2 class="font-headline-md text-[18px] text-on-surface mb-4">Trending Professional</h2>
-					<div class="grid grid-cols-2 gap-2">
-						<div class="col-span-2 p-3 bg-primary-container/30 rounded-lg hover:bg-primary-container/50 transition-colors cursor-pointer">
-							<p class="text-xs font-bold text-primary mb-1">#FUTUREOFWORK</p>
-							<p class="text-sm font-semibold text-on-surface">Remote work trends in 2024</p>
-						</div>
-						<div class="p-3 bg-secondary-container/20 rounded-lg hover:bg-secondary-container/40 transition-colors cursor-pointer">
-							<p class="text-xs font-bold text-secondary mb-1">#UIUX</p>
-							<p class="text-[13px] text-on-surface">Design Systems</p>
-						</div>
-						<div class="p-3 bg-tertiary-container/30 rounded-lg hover:bg-tertiary-container/50 transition-colors cursor-pointer">
-							<p class="text-xs font-bold text-tertiary mb-1">#AI</p>
-							<p class="text-[13px] text-on-surface">Prompt Eng.</p>
-						</div>
+					{% endfor %}
 					</div>
 				</section>
+				{% endif %}
+
 				<!-- Small Footer Link Section -->
 				<div class="px-md flex flex-wrap gap-x-4 gap-y-2 text-xs text-on-surface-variant opacity-60">
 					<a class="hover:text-primary" href="#">About</a>
@@ -442,59 +422,85 @@ extend: {
 		</button>
 
 
-		<!-- CREACION DE PULICACION-->
+		<!-- CREACION DE PUBLICACION -->
 		<div id="modal-post" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
 			<div class="bg-white w-[600px] max-w-[90%] rounded-xl p-6">
-
 				<h2 class="text-lg font-bold mb-4">Crear publicación</h2>
-
 				<form id="form-publicacion" method="POST" action="{% url 'crear_publicacion' %}" enctype="multipart/form-data" class="flex flex-col gap-4">
 					{% csrf_token %}
 					<div class="flex items-center gap-3">
 						<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white">
 							{% if user.perfil.foto_perfil %}
-							<img src="{{ user.perfil.foto_perfil.url }}" 
-								class="w-full h-full object-cover">
+							<img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
 							{% else %}
-							<img src="/static/img/default.jpg" 
-								class="w-full h-full object-cover">
+							<img src="/static/img/default.jpg" class="w-full h-full object-cover">
 							{% endif %}
-						</div>						
+						</div>
 						<div>
-							<p class="text-sm font-bold text-emerald-900">{{user.get_full_name}}</p>
-							<p class="text-[10px] uppercase tracking-widest text-emerald-700/70 font-bold">{{user.username}}</p>
+							<p class="text-sm font-bold text-emerald-900">{{ user.get_full_name }}</p>
+							<p class="text-[10px] uppercase tracking-widest text-emerald-700/70 font-bold">{{ user.username }}</p>
 						</div>
 					</div>
 
-					<!--DESCRIPCION DE PUBLICACION-->
-					<textarea 
-						name="descripcion" 
-						class="w-full h-32 bg-surface-container rounded-2xl p-4 cursor-pointer hover:bg-surface-container-high transition-colors resize-none"
+					<!-- DESCRIPCION -->
+					<textarea
+						name="descripcion"
+						class="w-full h-32 bg-surface-container rounded-2xl p-4 hover:bg-surface-container-high transition-colors resize-none"
 						required
-						placeholder="¿What's on your mind {{user.first_name}}?"></textarea>
+						placeholder="¿What's on your mind {{ user.first_name }}?"></textarea>
 
-					<!--SUBIR IMAGEN-->
-					<input class="hidden" type="file" name="imagen" id="input-imagen" onchange="previewImagen(event)" multiple>
-					<button 
-						type="button"
-						onclick="document.getElementById('input-imagen').click()"
-						class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
-						<span class="material-symbols-outlined text-[20px]">image</span>
-						<span>Media</span>
-					</button>
-
-					<!--PREVIEW DE IMAGEN-->
-					<div id="contenedor-imagenes" class="flex gap-2 flex-wrap mt-2"></div>
-
-					<!--CANCELAR-->
-					<div class="flex justify-end gap-2">
-						<button type="button" onclick="cerrarModal()" class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">Cancelar</button>
-						<button type="submit" class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">Publicar</button>
+					<!-- INPUT LINK (oculto por defecto) -->
+					<div id="contenedor-link" class="hidden flex items-center gap-2 bg-surface-container rounded-2xl px-4 py-3">
+						<span class="material-symbols-outlined text-primary text-[20px]">link</span>
+						<input
+							type="url"
+							name="link"
+							id="input-link"
+							placeholder="https://enlace.com"
+							class="flex-1 bg-transparent border-none focus:ring-0 text-sm"/>
+						<button type="button" onclick="quitarLink()"
+							class="material-symbols-outlined text-on-surface-variant text-[18px] hover:text-error transition-colors">
+							close
+						</button>
 					</div>
 
+					<!-- BOTONES MEDIA -->
+					<div class="flex gap-2">
+						<input class="hidden" type="file" name="imagen" id="input-imagen" onchange="previewImagen(event)" multiple>
+						<button
+							type="button"
+							onclick="document.getElementById('input-imagen').click()"
+							class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
+							<span class="material-symbols-outlined text-[20px]">image</span>
+							<span>Media</span>
+						</button>
+						<button
+							type="button"
+							onclick="mostrarLink()"
+							id="btn-link"
+							class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
+							<span class="material-symbols-outlined text-[20px]">link</span>
+							<span>Link</span>
+						</button>
+					</div>
+
+					<!-- PREVIEW IMAGENES -->
+					<div id="contenedor-imagenes" class="flex gap-2 flex-wrap mt-2"></div>
+
+					<!-- ACCIONES -->
+					<div class="flex justify-end gap-2">
+						<button type="button" onclick="cerrarModal()"
+							class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">
+							Cancelar
+						</button>
+						<button type="submit"
+							class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">
+							Publicar
+						</button>
+					</div>
 				</form>
 			</div>
-		</div>
+		</div>		
 		<!--VISUALIZAR IMAGENES DE PUBLICACION-->
 		<div id="modal-img" 
 			class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50"

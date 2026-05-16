@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.db.models import Count
 from .models import Publicacion, Reaccion, Comentario, ImagenPublicacion
 from profiles.models import Perfil
+import random
 
 @login_required(login_url='landing')
 def feed_view(request):
@@ -18,14 +19,19 @@ def feed_view(request):
     for pub in publicaciones:
         pub.liked = pub.reacciones.filter(user=request.user).exists()
 
+    todos_usuarios = list(User.objects.exclude(id=request.user.id))
+    usuarios_recomendados = random.sample(todos_usuarios, min(3, len(todos_usuarios)))
+
     return render(request, "feed.html", {
-        'publicaciones': publicaciones
+        'publicaciones': publicaciones,
+        'usuarios': usuarios_recomendados
     })
 
 @require_POST
 @login_required
 def crear_publicacion(request):
     descripcion = request.POST.get('descripcion', '').strip()
+    link = request.POST.get('link', '').strip()
     imagenes = request.FILES.getlist('imagen')
 
     if not descripcion:
@@ -33,16 +39,14 @@ def crear_publicacion(request):
 
     publicacion = Publicacion.objects.create(
         descripcion=descripcion,
+        link=link or None,
         user=request.user
     )
-
     for img in imagenes:
         ImagenPublicacion.objects.create(
             publicacion=publicacion,
             imagen=img
         )
-
-    print(len(request.FILES.getlist('imagen')))
     return redirect('feed')
 
 def search_users(request):
@@ -166,3 +170,14 @@ def eliminar_publicacion(request, publicacion_id):
         img.imagen.delete()
     publicacion.delete()
     return JsonResponse({'ok': True})
+
+@login_required
+def mis_publicaciones(request):
+    publicaciones = Publicacion.objects.filter(user=request.user)\
+        .annotate(total_reacciones=Count('reacciones'))\
+        .order_by('-created_at')
+    for pub in publicaciones:
+        pub.liked = pub.reacciones.filter(user=request.user).exists()
+    return render(request, 'publicaciones.html', {
+        'publicaciones': publicaciones,
+    })
