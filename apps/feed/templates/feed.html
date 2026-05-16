@@ -8,6 +8,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 	{% load static %}
 	{% load tz %}
+	{% include "modales.html" %}
 	{{ publicacion.created_at|localtime }}
 	<script id="tailwind-config">
 	tailwind.config = {
@@ -103,87 +104,11 @@ extend: {
 </script>
 </head>
 	<body class="bg-background text-on-background font-body-md overflow-x-hidden">
-		<!-- TopNavBar (Shared Component) -->
-		<header class="sticky top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-emerald-50 dark:border-slate-800 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-
-			<div class="flex justify-between items-center h-20 px-8 max-w-[1200px] mx-auto">
-
-				<!-- IZQUIERDA -->
-				<div class="flex items-center gap-8">
-					<a href="{% url 'feed' %}">
-						<span class="text-2xl font-black bg-gradient-to-r from-emerald-600 to-orange-400 bg-clip-text text-transparent">
-							Chambitas
-						</span>
-					</a>
-				</div>
-				<div class="flex items-center gap-4">
-					<!-- SEARCH -->
-					<div class="relative w-70"> 
-						<div class="flex items-center bg-primary-container/30 px-4 py-2 rounded-full border border-outline-variant/30">
-							<span class="material-symbols-outlined text-[20px]">search</span>
-							<input id="search-input"
-								class="bg-transparent border-none focus:ring-0 text-sm ml-2 w-full"
-								placeholder="Search..."
-								type="text"/>
-						</div>
-
-						<div id="results"
-							class="absolute top-full left-0 w-full bg-white text-black rounded shadow mt-2 z-50">
-						</div>
-					</div>
-					<!--LOG OUT-->
-					<form action="{% url 'logout' %}" method="POST">
-						{% csrf_token %}
-						<button type="submit"
-							class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">
-							Log Out
-						</button>
-					</form>
-				</div>
-			</div>
-			
-		</header>
+		<!-- TopNavBar -->
+		{% include "topnav.html" %}
 		<div class="max-w-[1200px] mx-auto flex gap-gutter min-h-screen pt-md">
-			<!-- Left SideNavBar (Shared Component) -->
-			<aside class="hidden lg:flex flex-col gap-2 p-6 h-screen w-64 sticky top-20 bg-[#D9E9D0] dark:bg-emerald-950/30 font-['Plus_Jakarta_Sans'] antialiased">
-				<div class="flex flex-col gap-4 mb-8">
-					<a href="{% url 'main_profile'  %}" class="flex items-center gap-3 hover:opacity-80 transition">
-						<div class="flex items-center gap-3">
-							<div class="w-12 h-12 rounded-xl overflow-hidden border-2 border-white">
-								{% if user.perfil.foto_perfil %}
-								<img src="{{ user.perfil.foto_perfil.url }}"
-     								class="w-full h-full object-cover">
-								{% else %}
-								<img src="/static/img/default.jpg">
-								{% endif %}
-							</div>
-							<div>
-								<p class="text-sm font-bold text-emerald-900">{{user.get_full_name}}</p>
-								<p class="text-[10px] uppercase tracking-widest text-emerald-700/70 font-bold">{{user.username}}</p>
-							</div>
-						</div>
-					</a>
-				</div>
-				<nav class="flex flex-col gap-2">
-					<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-200 font-bold shadow-sm rounded-xl" href="#">
-						<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
-						<span>Dashboard</span>
-					</a>
-					<a href="{% url 'bandeja' %}"
-						class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl">
-						<span class="material-symbols-outlined">chat_bubble</span>
-						<span>Messages</span>
-					</a>
-					<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:translate-x-1 transition-transform hover:bg-white/40 dark:hover:bg-emerald-800/20 rounded-xl font-label-md" href="#">
-						<span class="material-symbols-outlined" data-icon="work">work</span>
-						Publicaciones
-					</a>
-					<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl" href="{% url 'main_profile'  %}">
-						<span class="material-symbols-outlined">settings</span>
-						<span>Settings</span>
-					</a>
-				</nav>
-			</aside>
+		<!-- Side Bar-->	
+		{% include "sidebar.html" with active_menu="dashboard" %}
 			<!-- Central Feed Canvas -->
 			<main class="flex-1 max-w-[640px] flex flex-col gap-md px-4 md:px-0 mb-xl">
 				<!-- Compose Box -->
@@ -228,7 +153,7 @@ extend: {
 									{% endif %}
 								</div>
 							<div>
-									<h3 class="font-headline-md text-[18px] text-on-surface">{{publicacion.user}}</h3>
+									<h3 class="font-headline-md text-[18px] text-on-surface">{{publicacion.user.get_full_name}}</h3>
 									<p class="text-caption text-on-surface-variant">
 										Hace {{ publicacion.created_at|timesince }}
 									</p>
@@ -241,10 +166,20 @@ extend: {
 									<span class="material-symbols-outlined">more_horiz</span>
 								</button>
 								<div id="menu-{{ publicacion.id }}" class="hidden absolute right-0 bg-white shadow-lg rounded-xl border border-outline-variant/20 z-10 w-40">
-									<button onclick="abrirEditar({{ publicacion.id }}, `{{ publicacion.descripcion|escapejs }}`)"
-										class="w-full text-left px-4 py-2 text-sm hover:bg-surface-container">Editar</button>
+									<button onclick="abrirEditar(
+										{{ publicacion.id }},
+										`{{ publicacion.descripcion|escapejs }}`,
+										`{{ publicacion.link|default:'' }}`,
+										[{% for img in publicacion.imagenes.all %}{id: {{ img.id }}, url: '{{ img.imagen.url }}'}{% if not forloop.last %},{% endif %}{% endfor %}])" 
+										class="w-full flex items-center gap-2 px-4 py-3 text-sm text-on-surface hover:bg-surface-container transition-colors">
+										<span class="material-symbols-outlined text-[18px]">edit</span>
+										Editar
+									</button>
 									<button onclick="confirmarEliminar({{ publicacion.id }})"
-										class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Eliminar</button>
+										class="w-full flex items-center gap-2 px-4 py-3 text-sm text-error hover:bg-error-container transition-colors">
+										<span class="material-symbols-outlined text-[18px]">delete</span>
+										Eliminar
+									</button>
 								</div>
 							</div>
 							{% endif %}
@@ -290,7 +225,9 @@ extend: {
 								class="flex items-center gap-1 hover:text-primary hover:underline underline-offset-2 transition-colors">
 								<span data-comments="{{ publicacion.id }}">{{ publicacion.comentarios.count }}</span>
 								<span>comments</span>
-							</button>						</div>
+							</button>						
+
+						</div>
 						<div class="flex border-t border-outline-variant/20 pt-4 justify-between">
 							<button 
 								onclick="darLike({{ publicacion.id }}, this)"
@@ -392,7 +329,7 @@ extend: {
 								{% endif %}
 							</div>
 							<div class="flex-1">
-								<p class="text-sm font-bold text-on-surface">{{u.username}}</p>
+								<p class="text-sm font-bold text-on-surface">{{u.get_full_name}}</p>
 								<p class="text-xs text-on-surface-variant line-clamp-1">{{ u.perfil.descripcion }}</p>
 							</div>
 							<a href="/perfil/{{ u.username }}/"
@@ -412,7 +349,7 @@ extend: {
 					<a class="hover:text-primary" href="#">Help Center</a>
 					<a class="hover:text-primary" href="#">Privacy &amp; Terms</a>
 					<a class="hover:text-primary" href="#">Community Policies</a>
-					<p class="w-full mt-2">© 2024 Chambitas. Cultivating professional growth.</p>
+					<p class="w-full mt-2">© 2026 Chambitas. Cultivating professional growth.</p>
 				</div>
 			</aside>
 		</div>
@@ -421,166 +358,10 @@ extend: {
 			<span class="material-symbols-outlined text-[28px]">add</span>
 		</button>
 
-
-		<!-- CREACION DE PUBLICACION -->
-		<div id="modal-post" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-			<div class="bg-white w-[600px] max-w-[90%] rounded-xl p-6">
-				<h2 class="text-lg font-bold mb-4">Crear publicación</h2>
-				<form id="form-publicacion" method="POST" action="{% url 'crear_publicacion' %}" enctype="multipart/form-data" class="flex flex-col gap-4">
-					{% csrf_token %}
-					<div class="flex items-center gap-3">
-						<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white">
-							{% if user.perfil.foto_perfil %}
-							<img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
-							{% else %}
-							<img src="/static/img/default.jpg" class="w-full h-full object-cover">
-							{% endif %}
-						</div>
-						<div>
-							<p class="text-sm font-bold text-emerald-900">{{ user.get_full_name }}</p>
-							<p class="text-[10px] uppercase tracking-widest text-emerald-700/70 font-bold">{{ user.username }}</p>
-						</div>
-					</div>
-
-					<!-- DESCRIPCION -->
-					<textarea
-						name="descripcion"
-						class="w-full h-32 bg-surface-container rounded-2xl p-4 hover:bg-surface-container-high transition-colors resize-none"
-						required
-						placeholder="¿What's on your mind {{ user.first_name }}?"></textarea>
-
-					<!-- INPUT LINK (oculto por defecto) -->
-					<div id="contenedor-link" class="hidden flex items-center gap-2 bg-surface-container rounded-2xl px-4 py-3">
-						<span class="material-symbols-outlined text-primary text-[20px]">link</span>
-						<input
-							type="url"
-							name="link"
-							id="input-link"
-							placeholder="https://enlace.com"
-							class="flex-1 bg-transparent border-none focus:ring-0 text-sm"/>
-						<button type="button" onclick="quitarLink()"
-							class="material-symbols-outlined text-on-surface-variant text-[18px] hover:text-error transition-colors">
-							close
-						</button>
-					</div>
-
-					<!-- BOTONES MEDIA -->
-					<div class="flex gap-2">
-						<input class="hidden" type="file" name="imagen" id="input-imagen" onchange="previewImagen(event)" multiple>
-						<button
-							type="button"
-							onclick="document.getElementById('input-imagen').click()"
-							class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
-							<span class="material-symbols-outlined text-[20px]">image</span>
-							<span>Media</span>
-						</button>
-						<button
-							type="button"
-							onclick="mostrarLink()"
-							id="btn-link"
-							class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
-							<span class="material-symbols-outlined text-[20px]">link</span>
-							<span>Link</span>
-						</button>
-					</div>
-
-					<!-- PREVIEW IMAGENES -->
-					<div id="contenedor-imagenes" class="flex gap-2 flex-wrap mt-2"></div>
-
-					<!-- ACCIONES -->
-					<div class="flex justify-end gap-2">
-						<button type="button" onclick="cerrarModal()"
-							class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">
-							Cancelar
-						</button>
-						<button type="submit"
-							class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">
-							Publicar
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>		
-		<!--VISUALIZAR IMAGENES DE PUBLICACION-->
-		<div id="modal-img" 
-			class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50"
-			onclick="cerrarImagen()">
-
-			<img id="img-grande" class="max-w-[90%] max-h-[90%] rounded-lg">
-		</div>
-		<!-- Modal editar publicación -->
-		<div id="modal-editar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-			<div class="bg-white w-[500px] max-w-[90%] rounded-xl p-6 flex flex-col gap-4">
-				<h2 class="text-lg font-bold">Editar publicación</h2>
-				<textarea id="textarea-editar"
-					class="w-full h-32 bg-surface-container rounded-2xl p-4 resize-none"></textarea>
-				<div class="flex justify-end gap-2">
-					<button onclick="cerrarEditar()"
-						class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">Cancelar</button>
-					<button onclick="guardarEdicion()"
-						class="bg-primary text-white px-5 py-2 rounded-full font-label-md">Guardar</button>
-				</div>
-			</div>
-		</div>
-		<!-- Modal confirmar eliminación -->
-			<div id="modal-eliminar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-				<div class="bg-white w-[400px] max-w-[90%] rounded-xl p-6 flex flex-col gap-4">
-					<h2 class="text-lg font-bold">¿Eliminar publicación?</h2>
-					<p class="text-on-surface-variant text-sm">Esta acción no se puede deshacer.</p>
-					<div class="flex justify-end gap-2">
-						<button onclick="document.getElementById('modal-eliminar').classList.add('hidden')"
-							class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">Cancelar</button>
-						<button id="btn-confirmar-eliminar"
-							class="bg-red-600 text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-red-700">Eliminar</button>
-					</div>
-				</div>
-			</div>
-					<script src="{% static 'js/search.js' %}"></script>
+		<!--ARCHIVOS DE JS-->
+		<script src="{% static 'js/search.js' %}"></script>
 		<script src="{% static 'js/post.js' %}"></script>	
 		<script src="{% static 'js/comments.js' %}"></script>	
-
-		<script>
-			let _editandoId = null;
-
-			function toggleMenu(id) {
-				document.querySelectorAll('[id^="menu-"]').forEach(m => {
-					if (m.id !== `menu-${id}`) m.classList.add('hidden');
-				});
-				document.getElementById(`menu-${id}`).classList.toggle('hidden');
-			}
-
-			function abrirEditar(id, descripcion) {
-				_editandoId = id;
-				document.getElementById('textarea-editar').value = descripcion;
-				document.getElementById('modal-editar').classList.remove('hidden');
-				document.getElementById(`menu-${id}`).classList.add('hidden');
-			}
-
-			function cerrarEditar() {
-				document.getElementById('modal-editar').classList.add('hidden');
-			}
-
-			async function guardarEdicion() {
-				const desc = document.getElementById('textarea-editar').value.trim();
-				if (!desc) return;
-				const res = await fetch(`/publicacion/${_editandoId}/editar/`, {
-					method: 'POST',
-					headers: {'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/x-www-form-urlencoded'},
-					body: `descripcion=${encodeURIComponent(desc)}`
-				});
-				if (res.ok) location.reload();
-			}
-
-			function confirmarEliminar(id) {
-				document.getElementById('modal-eliminar').classList.remove('hidden');
-				document.getElementById('btn-confirmar-eliminar').onclick = async () => {
-					const res = await fetch(`/publicacion/${id}/eliminar/`, {
-						method: 'POST',
-						headers: {'X-CSRFToken': '{{ csrf_token }}'}
-					});
-					if (res.ok) location.reload();
-				};
-			}
-			</script>
+		<script src="{% static 'js/edit_delete.js' %}"></script>
 	</body>
 </html>

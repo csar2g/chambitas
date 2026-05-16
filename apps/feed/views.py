@@ -128,6 +128,7 @@ def buscar_view(request):
         'publicaciones': publicaciones,
         'query': query,
         'tipo': tipo,
+        'total': len(usuarios) + len(publicaciones),
     })
 
 @require_POST
@@ -153,14 +154,29 @@ def agregar_comentario(request, publicacion_id):
 
 @require_POST
 @login_required
+@require_POST
+@login_required
 def editar_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, id=publicacion_id, user=request.user)
     descripcion = request.POST.get('descripcion', '').strip()
+    link = request.POST.get('link', '').strip()
+    imagenes_eliminar = request.POST.getlist('eliminar_imagen')
+    imagenes_nuevas = request.FILES.getlist('imagen')
+
     if descripcion:
         publicacion.descripcion = descripcion
+        publicacion.link = link or None
         publicacion.save()
-    return JsonResponse({'descripcion': publicacion.descripcion})
 
+    # Eliminar imágenes marcadas
+    for img_id in imagenes_eliminar:
+        ImagenPublicacion.objects.filter(id=img_id, publicacion=publicacion).delete()
+
+    # Agregar imágenes nuevas
+    for img in imagenes_nuevas:
+        ImagenPublicacion.objects.create(publicacion=publicacion, imagen=img)
+
+    return redirect('mis_publicaciones')
 @require_POST
 @login_required
 def eliminar_publicacion(request, publicacion_id):

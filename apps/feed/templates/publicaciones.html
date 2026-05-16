@@ -11,6 +11,7 @@
 		<style>
 		.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 		</style>
+		{% include "modales.html" %}
 		<script id="tailwind-config">
 		tailwind.config = {
 darkMode: "class",
@@ -66,11 +67,6 @@ fontSize: {
 								{{ publicaciones|length }} publicación{{ publicaciones|length|pluralize:"es" }}
 							</p>
 						</div>
-						<button onclick="abrirModal()"
-							class="flex items-center gap-2 bg-primary text-white px-md py-sm rounded-xl font-label-md hover:opacity-90 active:scale-95 transition-all shadow-sm">
-							<span class="material-symbols-outlined text-[20px]">add</span>
-							Nueva
-						</button>
 					</div>
 
 					<!-- Sin publicaciones -->
@@ -115,8 +111,12 @@ fontSize: {
 										</button>
 										<div id="menu-{{ publicacion.id }}"
 											class="hidden absolute right-0 top-8 bg-white border border-outline-variant/20 rounded-xl shadow-lg z-10 w-40 overflow-hidden">
-											<button onclick="abrirEditar({{ publicacion.id }}, `{{ publicacion.descripcion|escapejs }}`)"
-												class="w-full flex items-center gap-2 px-4 py-3 text-sm text-on-surface hover:bg-surface-container transition-colors">
+											<button onclick="abrirEditar(
+												{{ publicacion.id }},
+												`{{ publicacion.descripcion|escapejs }}`,
+												`{{ publicacion.link|default:'' }}`,
+												[{% for img in publicacion.imagenes.all %}{id: {{ img.id }}, url: '{{ img.imagen.url }}'}{% if not forloop.last %},{% endif %}{% endfor %}]
+											)" class="w-full flex items-center gap-2 px-4 py-3 text-sm text-on-surface hover:bg-surface-container transition-colors">
 												<span class="material-symbols-outlined text-[18px]">edit</span>
 												Editar
 											</button>
@@ -155,15 +155,88 @@ fontSize: {
 								{% endif %}
 								{% endwith %}
 							</div>
-
 							<!-- Stats -->
-							<div class="px-md pb-md flex items-center justify-between text-caption text-on-surface-variant border-t border-outline-variant/10 pt-3">
-								<div class="flex items-center gap-1">
-									<span class="material-symbols-outlined text-[14px] text-emerald-600" style="font-variation-settings: 'FILL' 1;">recommend</span>
-									<span>{{ publicacion.total_reacciones }} reactions</span>
+							<div class="px-md pb-md flex flex-col gap-4">
+								<div class="flex justify-between items-center text-caption text-on-surface-variant border-t border-outline-variant/10 pt-3">
+									<div class="flex items-center gap-1">
+										<span class="material-symbols-outlined text-[14px] text-emerald-600" style="font-variation-settings: 'FILL' 1;">recommend</span>
+										<span class="contador-reacciones">{{ publicacion.total_reacciones }} reactions</span>
+									</div>
+									<button onclick="toggleComentarios({{ publicacion.id }})"
+										class="flex items-center gap-1 hover:text-primary hover:underline underline-offset-2 transition-colors">
+										<span data-comments="{{ publicacion.id }}">{{ publicacion.comentarios.count }}</span>
+										<span>comments</span>
+									</button>
 								</div>
-								<span>{{ publicacion.comentarios.count }} comments</span>
+								<div class="flex border-t border-outline-variant/20 pt-2 justify-between">
+									<button
+										onclick="darLike({{ publicacion.id }}, this)"
+										class="like-btn flex-1 flex items-center justify-center gap-2 py-2 rounded-lg
+										{% if publicacion.liked %}text-blue-600{% else %}text-on-surface-variant{% endif %}">
+										<span class="material-symbols-outlined"
+											style="font-variation-settings: {% if publicacion.liked %}'FILL' 1{% else %}'FILL' 0{% endif %};">
+											thumb_up
+										</span>
+										<span class="texto-like font-label-md">{% if publicacion.liked %}Liked{% else %}Like{% endif %}</span>
+									</button>
+									<button onclick="toggleComentarios({{ publicacion.id }})"
+										class="flex-1 flex items-center justify-center gap-2 py-2 hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors">
+										<span class="material-symbols-outlined text-[20px]">chat_bubble_outline</span>
+										<span class="font-label-md">Comment</span>
+									</button>
+								</div>
 							</div>
+
+							<!-- Sección de comentarios -->
+							<div id="comentarios-{{ publicacion.id }}" class="hidden px-md pb-md flex flex-col gap-3">
+								<div id="lista-comentarios-{{ publicacion.id }}" class="flex flex-col gap-3">
+									{% for comentario in publicacion.comentarios.all %}
+									<div class="flex gap-3 items-start">
+										<div class="w-8 h-8 rounded-full overflow-hidden shrink-0">
+											{% if comentario.user.perfil.foto_perfil %}
+											<img src="{{ comentario.user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
+											{% else %}
+											<img src="/static/img/default.jpg" class="w-full h-full object-cover">
+											{% endif %}
+										</div>
+										<div class="bg-surface-container rounded-2xl px-4 py-2 flex-1">
+											<div class="flex items-baseline gap-2">
+												<p class="text-sm font-bold text-on-surface">{{ comentario.user.get_full_name }}</p>
+												<p class="text-[10px] text-on-surface-variant">Hace {{ comentario.created_at|timesince }}</p>
+											</div>
+											<p class="text-sm text-on-surface-variant">{{ comentario.contenido }}</p>
+										</div>
+									</div>
+									{% empty %}
+									<p class="text-caption text-on-surface-variant text-center py-2" id="empty-{{ publicacion.id }}">
+										No hay comentarios aún.
+									</p>
+									{% endfor %}
+								</div>
+								<div class="flex gap-3 items-center pt-2 border-t border-outline-variant/20">
+									<div class="w-8 h-8 rounded-full overflow-hidden shrink-0">
+										{% if user.perfil.foto_perfil %}
+										<img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
+										{% else %}
+										<img src="/static/img/default.jpg" class="w-full h-full object-cover">
+										{% endif %}
+									</div>
+									<div class="flex-1 flex items-center gap-2 bg-surface-container rounded-full px-4 py-2">
+										<input
+											type="text"
+											id="input-comentario-{{ publicacion.id }}"
+											placeholder="Write a comment..."
+											class="flex-1 bg-transparent border-none focus:ring-0 text-sm"
+											onkeydown="if(event.key==='Enter') enviarComentario({{ publicacion.id }})"
+										/>
+										<button onclick="enviarComentario({{ publicacion.id }})"
+											class="material-symbols-outlined text-primary text-[20px] hover:opacity-70 transition-opacity">
+											send
+										</button>
+									</div>
+								</div>
+							</div>
+
 						</article>
 						{% endfor %}
 					</div>
@@ -171,152 +244,8 @@ fontSize: {
 				</div>
 			</main>
 		</div>
-
-		<!-- Modal crear publicación -->
-		<div id="modal-post" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-			<div class="bg-white w-[600px] max-w-[90%] rounded-xl p-6">
-				<h2 class="text-lg font-bold mb-4">Crear publicación</h2>
-				<form id="form-publicacion" method="POST" action="{% url 'crear_publicacion' %}" enctype="multipart/form-data" class="flex flex-col gap-4">
-					{% csrf_token %}
-					<div class="flex items-center gap-3">
-						<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white">
-							{% if user.perfil.foto_perfil %}
-							<img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
-							{% else %}
-							<img src="/static/img/default.jpg" class="w-full h-full object-cover">
-							{% endif %}
-						</div>
-						<div>
-							<p class="text-sm font-bold text-emerald-900">{{ user.get_full_name }}</p>
-							<p class="text-[10px] uppercase tracking-widest text-emerald-700/70 font-bold">{{ user.username }}</p>
-						</div>
-					</div>
-					<textarea name="descripcion" class="w-full h-32 bg-surface-container rounded-2xl p-4 hover:bg-surface-container-high transition-colors resize-none" required placeholder="¿What's on your mind?"></textarea>
-					<div id="contenedor-link" class="hidden flex items-center gap-2 bg-surface-container rounded-2xl px-4 py-3">
-						<span class="material-symbols-outlined text-primary text-[20px]">link</span>
-						<input type="url" name="link" id="input-link" placeholder="https://tu-portafolio.com" class="flex-1 bg-transparent border-none focus:ring-0 text-sm"/>
-						<button type="button" onclick="quitarLink()" class="material-symbols-outlined text-on-surface-variant text-[18px] hover:text-error transition-colors">close</button>
-					</div>
-					<div class="flex gap-2">
-						<input class="hidden" type="file" name="imagen" id="input-imagen" onchange="previewImagen(event)" multiple>
-						<button type="button" onclick="document.getElementById('input-imagen').click()"
-							class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
-							<span class="material-symbols-outlined text-[20px]">image</span>
-							<span>Media</span>
-						</button>
-						<button type="button" onclick="mostrarLink()" id="btn-link"
-							class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
-							<span class="material-symbols-outlined text-[20px]">link</span>
-							<span>Link</span>
-						</button>
-					</div>
-					<div id="contenedor-imagenes" class="flex gap-2 flex-wrap mt-2"></div>
-					<div class="flex justify-end gap-2">
-						<button type="button" onclick="cerrarModal()" class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">Cancelar</button>
-						<button type="submit" class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">Publicar</button>
-					</div>
-				</form>
-			</div>
-		</div>
-
-		<!-- Modal editar publicación -->
-		<div id="modal-editar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-			<div class="bg-white w-[600px] max-w-[90%] rounded-xl p-6">
-				<h2 class="text-lg font-bold mb-4">Editar publicación</h2>
-				<form id="form-editar" method="POST" action="" class="flex flex-col gap-4">
-					{% csrf_token %}
-					<textarea id="textarea-editar" name="descripcion"
-						class="w-full h-32 bg-surface-container rounded-2xl p-4 hover:bg-surface-container-high transition-colors resize-none"
-						required></textarea>
-					<div class="flex justify-end gap-2">
-						<button type="button" onclick="cerrarEditar()"
-							class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">
-							Cancelar
-						</button>
-						<button type="submit"
-							class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">
-							Guardar
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-
-		<!-- Modal eliminar -->
-		<div id="modal-eliminar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-			<div class="bg-white w-[400px] max-w-[90%] rounded-xl p-6 text-center flex flex-col gap-4">
-				<span class="material-symbols-outlined text-error text-[48px] mx-auto">delete_forever</span>
-				<h2 class="text-lg font-bold text-on-surface">¿Eliminar publicación?</h2>
-				<p class="text-sm text-on-surface-variant">Esta acción no se puede deshacer.</p>
-				<form id="form-eliminar" method="POST" action="">
-					{% csrf_token %}
-					<div class="flex justify-center gap-3">
-						<button type="button" onclick="cerrarEliminar()"
-							class="px-6 py-2 rounded-full border border-outline text-on-surface text-sm font-semibold hover:bg-surface-container">
-							Cancelar
-						</button>
-						<button type="submit"
-							class="px-6 py-2 rounded-full bg-error text-white text-sm font-semibold hover:opacity-90">
-							Eliminar
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-
-		<!-- Modal imagen -->
-		<div id="modal-img" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50" onclick="cerrarImagen()">
-			<img id="img-grande" class="max-w-[90%] max-h-[90%] rounded-lg">
-		</div>
-
 		<script src="{% static 'js/post.js' %}"></script>
-		<script>
-function toggleMenu(id) {
-const menu = document.getElementById(`menu-${id}`);
-document.querySelectorAll('[id^="menu-"]').forEach(m => {
-if (m.id !== `menu-${id}`) m.classList.add('hidden');
-});
-menu.classList.toggle('hidden');
-}
-
-document.addEventListener('click', function(e) {
-if (!e.target.closest('[onclick^="toggleMenu"]') && !e.target.closest('[id^="menu-"]')) {
-document.querySelectorAll('[id^="menu-"]').forEach(m => m.classList.add('hidden'));
-}
-});
-
-function abrirEditar(id, descripcion) {
-document.getElementById('modal-editar').classList.remove('hidden');
-document.getElementById('textarea-editar').value = descripcion;
-document.getElementById('form-editar').action = `/publicacion/${id}/editar/`;
-document.querySelectorAll('[id^="menu-"]').forEach(m => m.classList.add('hidden'));
-}
-
-function cerrarEditar() {
-document.getElementById('modal-editar').classList.add('hidden');
-}
-
-function confirmarEliminar(id) {
-document.getElementById('modal-eliminar').classList.remove('hidden');
-document.getElementById('form-eliminar').action = `/publicacion/${id}/eliminar/`;
-document.querySelectorAll('[id^="menu-"]').forEach(m => m.classList.add('hidden'));
-}
-
-function cerrarEliminar() {
-document.getElementById('modal-eliminar').classList.add('hidden');
-}
-
-function mostrarLink() {
-document.getElementById('contenedor-link').classList.remove('hidden');
-document.getElementById('btn-link').classList.add('hidden');
-document.getElementById('input-link').focus();
-}
-
-function quitarLink() {
-document.getElementById('contenedor-link').classList.add('hidden');
-document.getElementById('btn-link').classList.remove('hidden');
-document.getElementById('input-link').value = '';
-}
-		</script>
+		<script src="{% static 'js/comments.js' %}"></script>
+		<script src="{% static 'js/edit_delete.js'%}"></script>
 	</body>
 </html>
