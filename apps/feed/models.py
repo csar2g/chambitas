@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 class Publicacion(models.Model):
     descripcion = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='publicaciones')
+    link = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

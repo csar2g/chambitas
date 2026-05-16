@@ -113,3 +113,15 @@ function getCSRFToken() {
         .find(row => row.startsWith('csrftoken'))
         .split('=')[1];
 }
+
+function mostrarLink() {
+    document.getElementById('contenedor-link').classList.remove('hidden');
+    document.getElementById('btn-link').classList.add('hidden');
+    document.getElementById('input-link').focus();
+}
+
+function quitarLink() {
+    document.getElementById('contenedor-link').classList.add('hidden');
+    document.getElementById('btn-link').classList.remove('hidden');
+    document.getElementById('input-link').value = '';
+}

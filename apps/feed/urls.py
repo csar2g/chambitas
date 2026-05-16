@@ -10,4 +10,5 @@ urlpatterns = [
     path('publicacion/<int:publicacion_id>/comentar/', views.agregar_comentario, name='agregar_comentario'),
     path('publicacion/<int:publicacion_id>/editar/', views.editar_publicacion, name='editar_publicacion'),
     path('publicacion/<int:publicacion_id>/eliminar/', views.eliminar_publicacion, name='eliminar_publicacion'),
+    path('mis-publicaciones/', views.mis_publicaciones, name='mis_publicaciones'),
 ]

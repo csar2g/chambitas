@@ -5,9 +5,10 @@
 	<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 	<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+	{% load static %}
+	{% include "modales.html" %}
 	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 	<script id="tailwind-config">
-	{% load static %}
 	tailwind.config = {
 darkMode: "class",
 theme: {
@@ -113,75 +114,12 @@ extend: {
 	</style>
 </head>
 	<body class="bg-background text-on-background font-body-md min-h-screen">
-		<!-- TopNavBar -->
-		<header class="sticky top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-emerald-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-			<div class="flex justify-between items-center h-20 px-8 max-w-[1200px] mx-auto">
-				<div class="flex items-center gap-8">
-					<a href="{% url 'feed' %}">
-						<span class="text-2xl font-black bg-gradient-to-r from-emerald-600 to-orange-400 bg-clip-text text-transparent">
-							Chambitas
-						</span>
-					</a>
-				</div>
-				<div class="flex items-center gap-4">
-					<div class="relative w-70">
-						<div class="flex items-center bg-primary-container/30 px-4 py-2 rounded-full border border-outline-variant/30">
-							<span class="material-symbols-outlined text-[20px]">search</span>
-							<input id="search-input"
-								class="bg-transparent border-none focus:ring-0 text-sm ml-2 w-full"
-								placeholder="Search..."
-								type="text"
-								value="{{ query }}"/>
-						</div>
-						<div id="results" class="absolute top-full left-0 w-full bg-white text-black rounded shadow mt-2 z-50"></div>
-					</div>
-					<form action="{% url 'logout' %}" method="POST">
-						{% csrf_token %}
-						<button type="submit" class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">
-							Log Out
-						</button>
-					</form>
-				</div>
-			</div>
-		</header>
+	<!-- TopNavBar -->
+	{% include "topnav.html" %}
+
 	<div class="max-w-[1200px] mx-auto flex gap-gutter min-h-screen pt-md">
-    <aside class="hidden lg:flex flex-col gap-2 p-6 h-screen w-64 sticky top-20 bg-[#D9E9D0] font-['Plus_Jakarta_Sans'] antialiased">
-        <div class="flex flex-col gap-4 mb-8">
-            <a href="{% url 'main_profile' %}" class="flex items-center gap-3 hover:opacity-80 transition">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-xl overflow-hidden border-2 border-white">
-                        {% if user.perfil.foto_perfil %}
-                        <img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
-                        {% else %}
-                        <img src="/static/img/default.jpg">
-                        {% endif %}
-                    </div>
-                    <div>
-                        <p class="text-sm font-bold text-emerald-900">{{ user.get_full_name }}</p>
-                        <p class="text-[10px] uppercase tracking-widest text-emerald-700/70 font-bold">{{ user.username }}</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <nav class="flex flex-col gap-2">
-            <a class="flex items-center gap-3 px-4 py-3 bg-white text-emerald-700 font-bold shadow-sm rounded-xl" href="#">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
-                <span>Dashboard</span>
-            </a>
-            <a href="{% url 'bandeja' %}" class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl">
-                <span class="material-symbols-outlined">chat_bubble</span>
-                <span>Messages</span>
-            </a>
-			<a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 dark:text-emerald-400/70 hover:translate-x-1 transition-transform hover:bg-white/40 dark:hover:bg-emerald-800/20 rounded-xl font-label-md" href="#">
-				<span class="material-symbols-outlined" data-icon="work">work</span>
-				Publicaciones
-			</a>
-            <a class="flex items-center gap-3 px-4 py-3 text-emerald-900/60 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl" href="{% url 'main_profile'  %}">
-                <span class="material-symbols-outlined">settings</span>
-                <span>Settings</span>
-            </a>
-        </nav>
-    </aside>
+	<!--Side Bar-->
+	{% include "sidebar.html" with active_menu="dashboard" %}
 
     <!-- Main Content -->
     <main class="flex-1 flex flex-col items-center py-md px-4 md:px-0 mb-xl">
@@ -191,7 +129,7 @@ extend: {
 					<div class="flex justify-between items-end">
 						<div>
 								<h1 class="font-headline-lg text-headline-lg text-on-surface">Resultados de búsqueda "{{query}}"</h1>
-								<p class="text-on-surface-variant font-body-md mt-xs">Se encontraron <span class="font-bold text-primary">124</span> resultados para '{{query}}'</p>
+								<p class="text-on-surface-variant font-body-md mt-xs">Se encontraron <span class="font-bold text-primary">{{ total  }}</span> resultados para '<span class="text-primary">{{ query }}</span>'</p>
 						</div>
 					</div>
 					<!-- Tabs -->
@@ -217,7 +155,7 @@ extend: {
 					<div class="flex flex-col gap-md">
 						<h2 class="font-headline-md text-on-surface-variant text-sm uppercase tracking-widest">Personas</h2>
 						{% for u in usuarios %}
-						<a href="/perfil/{{ u.username }}/"
+						<a href="{% if u == request.user %}{% url 'main_profile' %}{% else %}/perfil/{{ u.username }}/{% endif %}"
 							class="bg-surface-container-lowest p-gutter rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10 flex flex-col md:flex-row gap-md hover:translate-y-[-2px] transition-transform">
 							<div class="relative flex-shrink-0">
 								{% if u.perfil.foto_perfil %}
@@ -225,9 +163,17 @@ extend: {
 								{% else %}
 								<img src="/static/img/default.jpg" class="w-24 h-24 rounded-2xl object-cover border-2 border-primary-container shadow-sm"/>
 								{% endif %}
+								{% if u == request.user %}
+								<div class="absolute -bottom-2 -right-2 bg-primary text-on-primary px-xs py-0.5 rounded-full text-[10px] font-bold">Tú</div>
+								{% endif %}
 							</div>
 							<div class="flex-grow flex flex-col justify-center gap-xs">
-								<h3 class="font-headline-md text-on-surface">{{ u.get_full_name|default:u.username }}</h3>
+								<div class="flex items-center gap-sm">
+									<h3 class="font-headline-md text-on-surface">{{ u.get_full_name|default:u.username }}</h3>
+									{% if u == request.user %}
+									<span class="text-caption bg-primary-container text-primary px-sm py-xs rounded-full font-bold">Mi perfil</span>
+									{% endif %}
+								</div>
 								<p class="text-primary font-label-md">@{{ u.username }}</p>
 								{% if u.perfil.descripcion %}
 								<p class="text-on-surface-variant text-body-md line-clamp-2">{{ u.perfil.descripcion }}</p>
@@ -256,36 +202,46 @@ extend: {
 						{% for publicacion in publicaciones %}
 						<article class="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10 overflow-hidden">
 							<div class="p-md">
-								
-									<div class="flex justify-between items-start mb-4">
-    <div class="flex gap-3">
-        <div class="w-12 h-12 rounded-lg overflow-hidden">
-            {% if publicacion.user.perfil.foto_perfil %}
-            <img src="{{ publicacion.user.perfil.foto_perfil.url }}" class="w-10 h-10 rounded-full object-cover">
-            {% else %}
-            <img src="/static/img/default.jpg" class="w-10 h-10 rounded-full object-cover">
-            {% endif %}
-        </div>
-        <div>
-            <h3 class="font-headline-md text-[18px] text-on-surface">{{ publicacion.user }}</h3>
-            <p class="text-caption text-on-surface-variant">Hace {{ publicacion.created_at|timesince }}</p>
-        </div>
-						</div>
-							{% if publicacion.user == user %}
-								<div class="relative">
-									<button onclick="toggleMenu({{ publicacion.id }})"
-										class="text-on-surface-variant hover:bg-surface-container rounded-full p-1 transition-colors">
-										<span class="material-symbols-outlined">more_horiz</span>
-									</button>
-									<div id="menu-{{ publicacion.id }}" class="hidden absolute right-0 bg-white shadow-lg rounded-xl border border-outline-variant/20 z-10 w-40">
-										<button onclick="abrirEditar({{ publicacion.id }}, `{{ publicacion.descripcion|escapejs }}`)"
-											class="w-full text-left px-4 py-2 text-sm hover:bg-surface-container">Editar</button>
-										<button onclick="confirmarEliminar({{ publicacion.id }})"
-											class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Eliminar</button>
+
+								<div class="flex justify-between items-start mb-4">
+									<div class="flex gap-3">
+										<div class="w-12 h-12 rounded-lg overflow-hidden">
+											{% if publicacion.user.perfil.foto_perfil %}
+											<img src="{{ publicacion.user.perfil.foto_perfil.url }}" class="w-10 h-10 rounded-full object-cover">
+											{% else %}
+											<img src="/static/img/default.jpg" class="w-10 h-10 rounded-full object-cover">
+											{% endif %}
+										</div>
+										<div>
+											<h3 class="font-headline-md text-[18px] text-on-surface">{{ publicacion.user.get_full_name }}</h3>
+											<p class="text-caption text-on-surface-variant">Hace {{ publicacion.created_at|timesince }}</p>
+										</div>
 									</div>
-								</div>
+									{% if publicacion.user == user %}
+									<div class="relative">
+										<button onclick="toggleMenu({{ publicacion.id }})"
+											class="text-on-surface-variant hover:bg-surface-container rounded-full p-1 transition-colors">
+											<span class="material-symbols-outlined">more_horiz</span>
+										</button>
+										<div id="menu-{{ publicacion.id }}" class="hidden absolute right-0 bg-white shadow-lg rounded-xl border border-outline-variant/20 z-10 w-40">
+											<button onclick="abrirEditar(
+												{{ publicacion.id }},
+												`{{ publicacion.descripcion|escapejs }}`,
+												`{{ publicacion.link|default:'' }}`,
+												[{% for img in publicacion.imagenes.all %}{id: {{ img.id }}, url: '{{ img.imagen.url }}'}{% if not forloop.last %},{% endif %}{% endfor %}])" 
+												class="w-full flex items-center gap-2 px-4 py-3 text-sm text-on-surface hover:bg-surface-container transition-colors">
+												<span class="material-symbols-outlined text-[18px]">edit</span>
+												Editar
+											</button>
+											<button onclick="confirmarEliminar({{ publicacion.id }})"
+												class="w-full flex items-center gap-2 px-4 py-3 text-sm text-error hover:bg-error-container transition-colors">
+												<span class="material-symbols-outlined text-[18px]">delete</span>
+												Eliminar
+											</button>
+										</div>
+									</div>
 								{% endif %}
-						</div>
+							</div>
 								<p class="font-body-md text-on-surface-variant mb-4 whitespace-pre-wrap">{{publicacion.descripcion}}</p>
 								{% with total=publicacion.imagenes.count %}
 								{% if total > 0 %}
@@ -450,49 +406,8 @@ extend: {
 		<script src="{% static 'js/search.js' %}"></script>
 		<script src="{% static 'js/comments.js' %}"></script>
 		<script src="{% static 'js/post.js' %}"></script>
+		<script src="{% static 'js/edit_delete.js' %}"></script>
 
-		<script>
-			let _editandoId = null;
 
-			function toggleMenu(id) {
-				document.querySelectorAll('[id^="menu-"]').forEach(m => {
-					if (m.id !== `menu-${id}`) m.classList.add('hidden');
-				});
-				document.getElementById(`menu-${id}`).classList.toggle('hidden');
-			}
-
-			function abrirEditar(id, descripcion) {
-				_editandoId = id;
-				document.getElementById('textarea-editar').value = descripcion;
-				document.getElementById('modal-editar').classList.remove('hidden');
-				document.getElementById(`menu-${id}`).classList.add('hidden');
-			}
-
-			function cerrarEditar() {
-				document.getElementById('modal-editar').classList.add('hidden');
-			}
-
-			async function guardarEdicion() {
-				const desc = document.getElementById('textarea-editar').value.trim();
-				if (!desc) return;
-				const res = await fetch(`/publicacion/${_editandoId}/editar/`, {
-					method: 'POST',
-					headers: {'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/x-www-form-urlencoded'},
-					body: `descripcion=${encodeURIComponent(desc)}`
-				});
-				if (res.ok) location.reload();
-			}
-
-			function confirmarEliminar(id) {
-				document.getElementById('modal-eliminar').classList.remove('hidden');
-				document.getElementById('btn-confirmar-eliminar').onclick = async () => {
-					const res = await fetch(`/publicacion/${id}/eliminar/`, {
-						method: 'POST',
-						headers: {'X-CSRFToken': '{{ csrf_token }}'}
-					});
-					if (res.ok) location.reload();
-				};
-			}
-			</script>
 	</body>
 </html>

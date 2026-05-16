@@ -1,0 +1,45 @@
+{% load static %}
+<aside class="hidden lg:flex flex-col gap-2 p-6 w-64 sticky top-20 bg-[#D9E9D0] dark:bg-emerald-950/30 font-['Plus_Jakarta_Sans'] antialiased h-[calc(100vh-5rem)] overflow-hidden">
+    <div class="flex flex-col gap-4 mb-8">
+        <a href="{% url 'main_profile' %}" class="flex items-center gap-3 hover:opacity-80 transition">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl overflow-hidden border-2 border-white">
+                    {% if user.perfil.foto_perfil %}
+                    <img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <img src="/static/img/default.jpg">
+                    {% endif %}
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-emerald-900">{{ user.get_full_name }}</p>
+                    <p class="text-[10px] uppercase tracking-widest text-emerald-700/70 font-bold">{{ user.username }}</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <nav class="flex flex-col gap-2">
+        <a class="flex items-center gap-3 px-4 py-3 {% if active_menu == 'dashboard' %}bg-white text-emerald-700 font-bold shadow-sm{% else %}text-emerald-900/60 hover:bg-white/40 hover:translate-x-1{% endif %} transition-all rounded-xl" href="{% url 'feed' %}">
+            <span class="material-symbols-outlined" style="{% if active_menu == 'dashboard' %}font-variation-settings: 'FILL' 1;{% endif %}">dashboard</span>
+            <span>Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 {% if active_menu == 'publicaciones' %}bg-white text-emerald-700 font-bold shadow-sm{% else %}text-emerald-900/60 hover:bg-white/40 hover:translate-x-1{% endif %} transition-all rounded-xl" href="{% url 'mis_publicaciones' %}">
+            <span class="material-symbols-outlined">work</span>
+            <span>Publicaciones</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 {% if active_menu == 'messages' %}bg-white text-emerald-700 font-bold shadow-sm{% else %}text-emerald-900/60 hover:bg-white/40 hover:translate-x-1{% endif %} transition-all rounded-xl" href="{% url 'bandeja' %}">
+            <span class="material-symbols-outlined">chat_bubble</span>
+            <span>Messages</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 {% if active_menu == 'perfil' %}bg-white text-emerald-700 font-bold shadow-sm{% else %}text-emerald-900/60 hover:bg-white/40 hover:translate-x-1{% endif %} transition-all rounded-xl" href="{% url 'main_profile' %}">
+            <span class="material-symbols-outlined">settings</span>
+            <span>Settings</span>
+        </a>
+    </nav>
+    <form action="{% url 'logout' %}" method="POST" class="mt-auto pt-4 border-t border-emerald-900/50">
+        {% csrf_token %}
+        <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-emerald-900/60 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl font-label-md">
+            <span class="material-symbols-outlined">logout</span>
+            <span>Cerrar sesión</span>
+        </button>
+    </form>
+</aside>

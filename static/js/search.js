@@ -42,7 +42,7 @@ input.addEventListener('keyup', async () => {
 		buscarTexto.innerHTML = `Buscar "<strong>${query}</strong>"`;
 
 		buscarTexto.className = "p-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100";
-		verTodos.className = "p-2 text-center text-blue-600 font-semibold cursor-pointer hover:bg-gray-100 border-t";
+		verTodos.className = "p-2 text-center text-emerald-600 font-semibold cursor-pointer hover:bg-gray-100 border-t";
 
 		verTodos.textContent = "Ver todos los resultados";
 

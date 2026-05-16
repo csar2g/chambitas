@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.db.models import Count
 from .models import Publicacion, Reaccion, Comentario, ImagenPublicacion
 from profiles.models import Perfil
+import random
 
 @login_required(login_url='landing')
 def feed_view(request):
@@ -18,14 +19,19 @@ def feed_view(request):
     for pub in publicaciones:
         pub.liked = pub.reacciones.filter(user=request.user).exists()
 
+    todos_usuarios = list(User.objects.exclude(id=request.user.id))
+    usuarios_recomendados = random.sample(todos_usuarios, min(3, len(todos_usuarios)))
+
     return render(request, "feed.html", {
-        'publicaciones': publicaciones
+        'publicaciones': publicaciones,
+        'usuarios': usuarios_recomendados
     })
 
 @require_POST
 @login_required
 def crear_publicacion(request):
     descripcion = request.POST.get('descripcion', '').strip()
+    link = request.POST.get('link', '').strip()
     imagenes = request.FILES.getlist('imagen')
 
     if not descripcion:
@@ -33,16 +39,14 @@ def crear_publicacion(request):
 
     publicacion = Publicacion.objects.create(
         descripcion=descripcion,
+        link=link or None,
         user=request.user
     )
-
     for img in imagenes:
         ImagenPublicacion.objects.create(
             publicacion=publicacion,
             imagen=img
         )
-
-    print(len(request.FILES.getlist('imagen')))
     return redirect('feed')
 
 def search_users(request):
@@ -124,6 +128,7 @@ def buscar_view(request):
         'publicaciones': publicaciones,
         'query': query,
         'tipo': tipo,
+        'total': len(usuarios) + len(publicaciones),
     })
 
 @require_POST
@@ -149,14 +154,29 @@ def agregar_comentario(request, publicacion_id):
 
 @require_POST
 @login_required
+@require_POST
+@login_required
 def editar_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, id=publicacion_id, user=request.user)
     descripcion = request.POST.get('descripcion', '').strip()
+    link = request.POST.get('link', '').strip()
+    imagenes_eliminar = request.POST.getlist('eliminar_imagen')
+    imagenes_nuevas = request.FILES.getlist('imagen')
+
     if descripcion:
         publicacion.descripcion = descripcion
+        publicacion.link = link or None
         publicacion.save()
-    return JsonResponse({'descripcion': publicacion.descripcion})
 
+    # Eliminar imágenes marcadas
+    for img_id in imagenes_eliminar:
+        ImagenPublicacion.objects.filter(id=img_id, publicacion=publicacion).delete()
+
+    # Agregar imágenes nuevas
+    for img in imagenes_nuevas:
+        ImagenPublicacion.objects.create(publicacion=publicacion, imagen=img)
+
+    return redirect('mis_publicaciones')
 @require_POST
 @login_required
 def eliminar_publicacion(request, publicacion_id):
@@ -166,3 +186,14 @@ def eliminar_publicacion(request, publicacion_id):
         img.imagen.delete()
     publicacion.delete()
     return JsonResponse({'ok': True})
+
+@login_required
+def mis_publicaciones(request):
+    publicaciones = Publicacion.objects.filter(user=request.user)\
+        .annotate(total_reacciones=Count('reacciones'))\
+        .order_by('-created_at')
+    for pub in publicaciones:
+        pub.liked = pub.reacciones.filter(user=request.user).exists()
+    return render(request, 'publicaciones.html', {
+        'publicaciones': publicaciones,
+    })
