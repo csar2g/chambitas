@@ -140,21 +140,11 @@
 <div class="relative shrink-0 flex-none h-32 w-32 md:h-40 md:w-40 rounded-full">
 <img class="w-full h-full rounded-full object-cover shadow-xl border-4 border-white aspect-square" data-alt="professional portrait of a creative individual in a bright modern studio with a warm and friendly expression" src="{% if perfil.foto_perfil %}{{ perfil.foto_perfil.url }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuBMF0iBtcXqEyRXB1XAVGe11gzboHIuvC9luupau4oi4uhd32Gfjs9GwXL_G3ANRwYFv-5nHJlaL9D892GJAjoFcdz2IqAtAEwH8s0FRhoOGVgHmdczLpf6C1v7sWbJD8-zFAQ7g3ER5CG4k6sa5qFYH63U4-6bjB6PWx3TMGmlbahGxWMofKEaECKB359_qMTkEDIKEe7gEQyQmKJ6Fp5KTkBbdIxW23DK9ntypA3-GsyV4DbsuW7mF8rtttQIqNiRm6eDCF6bxic{% endif %}"/>
 </div>
-<div class="flex-1 mt-4 md:mt-0">
+<div class="flex-1 mt-6 md:mt-8">
 <div class="flex flex-wrap items-center gap-sm">
 <h1 class="font-headline-lg text-on-surface">{{ profile_user.get_full_name|default:profile_user.username }}</h1>
 </div>
 <p class="font-headline-md text-primary mt-1">{{ profile_user.email|default:"Profesional en Chambitas" }}</p>
-<div class="flex items-center gap-md mt-sm text-on-surface-variant font-label-md">
-<div class="flex items-center gap-xs">
-<span class="material-symbols-outlined text-primary text-lg" data-icon="location_on">location_on</span>
-                                        {{ perfil.ubicacion|default:"Sin ubicación" }}
-                                    </div>
-<div class="flex items-center gap-xs">
-<span class="material-symbols-outlined text-primary text-lg" data-icon="call">call</span>
-                                        {{ perfil.numero_tel|default:"Sin telefono registrado" }}
-                                    </div>
-</div>
 <!-- Follower/Following Counters -->
 <div class="flex items-center gap-lg mt-md">
 <a href="{% url 'followers_list' user_id=profile_user.id %}" class="flex items-center gap-xs hover:text-primary transition-colors">
@@ -188,6 +178,9 @@
 {% endif %}
 </div>
 </div>
+
+
+
 <div class="mt-lg border-t border-outline-variant/20 pt-lg">
 <h2 class="font-headline-md mb-sm">About</h2>
 <p class="font-body-lg text-on-surface-variant leading-relaxed">
@@ -215,7 +208,7 @@
 <aside class="w-full lg:w-80 lg:shrink-0 space-y-gutter">
 <!-- Enlaces Section -->
 <div class="bg-surface-container-lowest p-md rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
-<h2 class="font-headline-md mb-md text-lg">Enlaces</h2>
+<h2 class="font-headline-md mb-md text-lg">Links</h2>
 <div class="flex flex-col gap-sm">
 {% if linkedin_url %}
 <a class="flex items-center justify-between p-3 rounded-xl border border-outline-variant/20 hover:bg-primary-container/10 transition-colors" href="{{ linkedin_url }}" rel="noopener noreferrer" target="_blank">
@@ -250,6 +243,24 @@
 </div>
 </div>
 
+<!-- Detalles Section -->
+<div class="bg-surface-container-lowest p-md rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
+<h2 class="font-headline-md mb-md text-lg">Contact Details</h2>
+<div class="flex flex-col gap-sm">
+<div class="flex items-center p-3 rounded-xl border border-outline-variant/20 bg-background/50">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span>
+<span class="font-label-md text-on-surface-variant">{{ perfil.ubicacion|default:"No location set" }}</span>
+</div>
+</div>
+<div class="flex items-center p-3 rounded-xl border border-outline-variant/20 bg-background/50">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="call">call</span>
+<span class="font-label-md text-on-surface-variant">{{ perfil.numero_tel|default:"No phone registered" }}</span>
+</div>
+</div>
+</div>
+</div>
 
 </aside>
 </div>
