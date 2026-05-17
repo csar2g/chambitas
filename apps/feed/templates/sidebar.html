@@ -24,7 +24,7 @@
         </a>
         <a class="flex items-center gap-3 px-4 py-3 {% if active_menu == 'publicaciones' %}bg-white text-emerald-700 font-bold shadow-sm{% else %}text-emerald-900/60 hover:bg-white/40 hover:translate-x-1{% endif %} transition-all rounded-xl" href="{% url 'mis_publicaciones' %}">
             <span class="material-symbols-outlined">work</span>
-            <span>Publicaciones</span>
+            <span>Posts</span>
         </a>
         <a class="flex items-center gap-3 px-4 py-3 {% if active_menu == 'messages' %}bg-white text-emerald-700 font-bold shadow-sm{% else %}text-emerald-900/60 hover:bg-white/40 hover:translate-x-1{% endif %} transition-all rounded-xl" href="{% url 'bandeja' %}">
             <span class="material-symbols-outlined">chat_bubble</span>
@@ -39,7 +39,7 @@
         {% csrf_token %}
         <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-emerald-900/60 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl font-label-md">
             <span class="material-symbols-outlined">logout</span>
-            <span>Cerrar sesión</span>
+            <span>Log Out</span>
         </button>
     </form>
 </aside>

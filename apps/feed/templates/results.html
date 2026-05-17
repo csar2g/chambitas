@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html class="light" lang="es"><head>
+<html class="light" lang="en"><head>
 	<meta charset="utf-8"/>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 	<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -117,34 +117,35 @@ extend: {
 	<!-- TopNavBar -->
 	{% include "topnav.html" %}
 
-	<div class="max-w-[1200px] mx-auto flex gap-gutter min-h-screen pt-md">
+	<div class="flex min-h-screen pr-20">
+
 	<!--Side Bar-->
 	{% include "sidebar.html" with active_menu="dashboard" %}
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col items-center py-md px-4 md:px-0 mb-xl">
-        <div class="w-full max-w-2xl">
+    <main class="flex-1 flex justify-center py-md px-4 mb-xl">
+        <div class="w-full max-w-3xl">
 					<!-- Search Stats & Filter Bar -->
 				<div class="flex flex-col gap-md mb-lg">
 					<div class="flex justify-between items-end">
 						<div>
-								<h1 class="font-headline-lg text-headline-lg text-on-surface">Resultados de búsqueda "{{query}}"</h1>
-								<p class="text-on-surface-variant font-body-md mt-xs">Se encontraron <span class="font-bold text-primary">{{ total  }}</span> resultados para '<span class="text-primary">{{ query }}</span>'</p>
+								<h1 class="font-headline-lg text-headline-lg text-on-surface">Search results for "{{query}}"</h1>
+								<p class="text-on-surface-variant font-body-md mt-xs"><span class="font-bold text-primary">{{ total  }}</span> results were found '<span class="text-primary">{{ query }}</span>'</p>
 						</div>
 					</div>
 					<!-- Tabs -->
 					<div class="flex border-b border-outline-variant/30 gap-lg">
 						<a href="?q={{ query }}&tipo=todo"
 							class="px-sm py-md font-label-md transition-colors {% if tipo == 'todo' %}text-primary border-b-2 border-primary{% else %}text-on-surface-variant hover:text-primary{% endif %}">
-							Todo
+							Everything
 						</a>
 						<a href="?q={{ query }}&tipo=usuarios"
 							class="px-sm py-md font-label-md transition-colors {% if tipo == 'usuarios' %}text-primary border-b-2 border-primary{% else %}text-on-surface-variant hover:text-primary{% endif %}">
-							Personas
+							People
 						</a>
 						<a href="?q={{ query }}&tipo=publicaciones"
 							class="px-sm py-md font-label-md transition-colors {% if tipo == 'publicaciones' %}text-primary border-b-2 border-primary{% else %}text-on-surface-variant hover:text-primary{% endif %}">
-							Publicaciones
+							Posts
 						</a>
 					</div>
 				</div>
@@ -153,7 +154,7 @@ extend: {
 					<!-- Usuarios -->
 					{% if usuarios %}
 					<div class="flex flex-col gap-md">
-						<h2 class="font-headline-md text-on-surface-variant text-sm uppercase tracking-widest">Personas</h2>
+						<h2 class="font-headline-md text-on-surface-variant text-sm uppercase tracking-widest">People</h2>
 						{% for u in usuarios %}
 						<a href="{% if u == request.user %}{% url 'main_profile' %}{% else %}{% url 'public_profile' user_id=u.id %}{% endif %}"
 							class="bg-surface-container-lowest p-gutter rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10 flex flex-col md:flex-row gap-md hover:translate-y-[-2px] transition-transform">
@@ -198,7 +199,7 @@ extend: {
 					<!-- Publicaciones -->
 					{% if publicaciones %}
 					<div class="flex flex-col gap-md">
-						<h2 class="font-headline-md text-on-surface-variant text-sm uppercase tracking-widest">Publicaciones</h2>
+						<h2 class="font-headline-md text-on-surface-variant text-sm uppercase tracking-widest">Posts</h2>
 						{% for publicacion in publicaciones %}
 						<article class="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10 overflow-hidden">
 							<div class="p-md">
@@ -214,7 +215,7 @@ extend: {
 										</div>
 										<div>
 											<h3 class="font-headline-md text-[18px] text-on-surface">{{ publicacion.user.get_full_name }}</h3>
-											<p class="text-caption text-on-surface-variant">Hace {{ publicacion.created_at|timesince }}</p>
+											<p class="text-caption text-on-surface-variant">{{ publicacion.created_at|timesince }}</p>
 										</div>
 									</a>
 									{% if publicacion.user == user %}
@@ -231,12 +232,12 @@ extend: {
 												[{% for img in publicacion.imagenes.all %}{id: {{ img.id }}, url: '{{ img.imagen.url }}'}{% if not forloop.last %},{% endif %}{% endfor %}])" 
 												class="w-full flex items-center gap-2 px-4 py-3 text-sm text-on-surface hover:bg-surface-container transition-colors">
 												<span class="material-symbols-outlined text-[18px]">edit</span>
-												Editar
+												Edit
 											</button>
 											<button onclick="confirmarEliminar({{ publicacion.id }})"
 												class="w-full flex items-center gap-2 px-4 py-3 text-sm text-error hover:bg-error-container transition-colors">
 												<span class="material-symbols-outlined text-[18px]">delete</span>
-												Eliminar
+												Delete
 											</button>
 										</div>
 									</div>
@@ -308,7 +309,7 @@ extend: {
 									</div>
 									{% empty %}
 									<p class="text-caption text-on-surface-variant text-center py-2" id="empty-{{ publicacion.id }}">
-										No hay comentarios aún. ¡Sé el primero!
+										There are no comments yet. ¡Be the first one!
 									</p>
 									{% endfor %}
 								</div>
@@ -333,7 +334,7 @@ extend: {
 											send
 										</button>
 									</div>
-								</div>
+								</div> 
 							</div>
 						</article>
 						{% endfor %}
@@ -343,71 +344,18 @@ extend: {
 					{% if not usuarios and not publicaciones and query %}
 					<div class="flex flex-col items-center justify-center py-xl gap-md text-on-surface-variant">
 						<span class="material-symbols-outlined text-[64px] opacity-30">search_off</span>
-						<p class="font-headline-md text-center">No se encontraron resultados para <span class="text-primary">"{{ query }}"</span></p>
-						<p class="text-body-md text-center">Intenta con otras palabras clave</p>
+						<p class="font-headline-md text-center">There are no results for <span class="text-primary">"{{ query }}"</span></p>
+						<p class="text-body-md text-center">Try with other keywords</p>
 					</div>
 					{% endif %}
 				</div>
 			</main>
 		</div>
 
-		<!-- Mobile Navigation (Floating Bottom Bar) -->
-		<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface/80 backdrop-blur-md border-t border-outline-variant/10 flex justify-around items-center py-sm z-50">
-			<button class="flex flex-col items-center gap-xs text-on-surface-variant hover:text-primary">
-				<span class="material-symbols-outlined">dashboard</span>
-				<span class="text-caption">Inicio</span>
-			</button>
-			<button class="flex flex-col items-center gap-xs text-primary">
-				<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">work</span>
-				<span class="text-caption font-bold">Proyectos</span>
-			</button>
-			<button class="flex flex-col items-center gap-xs text-on-surface-variant hover:text-primary">
-				<span class="material-symbols-outlined">mail</span>
-				<span class="text-caption">Mensajes</span>
-			</button>
-			<button class="flex flex-col items-center gap-xs text-on-surface-variant hover:text-primary">
-				<span class="material-symbols-outlined">person</span>
-				<span class="text-caption">Perfil</span>
-			</button>
-		</nav>
-		<!--VISUALIZAR IMAGENES DE PUBLICACION-->
-		<div id="modal-img" 
-			class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50"
-			onclick="cerrarImagen()">
-
-			<img id="img-grande" class="max-w-[90%] max-h-[90%] rounded-lg">
-		</div>
-		<!-- Modal editar publicación -->
-		<div id="modal-editar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-			<div class="bg-white w-[500px] max-w-[90%] rounded-xl p-6 flex flex-col gap-4">
-				<h2 class="text-lg font-bold">Editar publicación</h2>
-				<textarea id="textarea-editar"
-					class="w-full h-32 bg-surface-container rounded-2xl p-4 resize-none"></textarea>
-				<div class="flex justify-end gap-2">
-					<button onclick="cerrarEditar()"
-						class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">Cancelar</button>
-					<button onclick="guardarEdicion()"
-						class="bg-primary text-white px-5 py-2 rounded-full font-label-md">Guardar</button>
-				</div>
-			</div>
-		</div>
-		<div id="modal-eliminar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-			<div class="bg-white w-[400px] max-w-[90%] rounded-xl p-6 flex flex-col gap-4">
-				<h2 class="text-lg font-bold">¿Eliminar publicación?</h2>
-				<p class="text-on-surface-variant text-sm">Esta acción no se puede deshacer.</p>
-				<div class="flex justify-end gap-2">
-					<button onclick="document.getElementById('modal-eliminar').classList.add('hidden')"
-						class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">Cancelar</button>
-					<button id="btn-confirmar-eliminar"
-						class="bg-red-600 text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-red-700">Eliminar</button>
-				</div>
-			</div>
-		</div>
 		<script src="{% static 'js/search.js' %}"></script>
 		<script src="{% static 'js/comments.js' %}"></script>
 		<script src="{% static 'js/post.js' %}"></script>
 		<script src="{% static 'js/edit_delete.js' %}"></script>
-
 
 	</body>
 </html>

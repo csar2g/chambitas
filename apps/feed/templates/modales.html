@@ -4,7 +4,7 @@
 
 		<div id="modal-post" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-[100]">
 			<div class="bg-white w-[600px] max-w-[90%] rounded-xl p-6">
-				<h2 class="text-lg font-bold mb-4">Crear publicación</h2>
+				<h2 class="text-lg font-bold mb-4">Create Post</h2>
 				<form id="form-publicacion" method="POST" action="{% url 'crear_publicacion' %}" enctype="multipart/form-data" class="flex flex-col gap-4">
 					{% csrf_token %}
 					<div class="flex items-center gap-3">
@@ -70,11 +70,11 @@
 					<div class="flex justify-end gap-2">
 						<button type="button" onclick="cerrarModal()"
 							class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">
-							Cancelar
+							Cancel
 						</button>
 						<button type="submit"
 							class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">
-							Publicar
+							Post
 						</button>
 					</div>
 				</form>
@@ -123,12 +123,12 @@
 						<button type="button" onclick="document.getElementById('input-imagen-editar').click()"
 							class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
 							<span class="material-symbols-outlined text-[20px]">image</span>
-							<span>Agregar imagen</span>
+							<span>Add Image</span>
 						</button>
 						<button type="button" onclick="mostrarLinkEditar()" id="btn-link-editar"
 							class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-container/30 text-primary font-label-md transition-colors">
 							<span class="material-symbols-outlined text-[20px]">link</span>
-							<span>Agregar link</span>
+							<span>Add Link</span>
 						</button>
 					</div>
 
@@ -138,11 +138,11 @@
 					<div class="flex justify-end gap-2">
 						<button type="button" onclick="cerrarEditar()"
 							class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">
-							Cancelar
+							Cancel
 						</button>
 						<button type="submit"
 							class="bg-primary text-white px-5 py-2 rounded-full font-label-md hover:shadow-md transition-all">
-							Guardar
+							Save
 						</button>
 					</div>
 				</form>
@@ -152,13 +152,13 @@
 		<!-- Modal confirmar eliminación -->
 	<div id="modal-eliminar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-[100]">
 				<div class="bg-white w-[400px] max-w-[90%] rounded-xl p-6 flex flex-col gap-4">
-					<h2 class="text-lg font-bold">¿Eliminar publicación?</h2>
-					<p class="text-on-surface-variant text-sm">Esta acción no se puede deshacer.</p>
+					<h2 class="text-lg font-bold">¿Delete Post?</h2>
+					<p class="text-on-surface-variant text-sm">This action cant be undone.</p>
 					<div class="flex justify-end gap-2">
 						<button onclick="document.getElementById('modal-eliminar').classList.add('hidden')"
-							class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">Cancelar</button>
+							class="px-6 py-2 rounded-full border border-emerald-600 text-emerald-600 text-sm font-semibold hover:bg-emerald-50">Cancel</button>
 						<button id="btn-confirmar-eliminar"
-							class="bg-red-600 text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-red-700">Eliminar</button>
+							class="bg-red-600 text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-red-700">Delete</button>
 					</div>
 				</div>
 			</div>
