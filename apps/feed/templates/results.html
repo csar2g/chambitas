@@ -155,7 +155,7 @@ extend: {
 					<div class="flex flex-col gap-md">
 						<h2 class="font-headline-md text-on-surface-variant text-sm uppercase tracking-widest">Personas</h2>
 						{% for u in usuarios %}
-						<a href="{% if u == request.user %}{% url 'main_profile' %}{% else %}/perfil/{{ u.username }}/{% endif %}"
+						<a href="{% if u == request.user %}{% url 'main_profile' %}{% else %}{% url 'public_profile' user_id=u.id %}{% endif %}"
 							class="bg-surface-container-lowest p-gutter rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10 flex flex-col md:flex-row gap-md hover:translate-y-[-2px] transition-transform">
 							<div class="relative flex-shrink-0">
 								{% if u.perfil.foto_perfil %}
@@ -204,7 +204,7 @@ extend: {
 							<div class="p-md">
 
 								<div class="flex justify-between items-start mb-4">
-									<div class="flex gap-3">
+									<a href="{% url 'public_profile' user_id=publicacion.user.id %}" class="flex gap-3 hover:opacity-80 transition-opacity">
 										<div class="w-12 h-12 rounded-lg overflow-hidden">
 											{% if publicacion.user.perfil.foto_perfil %}
 											<img src="{{ publicacion.user.perfil.foto_perfil.url }}" class="w-10 h-10 rounded-full object-cover">
@@ -216,7 +216,7 @@ extend: {
 											<h3 class="font-headline-md text-[18px] text-on-surface">{{ publicacion.user.get_full_name }}</h3>
 											<p class="text-caption text-on-surface-variant">Hace {{ publicacion.created_at|timesince }}</p>
 										</div>
-									</div>
+									</a>
 									{% if publicacion.user == user %}
 									<div class="relative">
 										<button onclick="toggleMenu({{ publicacion.id }})"

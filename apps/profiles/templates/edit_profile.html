@@ -143,7 +143,7 @@
 <span class="material-symbols-outlined text-[18px]" data-icon="description">description</span>
                         Professional Biography
                     </label>
-<textarea class="w-full min-h-[160px] bg-primary-container/30 border border-outline-variant rounded-lg p-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-on-surface resize-none" name="descripcion" placeholder="Cuéntanos sobre tu experiencia, habilidades y qué te apasiona... (Mínimo 100 caracteres)">{{ perfil.descripcion }}</textarea>
+<textarea class="w-full min-h-[160px] bg-primary-container/30 border border-outline-variant rounded-lg p-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-on-surface resize-none" name="descripcion" placeholder="Tell us about your experience, skills and what you are passionate about... (Min 100 characters)">{{ perfil.descripcion }}</textarea>
 <div class="flex justify-end">
 <span class="text-caption text-outline">0 / 500</span>
 </div>
@@ -187,30 +187,25 @@
 </div>
 <div class="flex flex-col gap-sm">
 <!-- Portfolio Link -->
-<div class="p-sm bg-surface-container rounded-lg border border-outline-variant/30">
-<div class="flex flex-col gap-xs">
-<input class="bg-transparent font-label-md text-on-surface border-none p-0 focus:ring-0" placeholder="Título" readonly="" type="text" value="Portafolio"/>
-<div class="flex items-center gap-xs text-outline">
+<div class="p-sm bg-surface-container rounded-lg border border-outline-variant/30 flex flex-col gap-xs">
+<div class="flex items-center">
+<input class="w-full bg-surface-container-lowest font-label-md text-on-surface border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded px-2 py-1 transition-all shadow-sm" placeholder="Title" type="text" value="Portfolio"/>
+</div>
+<div class="flex items-center gap-xs text-outline px-1 mt-1">
 <span class="material-symbols-outlined text-[16px]" data-icon="link">link</span>
 <input class="bg-transparent font-caption text-outline border-none p-0 focus:ring-0 w-full" name="portfolio_url" placeholder="URL" type="url" value="{{ portfolio_url }}"/>
 </div>
 </div>
-</div>
 <!-- LinkedIn Link -->
-<div class="p-sm bg-surface-container rounded-lg border border-outline-variant/30">
-<div class="flex flex-col gap-xs">
-<input class="bg-transparent font-label-md text-on-surface border-none p-0 focus:ring-0" placeholder="Título" readonly="" type="text" value="LinkedIn"/>
-<div class="flex items-center gap-xs text-outline">
+<div class="p-sm bg-surface-container rounded-lg border border-outline-variant/30 flex flex-col gap-xs">
+<div class="flex items-center">
+<input class="w-full bg-surface-container-lowest font-label-md text-on-surface border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded px-2 py-1 transition-all shadow-sm" placeholder="Title" type="text" value="LinkedIn"/>
+</div>
+<div class="flex items-center gap-xs text-outline px-1 mt-1">
 <span class="material-symbols-outlined text-[16px]" data-icon="link">link</span>
 <input class="bg-transparent font-caption text-outline border-none p-0 focus:ring-0 w-full" name="linkedin_url" placeholder="URL" type="url" value="{{ linkedin_url }}"/>
 </div>
 </div>
-</div>
-</div>
-<button class="w-full h-12 rounded-full border-2 border-primary-container text-primary font-label-md flex items-center justify-center gap-sm hover:bg-primary-container transition-colors" type="submit">
-<span class="material-symbols-outlined" data-icon="link">link</span>
-                        Add link
-                    </button>
 </div>
 <div class="glass-card p-md rounded-xl flex flex-col gap-sm">
 <label class="font-label-md text-primary flex items-center gap-xs">
