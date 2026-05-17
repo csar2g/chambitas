@@ -171,7 +171,7 @@
 <span class="material-symbols-outlined text-lg">{% if is_following %}person_check{% else %}person_add{% endif %}</span>
     <span>{% if is_following %}Following{% else %}Follow{% endif %}</span>
 </button>
-<a class="flex items-center justify-center gap-2 px-5 py-3 bg-secondary text-white rounded-xl font-bold font-label-md shadow-lg hover:translate-y-[-2px] transition-all" href="{% url 'bandeja' %}">
+<a class="flex items-center justify-center gap-2 px-5 py-3 bg-secondary text-white rounded-xl font-bold font-label-md shadow-lg hover:translate-y-[-2px] transition-all" href="{% url 'iniciar_conversacion' profile_user.id %}">
 <span class="material-symbols-outlined text-lg" data-icon="mail">mail</span>
                                     Enviar Mensaje
                                 </a>

@@ -64,7 +64,7 @@
   <!-- Main Content -->
   <main class="ml-64 flex-1 flex h-screen">
 
-    <!-- Left Pane -->
+    <!-- Left Pane (bandeja) -->
     <section class="w-[380px] border-r border-surface-container flex flex-col bg-surface-container-lowest">
       <div class="p-6">
         <h2 class="font-headline-md text-primary mb-4">Messages</h2>
@@ -73,7 +73,7 @@
           <input
             id="buscador"
             class="w-full pl-12 pr-4 py-3 bg-primary-container/30 border-none rounded-full text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-on-primary-container/40"
-            placeholder="Buscar conversaciones..."
+            placeholder="Search conversations..."
             type="text"
             oninput="filtrarConversaciones(this.value)"
           />
@@ -86,9 +86,17 @@
              class="conv-item"
              data-nombre="{{ item.otro.nombre|lower }}">
             <div class="p-4 {% if conversacion_activa.id == item.conv.id %}bg-primary-container/40 border border-primary-container{% else %}hover:bg-surface-container-low{% endif %} rounded-2xl flex gap-3 cursor-pointer transition-all">
-              <div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">
-                {{ item.otro.nombre|slice:":2"|upper }}
+
+              <!-- FOTO DE PERFIL en bandeja -->
+              <div class="w-12 h-12 rounded-xl flex-shrink-0 overflow-hidden bg-primary-container flex items-center justify-center text-primary font-bold text-sm">
+                {% if item.otro.auth_user.perfil.foto_perfil %}
+                  <img src="{{ item.otro.auth_user.perfil.foto_perfil.url }}"
+                       class="w-12 h-12 object-cover" alt="{{ item.otro.nombre }}">
+                {% else %}
+                  {{ item.otro.nombre|slice:":2"|upper }}
+                {% endif %}
               </div>
+
               <div class="flex-1 min-w-0">
                 <div class="flex justify-between items-start mb-0.5">
                   <p class="font-label-md text-on-surface truncate">{{ item.otro.nombre }}</p>
@@ -97,7 +105,15 @@
                   </span>
                 </div>
                 <p class="font-body-md text-sm {% if conversacion_activa.id == item.conv.id %}text-primary font-semibold{% else %}text-outline-variant{% endif %} truncate">
-                  {% if item.ultimo_msg %}{{ item.ultimo_msg.contenido }}{% else %}Sin mensajes aún{% endif %}
+                  {% if item.ultimo_msg %}
+                    {% if item.ultimo_msg.imagen and not item.ultimo_msg.contenido %}
+                      📷 Image
+                    {% else %}
+                      {{ item.ultimo_msg.contenido }}
+                    {% endif %}
+                  {% else %}
+                    No messages yet
+                  {% endif %}
                 </p>
               </div>
             </div>
@@ -105,7 +121,7 @@
         {% empty %}
           <div class="flex flex-col items-center justify-center h-40 text-center px-4">
             <span class="material-symbols-outlined text-4xl text-outline-variant mb-2">chat_bubble_outline</span>
-            <p class="font-body-md text-sm text-outline-variant">No tienes conversaciones aún</p>
+            <p class="font-body-md text-sm text-outline-variant">No conversations yet</p>
           </div>
         {% endfor %}
       </div>
@@ -114,39 +130,53 @@
     <!-- Right Pane -->
     <section class="flex-1 flex flex-col bg-surface-container-lowest">
 
-      {% if conversacion_activa %}
+      {% if conversacion_activa or otro_header %}
 
-        <!-- Header sin llamada ni video -->
+        <!-- HEADER con foto clickeable que va al perfil -->
         <header class="h-20 flex items-center justify-between px-8 border-b border-surface-container">
           <div class="flex items-center gap-4">
-            <div class="relative">
-              <div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-primary font-bold text-sm">
-                {{ otro_header.nombre|slice:":2"|upper }}
+            <a href="{% url 'public_profile' otro_header.auth_user.id %}" class="relative flex-shrink-0">
+              <div class="w-10 h-10 rounded-xl overflow-hidden bg-primary-container flex items-center justify-center text-primary font-bold text-sm">
+                {% if otro_header.auth_user.perfil.foto_perfil %}
+                  <img src="{{ otro_header.auth_user.perfil.foto_perfil.url }}"
+                       class="w-10 h-10 object-cover" alt="{{ otro_header.nombre }}">
+                {% else %}
+                  {{ otro_header.nombre|slice:":2"|upper }}
+                {% endif %}
               </div>
               <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-            </div>
+            </a>
             <div>
-              <p class="font-headline-md text-lg leading-tight">{{ otro_header.nombre }}</p>
+              <a href="{% url 'public_profile' otro_header.auth_user.id %}"
+                 class="font-headline-md text-lg leading-tight hover:text-primary transition-colors">
+                {{ otro_header.nombre }}
+              </a>
               <p class="font-caption text-xs text-primary">{{ otro_header.correo }}</p>
             </div>
           </div>
-          <button class="p-2 hover:bg-surface-container rounded-full text-outline transition-all">
-            <span class="material-symbols-outlined">info</span>
-          </button>
         </header>
 
         <!-- Mensajes -->
         <div class="flex-1 overflow-y-auto p-8 space-y-6" id="chat-messages">
           <div class="flex justify-center">
-            <span class="px-3 py-1 bg-surface-container text-outline font-caption text-[10px] rounded-full uppercase tracking-widest">Hoy</span>
+            <span class="px-3 py-1 bg-surface-container text-outline font-caption text-[10px] rounded-full uppercase tracking-widest">Today</span>
           </div>
 
           {% for msg in mensajes %}
             {% if msg.usuario_emisor == usuario %}
+              <!-- Mensaje propio (derecha) -->
               <div class="flex flex-row-reverse gap-4 max-w-[80%] ml-auto">
                 <div>
                   <div class="bg-primary text-white p-4 rounded-2xl rounded-br-none shadow-sm">
-                    <p class="font-body-md text-sm">{{ msg.contenido }}</p>
+                    {% if msg.contenido %}
+                      <p class="font-body-md text-sm">{{ msg.contenido }}</p>
+                    {% endif %}
+                    {% if msg.imagen %}
+                      <img src="{{ msg.imagen.url }}"
+                           class="mt-2 rounded-xl max-w-xs max-h-60 object-cover cursor-pointer"
+                           onclick="window.open('{{ msg.imagen.url }}', '_blank')"
+                           alt="imagen">
+                    {% endif %}
                   </div>
                   <div class="flex justify-end gap-1 mt-1 mr-1">
                     <span class="font-caption text-[10px] text-outline">{{ msg.created_at|date:"H:i" }}</span>
@@ -155,13 +185,28 @@
                 </div>
               </div>
             {% else %}
+              <!-- Mensaje recibido (izquierda) -->
               <div class="flex gap-4 max-w-[80%]">
-                <div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-primary font-bold text-xs self-end mb-4 flex-shrink-0">
-                  {{ msg.usuario_emisor.nombre|slice:":2"|upper }}
+                <!-- FOTO DE PERFIL en burbuja recibida -->
+                <div class="w-8 h-8 rounded-lg overflow-hidden bg-primary-container flex items-center justify-center text-primary font-bold text-xs self-end mb-4 flex-shrink-0">
+                  {% if msg.usuario_emisor.auth_user.perfil.foto_perfil %}
+                    <img src="{{ msg.usuario_emisor.auth_user.perfil.foto_perfil.url }}"
+                         class="w-8 h-8 object-cover" alt="">
+                  {% else %}
+                    {{ msg.usuario_emisor.nombre|slice:":2"|upper }}
+                  {% endif %}
                 </div>
                 <div>
                   <div class="bg-surface-container-high text-on-surface p-4 rounded-2xl rounded-bl-none shadow-sm">
-                    <p class="font-body-md text-sm">{{ msg.contenido }}</p>
+                    {% if msg.contenido %}
+                      <p class="font-body-md text-sm">{{ msg.contenido }}</p>
+                    {% endif %}
+                    {% if msg.imagen %}
+                      <img src="{{ msg.imagen.url }}"
+                           class="mt-2 rounded-xl max-w-xs max-h-60 object-cover cursor-pointer"
+                           onclick="window.open('{{ msg.imagen.url }}', '_blank')"
+                           alt="imagen">
+                    {% endif %}
                   </div>
                   <span class="font-caption text-[10px] text-outline ml-1 mt-1 block">{{ msg.created_at|date:"H:i" }}</span>
                 </div>
@@ -170,25 +215,42 @@
           {% empty %}
             <div class="flex flex-col items-center justify-center h-full text-center py-16">
               <span class="material-symbols-outlined text-5xl text-outline-variant mb-3">forum</span>
-              <p class="font-body-md text-outline-variant">No hay mensajes aún.</p>
-              <p class="font-caption text-outline-variant mt-1">¡Sé el primero en escribir!</p>
+              <p class="font-body-md text-outline-variant">No messages yet.</p>
+              <p class="font-caption text-outline-variant mt-1">Be the first to write!</p>
             </div>
           {% endfor %}
         </div>
 
-        <!-- Input — todo dentro del form -->
+        <!-- Footer -->
         <footer class="p-6 border-t border-surface-container">
-          <form method="POST" action="{% url 'conversacion' conversacion_activa.id %}" enctype="multipart/form-data" id="form-mensaje">
-            {% csrf_token %}
+
+          {% if conversacion_activa %}
+            <form method="POST" action="{% url 'conversacion' conversacion_activa.id %}" enctype="multipart/form-data" id="form-mensaje">
+              {% csrf_token %}
+          {% else %}
+            <form method="POST" action="{% url 'crear_conversacion' %}" enctype="multipart/form-data" id="form-mensaje">
+              {% csrf_token %}
+              <input type="hidden" name="receptor_id" value="{{ draft_receptor_id }}">
+          {% endif %}
+
+            <!-- Preview de imagen seleccionada -->
+            <div id="image-preview-container" class="hidden max-w-4xl mx-auto mb-3">
+              <div class="relative inline-block">
+                <img id="image-preview" src="" class="h-20 rounded-xl object-cover" alt="preview">
+                <button type="button" onclick="cancelarImagen()"
+                  class="absolute -top-2 -right-2 w-5 h-5 bg-error text-white rounded-full text-xs flex items-center justify-center">
+                  ✕
+                </button>
+              </div>
+            </div>
 
             <div class="max-w-4xl mx-auto flex items-center gap-4">
               <div class="flex-1 relative flex items-center">
-
                 <textarea
                   name="contenido"
                   id="mensaje-input"
                   class="w-full px-5 pr-24 py-4 bg-surface-container-low border-none rounded-3xl text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-outline-variant resize-none"
-                  placeholder="Escribe tu mensaje..."
+                  placeholder="Write a message..."
                   rows="1"
                   onkeydown="enviarConEnter(event)"
                 ></textarea>
@@ -228,13 +290,14 @@
                       <button type="button" onclick="insertarEmoji('💡')" class="text-xl hover:bg-surface-container rounded p-1">💡</button>
                     </div>
                   </div>
-                  <!-- Solo un botón de adjuntar -->
+                  <!-- Adjuntar imagen -->
                   <button type="button"
                     onclick="document.getElementById('file-input').click()"
                     class="p-1 hover:bg-primary-container/50 rounded-full text-primary transition-all">
                     <span class="material-symbols-outlined">attach_file</span>
                   </button>
-                  <input type="file" id="file-input" accept="image/*" class="hidden"/>
+                  <input type="file" id="file-input" name="imagen" accept="image/*" class="hidden"
+                         onchange="previewImagen(this)"/>
                 </div>
               </div>
 
@@ -243,6 +306,7 @@
                 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
               </button>
             </div>
+
           </form>
         </footer>
 
@@ -251,9 +315,9 @@
           <div class="w-20 h-20 rounded-2xl bg-primary-container flex items-center justify-center mb-6">
             <span class="material-symbols-outlined text-4xl text-primary">chat_bubble_outline</span>
           </div>
-          <h3 class="font-headline-md text-xl text-on-surface mb-2">Tus mensajes</h3>
+          <h3 class="font-headline-md text-xl text-on-surface mb-2">Your messages</h3>
           <p class="font-body-md text-sm text-outline-variant max-w-xs">
-            Selecciona una conversación de la lista para empezar a chatear.
+            Select a conversation from the list to start chatting.
           </p>
         </div>
       {% endif %}
@@ -272,7 +336,8 @@
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       const contenido = document.getElementById('mensaje-input').value.trim();
-      if (contenido) document.getElementById('form-mensaje').submit();
+      const tieneImagen = document.getElementById('file-input').files.length > 0;
+      if (contenido || tieneImagen) document.getElementById('form-mensaje').submit();
     }
   }
 
@@ -307,6 +372,27 @@
     input.focus();
     input.setSelectionRange(pos + emoji.length, pos + emoji.length);
     emojiPanel.style.display = 'none';
+  }
+
+  // Preview de imagen antes de enviar
+  function previewImagen(input) {
+    const container = document.getElementById('image-preview-container');
+    const preview = document.getElementById('image-preview');
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        container.classList.remove('hidden');
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  // Cancelar imagen seleccionada
+  function cancelarImagen() {
+    document.getElementById('file-input').value = '';
+    document.getElementById('image-preview-container').classList.add('hidden');
+    document.getElementById('image-preview').src = '';
   }
 </script>
 
