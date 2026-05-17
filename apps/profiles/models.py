@@ -44,3 +44,24 @@ class Link(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["perfil", "tipo"], name="unique_link_por_tipo")
         ]
+
+
+class Seguimiento(models.Model):
+    seguidor = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="siguiendo"
+    )
+    seguido = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="seguidores"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "Seguimiento"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["seguidor", "seguido"], name="unique_seguimiento"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.seguidor.username} → {self.seguido.username}"

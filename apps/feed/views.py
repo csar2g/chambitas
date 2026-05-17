@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.db.models import Count
 from .models import Publicacion, Reaccion, Comentario, ImagenPublicacion
-from profiles.models import Perfil
+from profiles.models import Perfil, Seguimiento
 import random
 
 @login_required(login_url='landing')
@@ -21,6 +21,13 @@ def feed_view(request):
 
     todos_usuarios = list(User.objects.exclude(id=request.user.id))
     usuarios_recomendados = random.sample(todos_usuarios, min(3, len(todos_usuarios)))
+
+    followed_ids = set(
+        Seguimiento.objects.filter(seguidor=request.user)
+        .values_list('seguido_id', flat=True)
+    )
+    for u in usuarios_recomendados:
+        u.is_followed = u.id in followed_ids
 
     return render(request, "feed.html", {
         'publicaciones': publicaciones,
@@ -148,6 +155,7 @@ def agregar_comentario(request, publicacion_id):
         'id': comentario.id,
         'contenido': comentario.contenido,
         'username': comentario.user.get_full_name() or comentario.user.username,
+        'user_id': comentario.user.id,
         'foto': perfil.foto_perfil.url if perfil and perfil.foto_perfil else None,
         'created_at': timesince(comentario.created_at),
     })

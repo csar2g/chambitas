@@ -142,7 +142,7 @@ extend: {
 				<article class="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30 overflow-hidden">
 					<div class="p-md">
 						<div class="flex justify-between items-start mb-4">
-							<div class="flex gap-3">
+							<a href="{% url 'public_profile' user_id=publicacion.user.id %}" class="flex gap-3 hover:opacity-80 transition-opacity">
 								<div class="w-12 h-12 rounded-lg overflow-hidden">
 									{% if publicacion.user.perfil.foto_perfil %}
 									<img src="{{ publicacion.user.perfil.foto_perfil.url }}"
@@ -158,7 +158,7 @@ extend: {
 										Hace {{ publicacion.created_at|timesince }}
 									</p>
 								</div>
-							</div>
+							</a>
 							{% if publicacion.user == user %}
 							<div class="relative">
 								<button onclick="toggleMenu({{ publicacion.id }})"
@@ -264,16 +264,16 @@ extend: {
 						<div id="lista-comentarios-{{ publicacion.id }}" class="flex flex-col gap-3">
 							{% for comentario in publicacion.comentarios.all %}
 							<div class="flex gap-3 items-start">
-								<div class="w-8 h-8 rounded-full overflow-hidden shrink-0">
+								<a href="{% url 'public_profile' user_id=comentario.user.id %}" class="w-8 h-8 rounded-full overflow-hidden shrink-0 hover:opacity-80 transition-opacity">
 									{% if comentario.user.perfil.foto_perfil %}
 									<img src="{{ comentario.user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
 									{% else %}
 									<img src="/static/img/default.jpg" class="w-full h-full object-cover">
 									{% endif %}
-								</div>
+								</a>
 								<div class="bg-surface-container rounded-2xl px-4 py-2 flex-1">
 									<div class="flex items-baseline gap-2">
-										<p class="text-sm font-bold text-on-surface">{{ comentario.user.get_full_name }}</p>
+										<a href="{% url 'public_profile' user_id=comentario.user.id %}" class="text-sm font-bold text-on-surface hover:underline">{{ comentario.user.get_full_name }}</a>
 										<p class="text-[10px] text-on-surface-variant">Hace {{ comentario.created_at|timesince }}</p>
 									</div>	
 									<p class="text-sm text-on-surface-variant">{{ comentario.contenido }}</p>
@@ -319,23 +319,27 @@ extend: {
 				<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
 					<h2 class="font-headline-md text-[18px] text-on-surface mb-4">Recommended for you</h2>
 					<div class="flex flex-col gap-4">
-					{%for u in usuarios%}
+					{% for u in usuarios %}
 						<div class="flex items-center gap-3">
-							<div class="w-10 h-10 rounded-full overflow-hidden bg-slate-200">
-								{% if u.perfil.foto_perfil %}
-								<img src="{{ u.perfil.foto_perfil.url }}" class="w-full h-full object-cover"/>
-								{% else %}
-								<img src="/static/img/default.jpg" class="w-full h-full object-cover"/>
-								{% endif %}
-							</div>
-							<div class="flex-1">
-								<p class="text-sm font-bold text-on-surface">{{u.get_full_name}}</p>
-								<p class="text-xs text-on-surface-variant line-clamp-1">{{ u.perfil.descripcion }}</p>
-							</div>
-							<a href="/perfil/{{ u.username }}/"
-								class="material-symbols-outlined text-primary hover:bg-primary-container/30 p-1 rounded-full transition-all">
-								person_add
+							<a href="{% url 'public_profile' user_id=u.id %}" class="flex items-center gap-3 flex-1 hover:opacity-80 transition-opacity">
+								<div class="w-10 h-10 rounded-full overflow-hidden bg-slate-200">
+									{% if u.perfil.foto_perfil %}
+									<img src="{{ u.perfil.foto_perfil.url }}" class="w-full h-full object-cover"/>
+									{% else %}
+									<img src="/static/img/default.jpg" class="w-full h-full object-cover"/>
+									{% endif %}
+								</div>
+								<div class="flex-1">
+									<p class="text-sm font-bold text-on-surface">{{u.get_full_name}}</p>
+									<p class="text-xs text-on-surface-variant line-clamp-1">{{ u.perfil.descripcion }}</p>
+								</div>
 							</a>
+							<button onclick="toggleFollow({{ u.id }}, this)"
+								class="material-symbols-outlined p-1 rounded-full transition-all
+								{% if u.is_followed %}text-on-surface-variant hover:bg-surface-variant/30{% else %}text-primary hover:bg-primary-container/30{% endif %}"
+								data-following="{{ u.is_followed|yesno:'true,false' }}">
+								{% if u.is_followed %}person_check{% else %}person_add{% endif %}
+							</button>
 						</div>
 					{% endfor %}
 					</div>
@@ -363,5 +367,40 @@ extend: {
 		<script src="{% static 'js/post.js' %}"></script>	
 		<script src="{% static 'js/comments.js' %}"></script>	
 		<script src="{% static 'js/edit_delete.js' %}"></script>
+		<script>
+			function getCookie(name) {
+				let v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+				return v ? v.pop() : '';
+			}
+
+			function toggleFollow(userId, btn) {
+				fetch('/perfil/' + userId + '/seguir/', {
+					method: 'POST',
+					headers: {
+						'X-CSRFToken': getCookie('csrftoken'),
+						'Content-Type': 'application/json'
+					}
+				})
+				.then(r => r.json())
+				.then(data => {
+					if (data.following) {
+						btn.dataset.following = 'true';
+						btn.textContent = 'person_check';
+						btn.className = 'material-symbols-outlined p-1 rounded-full transition-all text-on-surface-variant hover:bg-surface-variant/30';
+					} else {
+						btn.dataset.following = 'false';
+						btn.textContent = 'person_add';
+						btn.className = 'material-symbols-outlined p-1 rounded-full transition-all text-primary hover:bg-primary-container/30';
+					}
+				});
+			}
+
+			function toggleMenu(id) {
+				const menu = document.getElementById('menu-' + id);
+				if (menu) {
+					menu.classList.toggle('hidden');
+				}
+			}
+		</script>
 	</body>
 </html>

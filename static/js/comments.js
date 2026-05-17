@@ -37,10 +37,10 @@ function enviarComentario(pubId) {
 
 		lista.insertAdjacentHTML('beforeend', `
 			<div class="flex gap-3 items-start">
-				<div class="w-8 h-8 rounded-full overflow-hidden shrink-0">${foto}</div>
+				<a href="/perfil/${data.user_id}/" class="w-8 h-8 rounded-full overflow-hidden shrink-0 hover:opacity-80 transition-opacity">${foto}</a>
 				<div class="bg-surface-container rounded-2xl px-4 py-2 flex-1">
 					<div class="flex items-baseline gap-2">
-						<p class="text-sm font-bold text-on-surface">${data.username}</p>
+						<a href="/perfil/${data.user_id}/" class="text-sm font-bold text-on-surface hover:underline">${data.username}</a>
 						<p class="text-[10px] text-on-surface-variant">Hace ${data.created_at}</p>
 					</div>
 					<p class="text-sm text-on-surface-variant">${data.contenido}</p>

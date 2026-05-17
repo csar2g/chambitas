@@ -1,8 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
-from .models import Link, Perfil
+from .models import Link, Perfil, Seguimiento
 from users.models import Usuario
 
 
@@ -19,6 +22,9 @@ def _build_profile_context(perfil):
         },
     )
 
+    followers_count = Seguimiento.objects.filter(seguido=auth_user).count()
+    following_count = Seguimiento.objects.filter(seguidor=auth_user).count()
+
     return {
         "perfil": perfil,
         "portfolio_url": portfolio_link.url if portfolio_link else "",
@@ -26,6 +32,8 @@ def _build_profile_context(perfil):
         "aptitudes": aptitudes,
         "aptitudes_texto": ", ".join(aptitudes),
         "usuario_mensajes_id": usuario_mensajes.id,
+        "followers_count": followers_count,
+        "following_count": following_count,
     }
 
 
@@ -81,6 +89,24 @@ def config_initial_profile_view(request):
 def main_profile_view(request):
     perfil, _ = Perfil.objects.get_or_create(usuario=request.user)
     context = _build_profile_context(perfil)
+    context["is_own_profile"] = True
+    context["profile_user"] = request.user
+    context["is_following"] = False
+    return render(request, "main_profile.html", context)
+
+
+@login_required
+def public_profile_view(request, user_id):
+    profile_user = get_object_or_404(User, id=user_id)
+    if profile_user == request.user:
+        return redirect("main_profile")
+    perfil, _ = Perfil.objects.get_or_create(usuario=profile_user)
+    context = _build_profile_context(perfil)
+    context["is_own_profile"] = False
+    context["profile_user"] = profile_user
+    context["is_following"] = Seguimiento.objects.filter(
+        seguidor=request.user, seguido=profile_user
+    ).exists()
     return render(request, "main_profile.html", context)
 
 
@@ -125,3 +151,85 @@ def edit_profile_view(request):
 
     context = _build_profile_context(perfil)
     return render(request, "edit_profile.html", context)
+
+
+@require_POST
+@login_required
+def toggle_follow(request, user_id):
+    target_user = get_object_or_404(User, id=user_id)
+    if target_user == request.user:
+        return JsonResponse({"error": "No puedes seguirte a ti mismo"}, status=400)
+
+    seguimiento = Seguimiento.objects.filter(
+        seguidor=request.user, seguido=target_user
+    ).first()
+
+    if seguimiento:
+        seguimiento.delete()
+        following = False
+    else:
+        Seguimiento.objects.create(seguidor=request.user, seguido=target_user)
+        following = True
+
+    return JsonResponse(
+        {
+            "following": following,
+            "followers_count": Seguimiento.objects.filter(seguido=target_user).count(),
+        }
+    )
+
+
+@login_required
+def followers_list(request, user_id):
+    profile_user = get_object_or_404(User, id=user_id)
+    seguimientos = Seguimiento.objects.filter(seguido=profile_user).select_related(
+        "seguidor", "seguidor__perfil"
+    )
+    users = []
+    for s in seguimientos:
+        users.append(
+            {
+                "user": s.seguidor,
+                "is_following": Seguimiento.objects.filter(
+                    seguidor=request.user, seguido=s.seguidor
+                ).exists(),
+            }
+        )
+    return render(
+        request,
+        "follow_list.html",
+        {
+            "profile_user": profile_user,
+            "users": users,
+            "list_type": "followers",
+            "title": f"Followers of {profile_user.get_full_name() or profile_user.username}",
+        },
+    )
+
+
+@login_required
+def following_list(request, user_id):
+    profile_user = get_object_or_404(User, id=user_id)
+    seguimientos = Seguimiento.objects.filter(seguidor=profile_user).select_related(
+        "seguido", "seguido__perfil"
+    )
+    users = []
+    for s in seguimientos:
+        users.append(
+            {
+                "user": s.seguido,
+                "is_following": Seguimiento.objects.filter(
+                    seguidor=request.user, seguido=s.seguido
+                ).exists(),
+            }
+        )
+    return render(
+        request,
+        "follow_list.html",
+        {
+            "profile_user": profile_user,
+            "users": users,
+            "list_type": "following",
+            "title": f"Following for {profile_user.get_full_name() or profile_user.username}",
+        },
+    )
