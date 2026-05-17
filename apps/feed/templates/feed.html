@@ -106,13 +106,14 @@ extend: {
 	<body class="bg-background text-on-background font-body-md overflow-x-hidden">
 		<!-- TopNavBar -->
 		{% include "topnav.html" %}
-		<div class="max-w-[1200px] mx-auto flex gap-gutter min-h-screen pt-md">
+		<div class="flex min-h-screen pr-20">
 		<!-- Side Bar-->	
-		{% include "sidebar.html" with active_menu="dashboard" %}
+			{% include "sidebar.html" with active_menu="dashboard" %}
 			<!-- Central Feed Canvas -->
-			<main class="flex-1 max-w-[640px] flex flex-col gap-md px-4 md:px-0 mb-xl">
-				<!-- Compose Box -->
-				<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
+			<main class="flex-1 flex flex-col items-center gap-md px-gutter py-md mb-xl">
+				<div class="w-full max-w-2xl flex flex-col gap-md">
+					<!-- Compose Box -->
+					<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
 					<div class="flex gap-2 items-center">
 						<div class="w-12 h-12 rounded-full overflow-hidden shrink-0">
 							{% if user.perfil.foto_perfil %}
@@ -155,7 +156,7 @@ extend: {
 							<div>
 									<h3 class="font-headline-md text-[18px] text-on-surface">{{publicacion.user.get_full_name}}</h3>
 									<p class="text-caption text-on-surface-variant">
-										Hace {{ publicacion.created_at|timesince }}
+									 	{{ publicacion.created_at|timesince }}
 									</p>
 								</div>
 							</a>
@@ -173,12 +174,12 @@ extend: {
 										[{% for img in publicacion.imagenes.all %}{id: {{ img.id }}, url: '{{ img.imagen.url }}'}{% if not forloop.last %},{% endif %}{% endfor %}])" 
 										class="w-full flex items-center gap-2 px-4 py-3 text-sm text-on-surface hover:bg-surface-container transition-colors">
 										<span class="material-symbols-outlined text-[18px]">edit</span>
-										Editar
+										Edit
 									</button>
 									<button onclick="confirmarEliminar({{ publicacion.id }})"
 										class="w-full flex items-center gap-2 px-4 py-3 text-sm text-error hover:bg-error-container transition-colors">
 										<span class="material-symbols-outlined text-[18px]">delete</span>
-										Eliminar
+										Delete
 									</button>
 								</div>
 							</div>
@@ -190,7 +191,7 @@ extend: {
 							class="flex items-center gap-3 p-3 mt-2 mb-4 bg-surface-container hover:bg-surface-container-high transition-colors rounded-xl border border-outline-variant/20 group">
 							<span class="material-symbols-outlined text-primary text-[24px] shrink-0">link</span>
 							<div class="flex-1 min-w-0">
-								<p class="text-xs text-on-surface-variant mb-0.5">Enlace externo</p>
+								<p class="text-xs text-on-surface-variant mb-0.5">External Link</p>
 								<p class="text-sm font-semibold text-primary truncate group-hover:underline">{{ publicacion.link }}</p>
 							</div>
 							<span class="material-symbols-outlined text-on-surface-variant text-[18px]">open_in_new</span>
@@ -274,14 +275,14 @@ extend: {
 								<div class="bg-surface-container rounded-2xl px-4 py-2 flex-1">
 									<div class="flex items-baseline gap-2">
 										<a href="{% url 'public_profile' user_id=comentario.user.id %}" class="text-sm font-bold text-on-surface hover:underline">{{ comentario.user.get_full_name }}</a>
-										<p class="text-[10px] text-on-surface-variant">Hace {{ comentario.created_at|timesince }}</p>
+										<p class="text-[10px] text-on-surface-variant">{{ comentario.created_at|timesince }}</p>
 									</div>	
 									<p class="text-sm text-on-surface-variant">{{ comentario.contenido }}</p>
 								</div>
 							</div>
 							{% empty %}
 							<p class="text-caption text-on-surface-variant text-center py-2" id="empty-{{ publicacion.id }}">
-								No hay comentarios aún. ¡Sé el primero!
+								There are no comments yet. ¡Be the first!
 							</p>
 							{% endfor %}
 						</div>
@@ -308,54 +309,57 @@ extend: {
 								</button>
 							</div>
 						</div>
-					</div>
-				</article>
-				{% endfor %}
+						</div>
+					</article>
+					{% endfor %}
+				</div>
 			</main>
 			<!-- Right Sidebar -->
-			<aside class="hidden xl:flex flex-col gap-gutter w-80 sticky top-20 h-fit">
-				{% if usuarios %}
-				<!-- Recommended Section -->
-				<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
-					<h2 class="font-headline-md text-[18px] text-on-surface mb-4">Recommended for you</h2>
-					<div class="flex flex-col gap-4">
-					{% for u in usuarios %}
-						<div class="flex items-center gap-3">
-							<a href="{% url 'public_profile' user_id=u.id %}" class="flex items-center gap-3 flex-1 hover:opacity-80 transition-opacity">
-								<div class="w-10 h-10 rounded-full overflow-hidden bg-slate-200">
-									{% if u.perfil.foto_perfil %}
-									<img src="{{ u.perfil.foto_perfil.url }}" class="w-full h-full object-cover"/>
-									{% else %}
-									<img src="/static/img/default.jpg" class="w-full h-full object-cover"/>
-									{% endif %}
-								</div>
-								<div class="flex-1">
-									<p class="text-sm font-bold text-on-surface">{{u.get_full_name}}</p>
-									<p class="text-xs text-on-surface-variant line-clamp-1">{{ u.perfil.descripcion }}</p>
-								</div>
-							</a>
-							<button onclick="toggleFollow({{ u.id }}, this)"
-								class="material-symbols-outlined p-1 rounded-full transition-all
-								{% if u.is_followed %}text-on-surface-variant hover:bg-surface-variant/30{% else %}text-primary hover:bg-primary-container/30{% endif %}"
-								data-following="{{ u.is_followed|yesno:'true,false' }}">
-								{% if u.is_followed %}person_check{% else %}person_add{% endif %}
-							</button>
+			<div class="hidden xl:block w-80 shrink-0 pt-md ml-2">
+				<aside class="hidden xl:flex flex-col gap-gutter w-full sticky top-24 h-fit">
+					{% if usuarios %}
+					<!-- Recommended Section -->
+					<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
+						<h2 class="font-headline-md text-[18px] text-on-surface mb-4">Recommended for you</h2>
+						<div class="flex flex-col gap-4">
+							{% for u in usuarios %}
+							<div class="flex items-center gap-3">
+								<a href="{% url 'public_profile' user_id=u.id %}" class="flex items-center gap-3 flex-1 hover:opacity-80 transition-opacity">
+									<div class="w-10 h-10 rounded-full overflow-hidden bg-slate-200">
+										{% if u.perfil.foto_perfil %}
+										<img src="{{ u.perfil.foto_perfil.url }}" class="w-full h-full object-cover"/>
+										{% else %}
+										<img src="/static/img/default.jpg" class="w-full h-full object-cover"/>
+										{% endif %}
+									</div>
+									<div class="flex-1">
+										<p class="text-sm font-bold text-on-surface">{{u.get_full_name}}</p>
+										<p class="text-xs text-on-surface-variant line-clamp-1">{{ u.perfil.descripcion }}</p>
+									</div>
+								</a>
+								<button onclick="toggleFollow({{ u.id }}, this)"
+									class="material-symbols-outlined p-1 rounded-full transition-all
+									{% if u.is_followed %}text-on-surface-variant hover:bg-surface-variant/30{% else %}text-primary hover:bg-primary-container/30{% endif %}"
+									data-following="{{ u.is_followed|yesno:'true,false' }}">
+									{% if u.is_followed %}person_check{% else %}person_add{% endif %}
+								</button>
+							</div>
+							{% endfor %}
 						</div>
-					{% endfor %}
-					</div>
-				</section>
-				{% endif %}
+					</section>
+					{% endif %}
 
-				<!-- Small Footer Link Section -->
-				<div class="px-md flex flex-wrap gap-x-4 gap-y-2 text-xs text-on-surface-variant opacity-60">
-					<a class="hover:text-primary" href="#">About</a>
-					<a class="hover:text-primary" href="#">Accessibility</a>
-					<a class="hover:text-primary" href="#">Help Center</a>
-					<a class="hover:text-primary" href="#">Privacy &amp; Terms</a>
-					<a class="hover:text-primary" href="#">Community Policies</a>
-					<p class="w-full mt-2">© 2026 Chambitas. Cultivating professional growth.</p>
-				</div>
-			</aside>
+					<!-- Small Footer Link Section -->
+					<div class="px-md flex flex-wrap gap-x-4 gap-y-2 text-xs text-on-surface-variant opacity-60">
+						<a class="hover:text-primary" href="#">About</a>
+						<a class="hover:text-primary" href="#">Accessibility</a>
+						<a class="hover:text-primary" href="#">Help Center</a>
+						<a class="hover:text-primary" href="#">Privacy &amp; Terms</a>
+						<a class="hover:text-primary" href="#">Community Policies</a>
+						<p class="w-full mt-2">© 2026 Chambitas. Cultivating professional growth.</p>
+					</div>
+				</aside>
+			</div>
 		</div>
 		<!-- Responsive FAB (Mobile Only) -->
 		<button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform">

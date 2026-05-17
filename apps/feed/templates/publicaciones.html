@@ -62,9 +62,9 @@ fontSize: {
 					<!-- Header -->
 					<div class="flex justify-between items-center mb-lg">
 						<div>
-							<h1 class="font-headline-lg text-[28px] font-bold text-on-surface">Mis publicaciones</h1>
+							<h1 class="font-headline-lg text-[28px] font-bold text-on-surface">My Posts</h1>
 							<p class="text-on-surface-variant text-sm mt-1">
-								{{ publicaciones|length }} publicación{{ publicaciones|length|pluralize:"es" }}
+								{{ publicaciones|length }} post{{ publicaciones|length|pluralize:"s" }}
 							</p>
 						</div>
 					</div>
@@ -73,11 +73,11 @@ fontSize: {
 					{% if not publicaciones %}
 					<div class="flex flex-col items-center justify-center py-xl gap-md text-on-surface-variant">
 						<span class="material-symbols-outlined text-[64px] opacity-30">article</span>
-						<p class="font-headline-md text-center">Aún no has publicado nada</p>
-						<p class="text-body-md text-center">Crea tu primera publicación para que otros puedan encontrarte</p>
+						<p class="font-headline-md text-center">You haven't posted anything yet.</p>
+						<p class="text-body-md text-center">Create your firs't post so other people can found you.</p>
 						<button onclick="abrirModal()"
 							class="bg-primary text-white px-lg py-sm rounded-xl font-label-md hover:opacity-90 transition-all">
-							Crear publicación
+							Create a Post
 						</button>
 					</div>
 					{% endif %}
@@ -100,7 +100,7 @@ fontSize: {
 										</div>
 										<div>
 											<h3 class="font-headline-md text-[16px] text-on-surface">{{ user.get_full_name }}</h3>
-											<p class="text-caption text-on-surface-variant">Hace {{ publicacion.created_at|timesince }}</p>
+											<p class="text-caption text-on-surface-variant">{{ publicacion.created_at|timesince }}</p>
 										</div>
 									</div>
 									<!-- Menú editar/eliminar -->
@@ -118,12 +118,12 @@ fontSize: {
 												[{% for img in publicacion.imagenes.all %}{id: {{ img.id }}, url: '{{ img.imagen.url }}'}{% if not forloop.last %},{% endif %}{% endfor %}]
 											)" class="w-full flex items-center gap-2 px-4 py-3 text-sm text-on-surface hover:bg-surface-container transition-colors">
 												<span class="material-symbols-outlined text-[18px]">edit</span>
-												Editar
+												Edit
 											</button>
 											<button onclick="confirmarEliminar({{ publicacion.id }})"
 												class="w-full flex items-center gap-2 px-4 py-3 text-sm text-error hover:bg-error-container transition-colors">
 												<span class="material-symbols-outlined text-[18px]">delete</span>
-												Eliminar
+												Delete	
 											</button>
 										</div>
 									</div>
@@ -202,14 +202,14 @@ fontSize: {
 										<div class="bg-surface-container rounded-2xl px-4 py-2 flex-1">
 											<div class="flex items-baseline gap-2">
 												<p class="text-sm font-bold text-on-surface">{{ comentario.user.get_full_name }}</p>
-												<p class="text-[10px] text-on-surface-variant">Hace {{ comentario.created_at|timesince }}</p>
+												<p class="text-[10px] text-on-surface-variant">{{ comentario.created_at|timesince }}</p>
 											</div>
 											<p class="text-sm text-on-surface-variant">{{ comentario.contenido }}</p>
 										</div>
 									</div>
 									{% empty %}
 									<p class="text-caption text-on-surface-variant text-center py-2" id="empty-{{ publicacion.id }}">
-										No hay comentarios aún.
+										There are no comments yet.
 									</p>
 									{% endfor %}
 								</div>

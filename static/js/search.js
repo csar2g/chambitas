@@ -29,7 +29,7 @@ input.addEventListener('keyup', async () => {
 		div.appendChild(span);
 
 		div.onclick = () => {
-			window.location.href = `/perfil/${user.username}/`;
+			window.location.href = `/perfil/${user.id}/`;
 		};
 
 		results.appendChild(div);
