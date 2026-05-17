@@ -32,9 +32,8 @@ class Mensaje(models.Model):
         related_name='mensajes_enviados'
     )
     contenido = models.TextField()
+    imagen = models.ImageField(upload_to='mensajes/', null=True, blank=True) 
     created_at = models.DateTimeField(auto_now_add=True)
-    #Se utilizara para las imagenes(local pero debera cambiarse a la nube)
-   # imagen = models.ImageField(upload_to='mensajes/', null=True, blank=True) 
 
     def __str__(self):
         return f"{self.usuario_emisor}: {self.contenido[:40]}"
