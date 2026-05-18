@@ -1,6 +1,6 @@
 {% load static %}
 
-<!-- CREACION DE PUBLICACION -->
+<!-- POST CREATION -->
 
 		<div id="modal-post" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-[100]">
 			<div class="bg-white w-[600px] max-w-[90%] rounded-xl p-6">
@@ -12,7 +12,7 @@
 							{% if user.perfil.foto_perfil %}
 							<img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
 							{% else %}
-							<img src="/static/img/default.jpg" class="w-full h-full object-cover">
+							<img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" class="w-full h-full object-cover">
 							{% endif %}
 						</div>
 						<div>
@@ -81,7 +81,7 @@
 			</div>
 		</div>		
 
-		<!--VISUALIZAR IMAGENES DE PUBLICACION-->
+		<!-- VIEW POST IMAGES -->
 		<div id="modal-img" 
 		class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[100]"
 			onclick="cerrarImagen()">
@@ -89,10 +89,10 @@
 			<img id="img-grande" class="max-w-[90%] max-h-[90%] rounded-lg">
 		</div>
 		
-		<!-- Modal editar publicación -->
+		<!-- Edit post modal -->
 	<div id="modal-editar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-[100]">
 			<div class="bg-white w-[600px] max-w-[90%] rounded-xl p-6 max-h-[90vh] overflow-y-auto">
-				<h2 class="text-lg font-bold mb-4">Editar publicación</h2>
+				<h2 class="text-lg font-bold mb-4">Edit Post</h2>
 				<form id="form-editar" method="POST" action="" enctype="multipart/form-data" class="flex flex-col gap-4">
 					{% csrf_token %}
 
@@ -149,7 +149,7 @@
 			</div>
 		</div>
 
-		<!-- Modal confirmar eliminación -->
+		<!-- Confirm delete modal -->
 	<div id="modal-eliminar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-[100]">
 				<div class="bg-white w-[400px] max-w-[90%] rounded-xl p-6 flex flex-col gap-4">
 					<h2 class="text-lg font-bold">¿Delete Post?</h2>

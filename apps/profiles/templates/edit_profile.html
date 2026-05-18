@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html class="light" lang="es"><head>
+<html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -125,7 +125,7 @@
 <section class="flex flex-col items-center gap-4">
 <div class="relative group">
 <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-primary-container shadow-lg">
-<img alt="Profile picture" class="w-full h-full object-cover" data-alt="Close-up portrait of a friendly professional smiling in a bright natural light outdoor setting, soft greenery in background" id="profile-photo-preview" src="{% if perfil.foto_perfil %}{{ perfil.foto_perfil.url }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuCFPlAwCKNYRtHY4KQyrscwq-ECe4rj1fmrnRhvYnqmjHnxnqjQU1eCPC66kMjvzuDqRnmShl8y1kbUgI0M06NtaxG017lFqRppFfHtcp6zQEkOm_Pvu_nH7lX80t-yas5czj3cepGoTVkEvY40iQsOCSj6Mobq9i4viAF1apS_9gVezKooqpQEvTvZP3pdcgy25x_QSWagGpbNJUJ86DpupwCOELfTIz5kOXgRop7_Dpq5zxpkTMlUqTMy-DvnmkXLPD8p-zZq7ek{% endif %}"/>
+<img alt="Profile picture" class="w-full h-full object-cover" data-alt="Default gray profile icon" id="profile-photo-preview" src="{% if perfil.foto_perfil %}{{ perfil.foto_perfil.url }}{% else %}https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y{% endif %}"/>
 </div>
 <input accept="image/*" class="hidden" id="profile-photo-input" name="foto_perfil" type="file"/>
 <label class="absolute bottom-0 right-0 bg-primary-container text-on-primary-container p-2 rounded-full shadow-md hover:scale-105 active:scale-90 transition-transform cursor-pointer" for="profile-photo-input">
@@ -189,7 +189,7 @@
 <!-- Portfolio Link -->
 <div class="p-sm bg-surface-container rounded-lg border border-outline-variant/30 flex flex-col gap-xs">
 <div class="flex items-center">
-<input class="w-full bg-surface-container-lowest font-label-md text-on-surface border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded px-2 py-1 transition-all shadow-sm" placeholder="Title" type="text" value="Portfolio"/>
+<input class="w-full bg-surface-container-lowest font-label-md text-on-surface border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded px-2 py-1 transition-all shadow-sm" name="portfolio_nombre" placeholder="Title" type="text" value="{{ portfolio_nombre|default:'Portfolio' }}"/>
 </div>
 <div class="flex items-center gap-xs text-outline px-1 mt-1">
 <span class="material-symbols-outlined text-[16px]" data-icon="link">link</span>
@@ -199,7 +199,7 @@
 <!-- LinkedIn Link -->
 <div class="p-sm bg-surface-container rounded-lg border border-outline-variant/30 flex flex-col gap-xs">
 <div class="flex items-center">
-<input class="w-full bg-surface-container-lowest font-label-md text-on-surface border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded px-2 py-1 transition-all shadow-sm" placeholder="Title" type="text" value="LinkedIn"/>
+<input class="w-full bg-surface-container-lowest font-label-md text-on-surface border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded px-2 py-1 transition-all shadow-sm" name="linkedin_nombre" placeholder="Title" type="text" value="{{ linkedin_nombre|default:'LinkedIn' }}"/>
 </div>
 <div class="flex items-center gap-xs text-outline px-1 mt-1">
 <span class="material-symbols-outlined text-[16px]" data-icon="link">link</span>
