@@ -7,7 +7,7 @@
                     {% if user.perfil.foto_perfil %}
                     <img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
                     {% else %}
-                    <img src="/static/img/default.jpg">
+                    <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" class="w-full h-full object-cover">
                     {% endif %}
                 </div>
                 <div>
@@ -31,15 +31,14 @@
             <span>Messages</span>
         </a>
         <a class="flex items-center gap-3 px-4 py-3 {% if active_menu == 'perfil' %}bg-white text-emerald-700 font-bold shadow-sm{% else %}text-emerald-900/60 hover:bg-white/40 hover:translate-x-1{% endif %} transition-all rounded-xl" href="{% url 'main_profile' %}">
-            <span class="material-symbols-outlined">settings</span>
-            <span>Settings</span>
+            <span class="material-symbols-outlined">person</span>
+            <span>Profile</span>
         </a>
     </nav>
-    <form action="{% url 'logout' %}" method="POST" class="mt-auto pt-4 border-t border-emerald-900/50">
+    <form action="{% url 'logout' %}" method="POST" class="mt-auto">
         {% csrf_token %}
-        <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-emerald-900/60 hover:bg-white/40 hover:translate-x-1 transition-all rounded-xl font-label-md">
-            <span class="material-symbols-outlined">logout</span>
-            <span>Log Out</span>
+        <button type="submit" class="w-full py-3 rounded-xl border border-emerald-800/20 text-emerald-900 font-semibold text-sm hover:bg-white/40 transition-colors">
+            Log Out
         </button>
     </form>
 </aside>

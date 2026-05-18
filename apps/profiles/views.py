@@ -28,7 +28,9 @@ def _build_profile_context(perfil):
     return {
         "perfil": perfil,
         "portfolio_url": portfolio_link.url if portfolio_link else "",
+        "portfolio_nombre": portfolio_link.nombre if portfolio_link else "Portfolio",
         "linkedin_url": linkedin_link.url if linkedin_link else "",
+        "linkedin_nombre": linkedin_link.nombre if linkedin_link else "LinkedIn",
         "aptitudes": aptitudes,
         "aptitudes_texto": ", ".join(aptitudes),
         "usuario_mensajes_id": usuario_mensajes.id,
@@ -42,7 +44,7 @@ def config_initial_profile_view(request):
     perfil, _ = Perfil.objects.get_or_create(usuario=request.user)
 
     if request.method == "POST":
-        action = request.POST.get("action", "draft")
+        action = request.POST.get("action", "complete")
         uploaded_photo = request.FILES.get("foto_perfil")
         perfil.numero_tel = request.POST.get("numero_tel", "").strip()
         perfil.whatsapp = request.POST.get("whatsapp", "").strip()
@@ -54,13 +56,15 @@ def config_initial_profile_view(request):
         perfil.save()
 
         portfolio_url = request.POST.get("portfolio_url", "").strip()
+        portfolio_nombre = request.POST.get("portfolio_nombre", "Portfolio").strip()
         linkedin_url = request.POST.get("linkedin_url", "").strip()
+        linkedin_nombre = request.POST.get("linkedin_nombre", "LinkedIn").strip()
 
         if portfolio_url:
             Link.objects.update_or_create(
                 perfil=perfil,
                 tipo=Link.TIPO_PORTFOLIO,
-                defaults={"url": portfolio_url},
+                defaults={"url": portfolio_url, "nombre": portfolio_nombre},
             )
         else:
             Link.objects.filter(perfil=perfil, tipo=Link.TIPO_PORTFOLIO).delete()
@@ -69,17 +73,17 @@ def config_initial_profile_view(request):
             Link.objects.update_or_create(
                 perfil=perfil,
                 tipo=Link.TIPO_LINKEDIN,
-                defaults={"url": linkedin_url},
+                defaults={"url": linkedin_url, "nombre": linkedin_nombre},
             )
         else:
             Link.objects.filter(perfil=perfil, tipo=Link.TIPO_LINKEDIN).delete()
 
         if action == "complete":
-            messages.success(request, "Perfil completado. Bienvenido a Chambitas.")
+            messages.success(request, "Profile completed. Welcome to Chambitas.")
             return redirect("landing")
 
-        messages.success(request, "Borrador guardado correctamente.")
-        return redirect("profile_setup")
+        messages.success(request, "Profile updated successfully.")
+        return redirect("main_profile")
 
     context = _build_profile_context(perfil)
     return render(request, "config_initial_profile.html", context)
@@ -124,15 +128,16 @@ def edit_profile_view(request):
         if uploaded_photo:
             perfil.foto_perfil = uploaded_photo
         perfil.save()
-
         portfolio_url = request.POST.get("portfolio_url", "").strip()
+        portfolio_nombre = request.POST.get("portfolio_nombre", "").strip()
         linkedin_url = request.POST.get("linkedin_url", "").strip()
+        linkedin_nombre = request.POST.get("linkedin_nombre", "").strip()
 
         if portfolio_url:
             Link.objects.update_or_create(
                 perfil=perfil,
                 tipo=Link.TIPO_PORTFOLIO,
-                defaults={"url": portfolio_url},
+                defaults={"url": portfolio_url, "nombre": portfolio_nombre},
             )
         else:
             Link.objects.filter(perfil=perfil, tipo=Link.TIPO_PORTFOLIO).delete()
@@ -141,12 +146,12 @@ def edit_profile_view(request):
             Link.objects.update_or_create(
                 perfil=perfil,
                 tipo=Link.TIPO_LINKEDIN,
-                defaults={"url": linkedin_url},
+                defaults={"url": linkedin_url, "nombre": linkedin_nombre},
             )
         else:
             Link.objects.filter(perfil=perfil, tipo=Link.TIPO_LINKEDIN).delete()
 
-        messages.success(request, "Perfil actualizado correctamente.")
+        messages.success(request, "Profile updated successfully.")
         return redirect("main_profile")
 
     context = _build_profile_context(perfil)
@@ -158,7 +163,7 @@ def edit_profile_view(request):
 def toggle_follow(request, user_id):
     target_user = get_object_or_404(User, id=user_id)
     if target_user == request.user:
-        return JsonResponse({"error": "No puedes seguirte a ti mismo"}, status=400)
+        return JsonResponse({"error": "You cannot follow yourself"}, status=400)
 
     seguimiento = Seguimiento.objects.filter(
         seguidor=request.user, seguido=target_user

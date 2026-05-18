@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html class="light" lang="es"><head>
+<html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -138,7 +138,7 @@
 <div class="bg-surface-container-lowest p-md lg:p-lg rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
 <div class="flex flex-col md:flex-row gap-md items-start">
 <div class="relative shrink-0 flex-none h-32 w-32 md:h-40 md:w-40 rounded-full">
-<img class="w-full h-full rounded-full object-cover shadow-xl border-4 border-white aspect-square" data-alt="professional portrait of a creative individual in a bright modern studio with a warm and friendly expression" src="{% if perfil.foto_perfil %}{{ perfil.foto_perfil.url }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuBMF0iBtcXqEyRXB1XAVGe11gzboHIuvC9luupau4oi4uhd32Gfjs9GwXL_G3ANRwYFv-5nHJlaL9D892GJAjoFcdz2IqAtAEwH8s0FRhoOGVgHmdczLpf6C1v7sWbJD8-zFAQ7g3ER5CG4k6sa5qFYH63U4-6bjB6PWx3TMGmlbahGxWMofKEaECKB359_qMTkEDIKEe7gEQyQmKJ6Fp5KTkBbdIxW23DK9ntypA3-GsyV4DbsuW7mF8rtttQIqNiRm6eDCF6bxic{% endif %}"/>
+<img class="w-full h-full rounded-full object-cover shadow-xl border-4 border-white aspect-square" data-alt="Default gray profile icon" src="{% if perfil.foto_perfil %}{{ perfil.foto_perfil.url }}{% else %}https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y{% endif %}"/>
 </div>
 <div class="flex-1 mt-6 md:mt-8">
 <div class="flex flex-wrap items-center gap-sm">
@@ -169,11 +169,11 @@
     {% if is_following %}bg-surface-container text-on-surface-variant border border-outline-variant/30{% else %}bg-primary text-white{% endif %}"
     data-following="{{ is_following|yesno:'true,false' }}">
 <span class="material-symbols-outlined text-lg">{% if is_following %}person_check{% else %}person_add{% endif %}</span>
-    <span>{% if is_following %}Following{% else %}Follow{% endif %}</span>
+    <span class="follow-text">{% if is_following %}Following{% else %}Follow{% endif %}</span>
 </button>
 <a class="flex items-center justify-center gap-2 px-5 py-3 bg-secondary text-white rounded-xl font-bold font-label-md shadow-lg hover:translate-y-[-2px] transition-all" href="{% url 'iniciar_conversacion' profile_user.id %}">
 <span class="material-symbols-outlined text-lg" data-icon="mail">mail</span>
-                                    Enviar Mensaje
+                                    Send Message
                                 </a>
 {% endif %}
 </div>
@@ -183,12 +183,20 @@
 
 <div class="mt-lg border-t border-outline-variant/20 pt-lg">
 <h2 class="font-headline-md mb-sm">About</h2>
-<p class="font-body-lg text-on-surface-variant leading-relaxed">
-                                {{ perfil.descripcion|default:"Complete your profile to let others know your experience and work style." }}
+                            <p class="font-body-lg text-on-surface-variant leading-relaxed">
+                                {% if perfil.descripcion %}
+                                    {{ perfil.descripcion }}
+                                {% else %}
+                                    {% if is_own_profile %}
+                                        Complete your profile to let others know your experience and work style.
+                                    {% else %}
+                                        This professional hasn't added a bio yet.
+                                    {% endif %}
+                                {% endif %}
                             </p>
 </div>
 </div>
-<!-- Aptitudes (Tags) Section -->
+<!-- Skills (Tags) Section -->
 <div class="bg-surface-container-lowest p-md lg:p-lg rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
 <h2 class="font-headline-md mb-md flex items-center gap-sm">
 <span class="material-symbols-outlined text-primary" data-icon="auto_awesome">auto_awesome</span>
@@ -198,32 +206,38 @@
 {% for aptitud in aptitudes %}
 <span class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-on-surface hover:bg-primary-fixed transition-colors cursor-default">{{ aptitud }}</span>
 {% empty %}
-<span class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-on-surface">Add skills from Edit Profile</span>
+<span class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-on-surface">
+    {% if is_own_profile %}
+        Add skills from Edit Profile
+    {% else %}
+        No skills listed yet
+    {% endif %}
+</span>
 {% endfor %}
 </div>
 </div>
 
 </div>
-<!-- Sidebar (Right Column) — mismo row que la columna izquierda (Edit Profile) -->
+<!-- Sidebar (Right Column) — same row as the left column (Edit Profile) -->
 <aside class="w-full lg:w-80 lg:shrink-0 space-y-gutter">
-<!-- Enlaces Section -->
+<!-- Links Section -->
 <div class="bg-surface-container-lowest p-md rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/30">
 <h2 class="font-headline-md mb-md text-lg">Links</h2>
 <div class="flex flex-col gap-sm">
-{% if linkedin_url %}
-<a class="flex items-center justify-between p-3 rounded-xl border border-outline-variant/20 hover:bg-primary-container/10 transition-colors" href="{{ linkedin_url }}" rel="noopener noreferrer" target="_blank">
+{% if portfolio_url %}
+<a class="flex items-center justify-between p-3 rounded-xl border border-outline-variant/20 hover:bg-primary-container/10 transition-colors" href="{{ portfolio_url }}" rel="noopener noreferrer" target="_blank">
 <div class="flex items-center gap-sm">
 <span class="material-symbols-outlined text-primary" data-icon="link">link</span>
-<span class="font-label-md">LinkedIn Profile</span>
+<span class="font-label-md">{{ portfolio_nombre|default:"Portfolio" }}</span>
 </div>
 <span class="material-symbols-outlined text-sm opacity-40" data-icon="open_in_new">open_in_new</span>
 </a>
 {% endif %}
-{% if portfolio_url %}
-<a class="flex items-center justify-between p-3 rounded-xl border border-outline-variant/20 hover:bg-primary-container/10 transition-colors" href="{{ portfolio_url }}" rel="noopener noreferrer" target="_blank">
+{% if linkedin_url %}
+<a class="flex items-center justify-between p-3 rounded-xl border border-outline-variant/20 hover:bg-primary-container/10 transition-colors" href="{{ linkedin_url }}" rel="noopener noreferrer" target="_blank">
 <div class="flex items-center gap-sm">
-<span class="material-symbols-outlined text-primary" data-icon="palette">palette</span>
-<span class="font-label-md">Portfolio</span>
+<span class="material-symbols-outlined text-primary" data-icon="link">link</span>
+<span class="font-label-md">{{ linkedin_nombre|default:"LinkedIn Profile" }}</span>
 </div>
 <span class="material-symbols-outlined text-sm opacity-40" data-icon="open_in_new">open_in_new</span>
 </a>
@@ -238,7 +252,13 @@
 </a>
 {% endif %}
 {% if not linkedin_url and not portfolio_url and not perfil.whatsapp %}
-<p class="text-sm text-on-surface-variant">You don't have any links configured yet.</p>
+<p class="text-sm text-on-surface-variant">
+    {% if is_own_profile %}
+        You don't have any links configured yet.
+    {% else %}
+        No professional links added.
+    {% endif %}
+</p>
 {% endif %}
 </div>
 </div>
@@ -270,13 +290,9 @@
 <div class="max-w-[1200px] mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
 <div class="flex flex-col gap-2">
 <span class="font-bold text-slate-900 dark:text-slate-100 font-headline-md">Chambitas</span>
-<p class="font-['Plus_Jakarta_Sans'] text-sm text-slate-500">© 2024 Chambitas. Cultivating professional growth.</p>
+<p class="font-['Plus_Jakarta_Sans'] text-sm text-slate-500">© 2026 Chambitas. Cultivating professional growth.</p>
 </div>
 <div class="flex gap-lg">
-<a class="text-slate-500 hover:text-emerald-500 transition-colors font-label-md" href="#">Privacy Policy</a>
-<a class="text-slate-500 hover:text-emerald-500 transition-colors font-label-md" href="#">Terms of Service</a>
-<a class="text-slate-500 hover:text-emerald-500 transition-colors font-label-md" href="#">Help Center</a>
-<a class="text-slate-500 hover:text-emerald-500 transition-colors font-label-md" href="#">Career Advice</a>
 </div>
 </div>
 </footer>
@@ -313,15 +329,16 @@
       .then(r => r.json())
       .then(data => {
           const icon = btn.querySelector('.material-symbols-outlined');
+          const text = btn.querySelector('.follow-text');
           if (data.following) {
               btn.dataset.following = 'true';
-              icon.textContent = 'person_check';
-              btn.lastChild.textContent = ' Following';
+              if (icon) icon.textContent = 'person_check';
+              if (text) text.textContent = 'Following';
               btn.className = 'follow-btn flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold font-label-md shadow-lg hover:translate-y-[-2px] transition-all bg-surface-container text-on-surface-variant border border-outline-variant/30';
           } else {
               btn.dataset.following = 'false';
-              icon.textContent = 'person_add';
-              btn.lastChild.textContent = 'Follow';
+              if (icon) icon.textContent = 'person_add';
+              if (text) text.textContent = 'Follow';
               btn.className = 'follow-btn flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold font-label-md shadow-lg hover:translate-y-[-2px] transition-all bg-primary text-white';
           }
           const counter = document.getElementById('followers-count');

@@ -119,7 +119,7 @@ extend: {
 							{% if user.perfil.foto_perfil %}
 							<img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
 							{% else %}
-							<img src="/static/img/default.jpg">
+							<img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" class="w-full h-full object-cover">
 							{% endif %}
 						</div>
 						<div onclick="abrirModal()"
@@ -149,7 +149,7 @@ extend: {
 									<img src="{{ publicacion.user.perfil.foto_perfil.url }}"
 										class="w-10 h-10 rounded-full object-cover">
 									{% else %}
-									<img src="/static/img/default.jpg"
+									<img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
 										class="w-10 h-10 rounded-full object-cover">
 									{% endif %}
 								</div>
@@ -269,7 +269,7 @@ extend: {
 									{% if comentario.user.perfil.foto_perfil %}
 									<img src="{{ comentario.user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
 									{% else %}
-									<img src="/static/img/default.jpg" class="w-full h-full object-cover">
+									<img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" class="w-full h-full object-cover">
 									{% endif %}
 								</a>
 								<div class="bg-surface-container rounded-2xl px-4 py-2 flex-1">
@@ -282,7 +282,7 @@ extend: {
 							</div>
 							{% empty %}
 							<p class="text-caption text-on-surface-variant text-center py-2" id="empty-{{ publicacion.id }}">
-								There are no comments yet. ¡Be the first!
+								There are no comments yet. Be the first!
 							</p>
 							{% endfor %}
 						</div>
@@ -292,7 +292,7 @@ extend: {
 								{% if user.perfil.foto_perfil %}
 								<img src="{{ user.perfil.foto_perfil.url }}" class="w-full h-full object-cover">
 								{% else %}
-								<img src="/static/img/default.jpg" class="w-full h-full object-cover">
+								<img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" class="w-full h-full object-cover">
 								{% endif %}
 							</div>
 							<div class="flex-1 flex items-center gap-2 bg-surface-container rounded-full px-4 py-2">
@@ -329,7 +329,7 @@ extend: {
 										{% if u.perfil.foto_perfil %}
 										<img src="{{ u.perfil.foto_perfil.url }}" class="w-full h-full object-cover"/>
 										{% else %}
-										<img src="/static/img/default.jpg" class="w-full h-full object-cover"/>
+										<img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" class="w-full h-full object-cover"/>
 										{% endif %}
 									</div>
 									<div class="flex-1">
@@ -349,14 +349,9 @@ extend: {
 					</section>
 					{% endif %}
 
-					<!-- Small Footer Link Section -->
+					<!-- Small Footer Section -->
 					<div class="px-md flex flex-wrap gap-x-4 gap-y-2 text-xs text-on-surface-variant opacity-60">
-						<a class="hover:text-primary" href="#">About</a>
-						<a class="hover:text-primary" href="#">Accessibility</a>
-						<a class="hover:text-primary" href="#">Help Center</a>
-						<a class="hover:text-primary" href="#">Privacy &amp; Terms</a>
-						<a class="hover:text-primary" href="#">Community Policies</a>
-						<p class="w-full mt-2">© 2026 Chambitas. Cultivating professional growth.</p>
+						<p class="w-full">© 2026 Chambitas. Cultivating professional growth.</p>
 					</div>
 				</aside>
 			</div>

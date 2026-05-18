@@ -28,16 +28,16 @@ def login_view(request):
         password = request.POST.get("password", "")
 
         if not email or not password:
-            messages.error(request, "Completa correo y contrasena para continuar.")
+            messages.error(request, "Please enter both email and password.")
             return render(request, "login.html")
 
         user = authenticate(request, username=email, password=password)
         if user is None:
-            messages.error(request, "Correo o contrasena incorrectos.")
+            messages.error(request, "Invalid email or password.")
             return render(request, "login.html")
 
         login(request, user)
-        messages.success(request, "Sesion iniciada correctamente.")
+        messages.success(request, "Logged in successfully.")
         return redirect("landing")
 
     return render(request, "login.html")
@@ -59,15 +59,19 @@ def register_view(request):
         )
 
         if not full_name or not email or not password:
-            messages.error(request, "Todos los campos son obligatorios.")
+            messages.error(request, "All fields are required.")
+            return render(request, "register.html", context)
+
+        if len(password) < 8:
+            messages.error(request, "Password must be at least 8 characters long.")
             return render(request, "register.html", context)
 
         if not accepted_terms:
-            messages.error(request, "Debes aceptar los terminos para registrarte.")
+            messages.error(request, "You must accept the terms to register.")
             return render(request, "register.html", context)
 
         if User.objects.filter(username=email).exists():
-            messages.error(request, "Ese correo ya esta registrado.")
+            messages.error(request, "This email is already registered.")
             return render(request, "register.html", context)
 
         first_name, *last_name_parts = full_name.split()
@@ -87,7 +91,7 @@ def register_view(request):
         )
 
         login(request, user)
-        messages.success(request, "Cuenta creada correctamente.")
+        messages.success(request, "Account created successfully.")
         return redirect("profile_setup")
 
     return render(request, "register.html", _register_context())
@@ -96,5 +100,5 @@ def register_view(request):
 def logout_view(request):
     if request.method == "POST":
         logout(request)
-        messages.success(request, "Sesion cerrada correctamente.")
+        messages.success(request, "Logged out successfully.")
     return redirect("landing")

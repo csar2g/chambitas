@@ -37,6 +37,7 @@ class Link(models.Model):
 
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name="links")
     tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default=TIPO_PORTFOLIO)
+    nombre = models.CharField(max_length=50, blank=True)
     url = models.CharField(max_length=255)
 
     class Meta:
